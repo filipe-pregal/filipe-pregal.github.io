@@ -36,7 +36,7 @@ main {
 	background-color: white;
 	display: flex;
 	flex-flow: row nowrap;
-	justify-content: flex-start;
+	align-content: stretch;
 	margin: 0 20%;
 	overflow-y: scroll;
 }
