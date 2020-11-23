@@ -24,34 +24,57 @@ import pt.unl.fct.di.www.eat.R;
 public class ListMenusCompany extends AppCompatActivity {
 
     ListView listView;
+    Button btnMenu, btnRequest;
     String email;
-    String restaurant;
     String mTitle[] = {"teste1", "teste2", "teste3"};
     String mP[] = {"feijoada", "sardinhas", "bolonhesa"};
+
+    String mT[] = {"a", "b", "c"};
+    String mB[] = {"d", "e", "f"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_menus_user);
+        setContentView(R.layout.activity_company_options);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             email = extras.getString("user");
         }
 
-        listView = findViewById(R.id.listViewMenuUser);
-        MyAdapter adapter = new MyAdapter(this, mTitle, mP);
-        listView.setAdapter(adapter);
+        listView = findViewById(R.id.listView);
 
+        btnMenu = findViewById(R.id.editMenus);
+
+        btnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    MyAdapterMenu adapterM = new MyAdapterMenu(getApplicationContext(), mTitle, mP);
+                    listView.setAdapter(adapterM);
+            }
+        });
+
+        btnRequest = findViewById(R.id.seeRequests);
+
+        MyAdapterRequest adapterR = new MyAdapterRequest(getApplicationContext(), mT, mB);
+        listView.setAdapter(adapterR);
+
+        btnRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    MyAdapterRequest adapterR = new MyAdapterRequest(getApplicationContext(), mT, mB);
+                    listView.setAdapter(adapterR);
+            }
+        });
     }
 
-    class MyAdapter extends ArrayAdapter<String> {
+    class MyAdapterMenu extends ArrayAdapter<String> {
         Context context;
         String rTitle[];
         String rP[];
 
-        MyAdapter(Context c, String title[], String p[]){
+        MyAdapterMenu(Context c, String title[], String p[]){
             super(c,R.layout.row_menu_user, R.id.titleMenu, title);
             this.context = c;
             this.rTitle = title;
@@ -92,6 +115,34 @@ public class ListMenusCompany extends AppCompatActivity {
             return row;
         }
     }
+
+    class MyAdapterRequest extends ArrayAdapter<String> {
+        Context context;
+        String rT[];
+        String rB[];
+
+        MyAdapterRequest(Context c, String t[], String b[]){
+            super(c,R.layout.row_menu_user, R.id.titleMenu, t);
+            this.context = c;
+            this.rT = t;
+            this.rB = b;
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View row = layoutInflater.inflate(R.layout.row_request,parent, false);
+
+            TextView myT = row.findViewById(R.id.teste1);
+            TextView myB = row.findViewById(R.id.teste2);
+
+            myT.setText(rT[position]);
+            myB.setText(rB[position]);
+            return row;
+        }
+    }
+
 
     private void openEditMenu(String menu){
         Intent intent = new Intent(this, EditMenu.class);

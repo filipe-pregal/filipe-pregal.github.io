@@ -24,7 +24,7 @@
             android:label="Edit Menu"></activity>
         <activity
             android:name=".ui.login.ListMenusCompany"
-            android:label="Edit Menus" />
+            android:label="Company Details" />
         <activity
             android:name=".ui.login.ListMenusUser"
             android:label="List of Menus" />
