@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.login.OrderNotificationActivity">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="40dp"
+        app:cardBackgroundColor="#a5b8d6"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bodyTitle"
+            android:layout_marginBottom="40dp">
+
+            <TextView
+                android:id="@+id/cardHeader"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="#C7C8C9"
+                android:gravity="center"
+                android:text="Thank you for your preference!"
+                android:textColor="#212121"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/bodyTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="120dp"
+                android:gravity="center"
+                android:text="Your order will be available in:"
+                android:textSize="23sp" />
+
+            <RelativeLayout
+                android:id="@+id/centeredDiv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/bodyTitle"
+                android:layout_marginTop="55dp">
+
+                <ImageView
+                    android:id="@+id/clock_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentStart="true"
+                    app:srcCompat="@drawable/clock_icon" />
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="30dp"
+                    android:layout_toRightOf="@id/clock_icon"
+                    android:textSize="24sp"
+                    android:text="15min" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/mapsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="Open on Maps"
+                android:layout_above="@id/maps_url"
+                android:layout_marginBottom="20dp"
+                android:textSize="24sp">
+
+            </TextView>
+            <ImageButton
+                android:id="@+id/maps_url"
+                android:background="@drawable/maps_icon"
+                android:layout_width="60dp"
+                android:layout_centerHorizontal="true"
+                android:layout_height="60dp"
+                android:layout_above="@id/labelCode"
+                android:layout_marginBottom="50dp"
+                android:text="Route"
+                android:textSize="26sp"></ImageButton>
+
+            <TextView
+                android:id="@+id/labelCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_above="@id/orderCode"
+                android:text="Your code:" />
+
+            <TextView
+                android:id="@+id/orderCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:textColor="#212121"
+                android:gravity="center"
+                android:textSize="28sp"
+                android:text="C4UT5" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
