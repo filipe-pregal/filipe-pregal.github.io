@@ -47,6 +47,19 @@
                 android:textSize="18dp"/>
 
             <TextView
+                android:id="@+id/emailR"
+                android:layout_margin="0dp"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="emailR"
+                android:textColor="#000"
+                android:textSize="18dp"
+                android:visibility="invisible"/>
+
+            <TextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

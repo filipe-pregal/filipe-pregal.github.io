@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="sobremesas">
-        <item>Mousse</item>
-        <item>Doce da Casa</item>
-        <item>Sem ideia</item>
-    </string-array>
-</resources>

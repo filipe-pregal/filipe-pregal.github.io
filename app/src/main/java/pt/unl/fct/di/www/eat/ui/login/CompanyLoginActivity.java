@@ -36,7 +36,7 @@ public class CompanyLoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String em = email.getText().toString();
-                String emailToSearch = em.replace(".", "\\");
+                String emailToSearch = em.replace(".", "_");
                 DatabaseReference d = FirebaseDatabase.getInstance().getReference().child("Users").child(emailToSearch);
                 d.addValueEventListener(new ValueEventListener() {
                     @Override

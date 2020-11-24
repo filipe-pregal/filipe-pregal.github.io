@@ -27,6 +27,9 @@ public class ListMenusUser extends AppCompatActivity {
     String mTitle[] = {"teste1", "teste2", "teste3"};
     String mP[] = {"feijoada", "sardinhas", "bolonhesa"};
 
+    String arrayBebidas[] = {"cola", "fanta", "compal"};
+    String arrayDoces[] = {"mousse", "doce da casa", "gelado"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,16 +67,14 @@ public class ListMenusUser extends AppCompatActivity {
             TextView myP = row.findViewById(R.id.desc2);
 
             Spinner spinnerB = row.findViewById(R.id.desc3);
-            ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getApplicationContext(),
-                    R.array.bebidas, android.R.layout.simple_spinner_item);
-            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerB.setAdapter(adapter1);
+            ArrayAdapter<String> adpt1 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, arrayBebidas);
+            adpt1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerB.setAdapter(adpt1);
 
             Spinner spinnerS = row.findViewById(R.id.desc4);
-            ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getApplicationContext(),
-                    R.array.sobremesas, android.R.layout.simple_spinner_item);
-            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerS.setAdapter(adapter2);
+            ArrayAdapter<String> adpt2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, arrayDoces);
+            adpt2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerS.setAdapter(adpt2);
 
             btn = row.findViewById(R.id.addCart);
 

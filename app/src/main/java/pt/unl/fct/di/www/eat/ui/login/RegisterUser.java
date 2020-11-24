@@ -2,7 +2,6 @@ package pt.unl.fct.di.www.eat.ui.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -118,7 +117,7 @@ public class RegisterUser extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String em = email.getText().toString();
-                String emailToSearch = em.replace(".", "\\");
+                String emailToSearch = em.replace(".", "_");
                 d = FirebaseDatabase.getInstance().getReference("Users");
                 d.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
