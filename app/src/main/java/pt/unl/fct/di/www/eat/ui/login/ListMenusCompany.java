@@ -25,7 +25,7 @@ public class ListMenusCompany extends AppCompatActivity {
 
     ListView listView;
     Button btnMenu, btnRequest;
-    String email, restaurant;
+    String email;
     String mTitle[] = {"teste1", "teste2", "teste3"};
     String mP[] = {"feijoada", "sardinhas", "bolonhesa"};
 
@@ -44,7 +44,6 @@ public class ListMenusCompany extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             email = extras.getString("user");
-            restaurant = extras.getString("restaurant");
         }
         listView = findViewById(R.id.listView);
 
@@ -113,7 +112,7 @@ public class ListMenusCompany extends AppCompatActivity {
                 }
             });
             b.setText("EDIT");
-            myTitle.setText(restaurant);
+            myTitle.setText(rTitle[position]);
             myP.setText(rP[position]);
             return row;
         }

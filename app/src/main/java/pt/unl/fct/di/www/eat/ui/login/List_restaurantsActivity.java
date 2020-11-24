@@ -77,21 +77,16 @@ public class List_restaurantsActivity extends AppCompatActivity {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     RestaurantData post = child.getValue(RestaurantData.class);
                     abc.add(post);
-                    //aux.put(post.getEmail(), post);
-                    //System.out.println("dentro do metodo" + aux);
                 }
                 getDataInPlace();
-                //System.out.println(mTitle);
+                MyAdapter adapter = new MyAdapter(getApplicationContext(), mTitle, mTag, mEmail, mAddress);
+                listView.setAdapter(adapter);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-
-        getDataInPlace();
-        MyAdapter adapter = new MyAdapter(getApplicationContext(), mTitle, mTag, mEmail, mAddress);
-        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -111,7 +106,6 @@ public class List_restaurantsActivity extends AppCompatActivity {
             mTag.add(r.getTag());
             mAddress.add(r.getAddress());
         }
-        System.out.println("entrei ca " + mTitle.size());
     }
 
     private void openMenus(String restaurant){
