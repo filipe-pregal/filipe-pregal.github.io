@@ -4,8 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import pt.unl.fct.di.www.eat.R;
+import pt.unl.fct.di.www.eat.data.Cart;
+import pt.unl.fct.di.www.eat.data.Menu;
+import pt.unl.fct.di.www.eat.data.Option;
+import pt.unl.fct.di.www.eat.data.RestaurantData;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,22 +23,35 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Map;
+
 public class ListMenusUser extends AppCompatActivity {
 
     ListView listView;
     Button btn;
-    String email;
-    String restaurant;
-    String mTitle[] = {"teste1", "teste2", "teste3"};
-    String mP[] = {"feijoada", "sardinhas", "bolonhesa"};
+    String email, restaurant;
+    DatabaseReference mref;
 
-    String arrayBebidas[] = {"cola", "fanta", "compal"};
-    String arrayDoces[] = {"mousse", "doce da casa", "gelado"};
+    ArrayList<String> mTitle = new ArrayList<>();
+    ArrayList<String> mDesserts = new ArrayList<>();
+    ArrayList<String> mDrinks = new ArrayList<>();
+    ArrayList<String> mTags = new ArrayList<>();
+    ArrayList<Double> mPrice = new ArrayList<>();
+    ArrayList<Double> mTime = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_menus_user);
+
+        mref = FirebaseDatabase.getInstance().getReference();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -42,20 +60,55 @@ public class ListMenusUser extends AppCompatActivity {
         }
 
         listView = findViewById(R.id.listViewMenuUser);
-        MyAdapter adapter = new MyAdapter(this, mTitle, mP);
-        listView.setAdapter(adapter);
+        checkLogin();
+
+        DatabaseReference rest = mref.child("Restaurants").child(restaurant);
+        rest.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
+                    setData(post);
+                }
+                MyAdapter adapter = new MyAdapter(getApplicationContext());
+                listView.setAdapter(adapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void setData(RestaurantData r){
+        for(Map.Entry<String, Option> drinks : r.getDrinks().entrySet()){
+            Option drink = drinks.getValue();
+            if(drink.getIsAvailable())
+                mDrinks.add(drink.getName());
+        }
+
+        for(Map.Entry<String, Option> desserts : r.getDesserts().entrySet()){
+            Option dessert = desserts.getValue();
+            if(dessert.getIsAvailable())
+                mDesserts.add(dessert.getName());
+        }
+
+        for (Map.Entry<String, Menu> menus : r.getMenu().entrySet()){
+            Menu menu = menus.getValue();
+            if(menu.getIsAvailable()){
+                mTitle.add(menu.getName());
+                mPrice.add(menu.getPrice());
+                mTime.add(menu.getTime());
+                mTags.add(menu.getTag());
+            }
+        }
     }
 
     class MyAdapter extends ArrayAdapter<String> {
-        Context context;
-        String rTitle[];
-        String rP[];
 
-        MyAdapter(Context c, String title[], String p[]){
-            super(c,R.layout.row_menu_user, R.id.titleMenu, title);
-            this.context = c;
-            this.rTitle = title;
-            this.rP = p;
+        MyAdapter(Context c){
+            super(c,R.layout.row_menu_user, R.id.titleMenu, mTitle);
+            //super(c,R.layout.row_menu_user, R.id.dish, title);
         }
 
         @NonNull
@@ -64,23 +117,69 @@ public class ListMenusUser extends AppCompatActivity {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.row_menu_user,parent, false);
             TextView myTitle = row.findViewById(R.id.titleMenu);
-            TextView myP = row.findViewById(R.id.desc2);
+            TextView myDish = row.findViewById(R.id.dish);
+            TextView myTag = row.findViewById(R.id.tagM);
+            TextView myPrice = row.findViewById(R.id.price);
+            TextView myTime = row.findViewById(R.id.timeM);
 
-            Spinner spinnerB = row.findViewById(R.id.desc3);
-            ArrayAdapter<String> adpt1 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, arrayBebidas);
-            adpt1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerB.setAdapter(adpt1);
+            Spinner myDrinks = row.findViewById(R.id.drinks);
+            if(!mDrinks.isEmpty()) {
+                ArrayAdapter<String> adpt1 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, mDrinks);
+                adpt1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                myDrinks.setAdapter(adpt1);
+            }else{
+                myDrinks.setVisibility(Spinner.INVISIBLE);
+            }
 
-            Spinner spinnerS = row.findViewById(R.id.desc4);
-            ArrayAdapter<String> adpt2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, arrayDoces);
-            adpt2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerS.setAdapter(adpt2);
+            Spinner myDesserts = row.findViewById(R.id.desserts);
+            if(!mDesserts.isEmpty()) {
+                ArrayAdapter<String> adpt2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, mDesserts);
+                adpt2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                myDesserts.setAdapter(adpt2);
+            }else{
+                myDesserts.setVisibility(Spinner.INVISIBLE);
+            }
 
             btn = row.findViewById(R.id.addCart);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Cart cart = new Cart(myTitle.getText().toString(), myDrinks.getSelectedItem().toString(), myDesserts.getSelectedItem().toString(), Double.parseDouble(myPrice.getText().toString()), Double.parseDouble(myTime.getText().toString()));
+                    System.out.println(cart.toString());
+                }
+            });
 
-            myTitle.setText(rTitle[position]);
-            myP.setText(rP[position]);
+            myTitle.setText(mTitle.get(position));
+            myDish.setText(mTitle.get(position));
+            myTag.setText(mTags.get(position));
+            myPrice.setText(mPrice.get(position).toString());
+            myTime.setText(mTime.get(position).toString());
             return row;
         }
+    }
+
+    private void checkLogin(){
+        DatabaseReference user = mref.child("Users").child(email);
+        user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String token = dataSnapshot.child("token").getValue().toString();
+                    if(token.equals("")){
+                        redirectLogin();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void redirectLogin(){
+        getIntent().removeExtra("user");
+        Intent intent = new Intent(this, UserLoginActivity.class);
+        startActivity(intent);
     }
 }

@@ -2,7 +2,7 @@ package pt.unl.fct.di.www.eat.data;
 
 public class Menu {
 
-    Boolean isAvailable;
+    boolean isAvailable;
     Double price;
     String name;
     String tag;
@@ -12,7 +12,7 @@ public class Menu {
 
     }
 
-    public Menu(Boolean isAvailable, Double price, String name, String tag, Double time){
+    public Menu(boolean isAvailable, Double price, String name, String tag, Double time){
         this.isAvailable=isAvailable;
         this.price = price;
         this.name = name;
@@ -20,11 +20,11 @@ public class Menu {
         this.time = time;
     }
 
-    public Boolean getAvailable() {
+    public boolean getIsAvailable() {
         return isAvailable;
     }
 
-    public void setAvailable(Boolean available) {
+    public void setIsAvailable(boolean available) {
         isAvailable = available;
     }
 

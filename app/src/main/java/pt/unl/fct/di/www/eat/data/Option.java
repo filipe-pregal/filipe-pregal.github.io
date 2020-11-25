@@ -3,13 +3,13 @@ package pt.unl.fct.di.www.eat.data;
 public class Option {
 
     String name;
-    Boolean isAvailable;
+    boolean isAvailable;
 
     public Option(){
 
     }
 
-    public Option(Boolean isAvailable, String name){
+    public Option(boolean isAvailable, String name){
         this.isAvailable = isAvailable;
         this.name = name;
     }
@@ -22,11 +22,11 @@ public class Option {
         this.name = name;
     }
 
-    public Boolean getAvailable() {
+    public boolean getIsAvailable() {
         return isAvailable;
     }
 
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
+    public void setIsAvailable(boolean available) {
+        this.isAvailable = available;
     }
 }

@@ -18,6 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Random;
+import java.util.UUID;
+
 import pt.unl.fct.di.www.eat.R;
 
 public class UserLoginActivity extends AppCompatActivity {
@@ -48,11 +51,23 @@ public class UserLoginActivity extends AppCompatActivity {
                             String emailT = dataSnapshot.child("email").getValue().toString();
                             String pwdT = dataSnapshot.child("password").getValue().toString();
                             String role = dataSnapshot.child("role").getValue().toString();
+                            String token = dataSnapshot.child("token").getValue().toString();
 
-                            if (emailT.equals(em) && pwdT.equals(pwd.getText().toString()) && role.equals("USER")) {
-                                //Toast.makeText(getApplicationContext(), "login", Toast.LENGTH_SHORT).show();
-                                openRestaurants(em);
+                            if (emailT.equals(em) && pwdT.equals(pwd.getText().toString())) {
+                                if(role.equals("USER")) {
+                                    if (token.equals("")) {
+                                        String random = UUID.randomUUID().toString().substring(0, 8);
+                                        d.child("token").setValue(random);
+                                    }
+                                    openRestaurants(emailToSearch);
+                                }else {
+                                    Toast.makeText(getApplicationContext(),"Logging with an company account.", Toast.LENGTH_SHORT).show();
+                                }
+                            }else{
+                                Toast.makeText(getApplicationContext(),"Email or password are incorrect.", Toast.LENGTH_SHORT).show();
                             }
+                        }else {
+                            Toast.makeText(getApplicationContext(), "Email or password are incorrect.", Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override

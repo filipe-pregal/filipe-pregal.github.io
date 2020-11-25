@@ -1,7 +1,7 @@
 package pt.unl.fct.di.www.eat.data;
 
 public class UserData {
-    String Email, Name, Password, Role;
+    String Email, Name, Password, Role, Token;
 
     public UserData(){
 
@@ -12,6 +12,7 @@ public class UserData {
         this.Name = Name;
         this.Password = Password;
         this.Role = "USER";
+        this.Token = "";
     }
 
     public String getRole() {

@@ -36,29 +36,21 @@ public class List_restaurantsActivity extends AppCompatActivity {
 
     ListView listView;
     String email;
-
-    //Map aux = new HashMap<String, RestaurantData>();
     ArrayList abc = new ArrayList<RestaurantData>();
+    DatabaseReference mref;
 
     ArrayList<String> mTitle = new ArrayList<>();
     ArrayList<String> mTag = new ArrayList<>();
     ArrayList<String> mEmail = new ArrayList<>();
-    ArrayList<Double> mTime = new ArrayList<>();
-    ArrayList<String> mAddress = new ArrayList<>();
-
-
-    String ab[] = {};
-    //String mTitle[] = {"teste1", "teste2", "teste3"};
-    //String mTag[] = {"peixe", "carne", "vegetariano"};
+    ArrayList<String> mTime = new ArrayList<>();
+    //ArrayList<String> mAddress = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_restaurants);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(true);
-        //actionBar.setLogo();
+        mref = FirebaseDatabase.getInstance().getReference();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -66,12 +58,11 @@ public class List_restaurantsActivity extends AppCompatActivity {
         }
 
         listView = findViewById(R.id.listView);
-        //getRestaurantsData();
 
-        DatabaseReference mref = FirebaseDatabase.getInstance().getReference();
-        Query postQuery = mref.child("Restaurants");
-        // Attach a listener to read the data at our posts reference
-        postQuery.addValueEventListener(new ValueEventListener() {
+        checkLogin();
+
+        DatabaseReference restaurants = mref.child("Restaurants");
+        restaurants.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
@@ -79,7 +70,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
                     abc.add(post);
                 }
                 getDataInPlace();
-                MyAdapter adapter = new MyAdapter(getApplicationContext(), mTitle, mTag, mEmail, mAddress);
+                MyAdapter adapter = new MyAdapter(getApplicationContext());
                 listView.setAdapter(adapter);
             }
             @Override
@@ -91,7 +82,6 @@ public class List_restaurantsActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 String s = (String) parent.getItemAtPosition(position);
                 openMenus(s);
             }
@@ -102,9 +92,10 @@ public class List_restaurantsActivity extends AppCompatActivity {
         for(int i=0; i< abc.size();i++){
             RestaurantData r = (RestaurantData) abc.get(i);
             mTitle.add(r.getName());
-            mEmail.add(r.getEmail());
+            mEmail.add(r.getEmail().replace(".", "_"));
             mTag.add(r.getTag());
-            mAddress.add(r.getAddress());
+            mTime.add(r.getTime().substring(11));
+            //mAddress.add(r.getAddress());
         }
     }
 
@@ -115,17 +106,35 @@ public class List_restaurantsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    class MyAdapter extends ArrayAdapter<String> {
-        Context context;
-        ArrayList<String> rTitle, rTag, rEmail, rAddress;
+    private void redirectLogin(){
+        getIntent().removeExtra("user");
+        Intent intent = new Intent(this, UserLoginActivity.class);
+        startActivity(intent);
+    }
 
-        MyAdapter(Context c, ArrayList<String> title, ArrayList<String> tag, ArrayList<String> email, ArrayList<String> address){
-            super(c,R.layout.row_restaurant, R.id.emailR, email);
-            this.context = c;
-            this.rTitle = title;
-            this.rTag = tag;
-            this.rEmail = email;
-            this.rAddress = address;
+    private void checkLogin(){
+        DatabaseReference user = mref.child("Users").child(email);
+        user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String token = dataSnapshot.child("token").getValue().toString();
+                    if(token.equals("")){
+                        redirectLogin();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    class MyAdapter extends ArrayAdapter<String> {
+
+        MyAdapter(Context c){
+            super(c,R.layout.row_restaurant, R.id.emailR, mEmail);
         }
 
         @NonNull
@@ -136,11 +145,12 @@ public class List_restaurantsActivity extends AppCompatActivity {
             TextView myTitle = row.findViewById(R.id.titleRestaurant);
             TextView myTag = row.findViewById(R.id.tag);
             TextView myTime = row.findViewById(R.id.time);
-            TextView myEmail = row.findViewById(R.id.emailR);
+            //TextView myEmail = row.findViewById(R.id.emailR);
 
-            myTitle.setText(rTitle.get(position));
-            myTag.setText(rTag.get(position));
-            myTime.setText(rAddress.get(position));
+            myTitle.setText(mTitle.get(position));
+            myTag.setText(mTag.get(position));
+            myTime.setText(mTime.get(position));
+            //myEmail.setText(rEmail.get(position));
 
             return row;
         }
