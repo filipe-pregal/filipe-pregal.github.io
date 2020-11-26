@@ -41,8 +41,9 @@ import pt.unl.fct.di.www.eat.data.RestaurantData;
 
 public class ListMenusCompany extends AppCompatActivity {
 
-    ListView listView, viewDrinks, viewDesserts;
-    Button btnMenu, btnRequest, btnExtra;
+    ListView listView1, listView2;
+    Button btnMenu, btnRequest, btnExtra, btnDrink, btnDessert;
+    TextView sDrinks, sDesserts;
     String email;
     DatabaseReference mref;
 
@@ -55,6 +56,8 @@ public class ListMenusCompany extends AppCompatActivity {
     ArrayList<Boolean> mAvailableDrinks = new ArrayList<>();
     ArrayList<Boolean> mAvailableDesserts = new ArrayList<>();
     ArrayList<Boolean> mAvailableMenus = new ArrayList<>();
+    ArrayList<String> tagDrinks = new ArrayList<>();
+    ArrayList<String> tagDesserts = new ArrayList<>();
 
     String mT[] = {"a", "b", "c"};
     String mB[] = {"d", "e", "f"};
@@ -74,21 +77,26 @@ public class ListMenusCompany extends AppCompatActivity {
         checkLogin();
 
         btnRequest = findViewById(R.id.seeRequests);
-        listView = findViewById(R.id.listView);
-        viewDrinks = findViewById(R.id.listView);
-        //viewDesserts = findViewById(R.id.listViewDesserts);
+        listView1 = findViewById(R.id.listViewDrinks);
+        listView2 = findViewById(R.id.listViewDesserts);
+        sDrinks = findViewById(R.id.seeDrinks);
+        sDesserts = findViewById(R.id.seeDesserts);
 
         MyAdapterRequest adapterR = new MyAdapterRequest(getApplicationContext());
-        listView.setAdapter(adapterR);
+        listView1.setAdapter(adapterR);
 
         btnRequest.setOnClickListener(view -> {
+            setVisibility(8);
             MyAdapterRequest adapterR1 = new MyAdapterRequest(getApplicationContext());
-            listView.setAdapter(adapterR1);
+            listView1.setAdapter(adapterR1);
         });
 
         btnMenu = findViewById(R.id.editMenus);
+        btnDrink = findViewById(R.id.editDrinks);
+        btnDessert = findViewById(R.id.editDesserts);
 
         btnMenu.setOnClickListener(view -> {
+            setVisibility(8);
             DatabaseReference rest = mref.child("Restaurants").child(email);
             rest.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -99,7 +107,7 @@ public class ListMenusCompany extends AppCompatActivity {
                         setDataMenu(post);
                     }
                     MyAdapterMenu adapter = new MyAdapterMenu(getApplicationContext(), rest);
-                    listView.setAdapter(adapter);
+                    listView1.setAdapter(adapter);
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -110,6 +118,7 @@ public class ListMenusCompany extends AppCompatActivity {
 
         btnExtra = findViewById(R.id.editExtras);
         btnExtra.setOnClickListener(view -> {
+            setVisibility(0);
             DatabaseReference rest = mref.child("Restaurants").child(email);
             rest.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -119,15 +128,11 @@ public class ListMenusCompany extends AppCompatActivity {
                         RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                         setDataExtra(post);
                     }
-                    //TextView t1 = findViewById(R.id.seeDrinks);
-                    //Button editDrinks = findViewById(R.id.editDrinks);
-                    MyAdapterExtra adapter1 = new MyAdapterExtra(getApplicationContext(), rest, mDrinks, mAvailableDrinks);
-                    viewDrinks.setAdapter(adapter1);
-                        /*
-                    TextView t2 = findViewById(R.id.seeDesserts);
-                    Button editDesserts = findViewById(R.id.editDesserts);
-                    MyAdapterExtra adapter2 = new MyAdapterExtra(getApplicationContext(), rest, mDesserts, mAvailableDesserts);
-                    viewDesserts.setAdapter(adapter2);*/
+                    MyAdapterExtra adapter1 = new MyAdapterExtra(getApplicationContext(), rest, mDrinks, mAvailableDrinks, "drink");
+                    listView1.setAdapter(adapter1);
+
+                    MyAdapterExtra adapter2 = new MyAdapterExtra(getApplicationContext(), rest, mDesserts, mAvailableDesserts, "dessert");
+                    listView2.setAdapter(adapter2);
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -135,6 +140,30 @@ public class ListMenusCompany extends AppCompatActivity {
                 }
             });
         });
+
+        btnDrink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println(mAvailableDrinks.toString());
+                System.out.println(tagDrinks.toString());
+            }
+        });
+
+        btnDessert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println(mAvailableDesserts.toString());
+                System.out.println(tagDesserts.toString());
+            }
+        });
+    }
+
+    private void setVisibility(int state){
+        btnDessert.setVisibility(state);
+        btnDrink.setVisibility(state);
+        sDrinks.setVisibility(state);
+        sDesserts.setVisibility(state);
+        listView2.setVisibility(state);
     }
 
     private void setDataMenu(RestaurantData r){
@@ -150,12 +179,14 @@ public class ListMenusCompany extends AppCompatActivity {
 
     private void setDataExtra(RestaurantData r){
         for(Map.Entry<String, Option> drinks : r.getDrinks().entrySet()){
+            tagDrinks.add(drinks.getKey());
             Option drink = drinks.getValue();
             mDrinks.add(drink.getName());
             mAvailableDrinks.add(drink.getIsAvailable());
         }
 
         for(Map.Entry<String, Option> desserts : r.getDesserts().entrySet()){
+            tagDesserts.add(desserts.getKey());
             Option dessert = desserts.getValue();
             mDesserts.add(dessert.getName());
             mAvailableDesserts.add(dessert.getIsAvailable());
@@ -175,6 +206,8 @@ public class ListMenusCompany extends AppCompatActivity {
         mDrinks.clear();
         mAvailableDesserts.clear();
         mAvailableDrinks.clear();
+        tagDesserts.clear();
+        tagDrinks.clear();
     }
 
     class MyAdapterMenu extends ArrayAdapter<String> {
@@ -286,34 +319,34 @@ public class ListMenusCompany extends AppCompatActivity {
         DatabaseReference r;
         ArrayList<String> rType;
         ArrayList<Boolean> rAvailability;
+        String aux;
 
-        MyAdapterExtra(Context c, DatabaseReference d, ArrayList<String> type, ArrayList<Boolean> availability){
-            super(c,R.layout.activity_edit_extra, R.id.extra, type);
+        MyAdapterExtra(Context c, DatabaseReference d, ArrayList<String> type, ArrayList<Boolean> availability, String aux){
+            super(c,R.layout.row_edit_extra, R.id.extra, type);
             this.r = d;
             this.rType = type;
             this.rAvailability = availability;
+            this.aux = aux;
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.activity_edit_extra,parent, false);
-
-            ListView l1 = row.findViewById(R.id.listViewDrinks);
-            l1.setScrollContainer(true);
-            MyAdapterRequest adapter1 = new MyAdapterRequest(getApplicationContext());
-            l1.setAdapter(adapter1);
-
-            ListView l2 = row.findViewById(R.id.listViewDesserts);
-            MyAdapterRequest adapter2 = new MyAdapterRequest(getApplicationContext());
-            l2.setAdapter(adapter2);
+            View row = layoutInflater.inflate(R.layout.row_edit_extra, parent, false);
 
             TextView myD = row.findViewById(R.id.extra);
             Switch myS = row.findViewById(R.id.switch1);
 
-            //myD.setText(rType.get(position));
-            //myS.setChecked(rAvailability.get(position));
+            myD.setText(rType.get(position));
+            myS.setChecked(rAvailability.get(position));
+
+            myS.setOnClickListener(view -> {
+                if(aux.equals("drink"))
+                    mAvailableDrinks.set(position, myS.isChecked());
+                if(aux.equals("dessert"))
+                    mAvailableDesserts.set(position, myS.isChecked());
+            });
             return row;
         }
     }

@@ -17,14 +17,12 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/unl/fct/di/www/eat/ui/login/CompanyLoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/unl/fct/di/www/eat/ui/login/CompanyLoginActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/unl/fct/di/www/eat/ui/login/ListMenusCompany.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/unl/fct/di/www/eat/ui/login/ListMenusCompany.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/unl/fct/di/www/eat/ui/login/ListMenusUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/unl/fct/di/www/eat/ui/login/ListMenusUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/unl/fct/di/www/eat/ui/login/List_restaurantsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/unl/fct/di/www/eat/ui/login/List_restaurantsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/pt/unl/fct/di/www/eat/ui/login/UserLoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/pt/unl/fct/di/www/eat/ui/login/UserLoginActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_edit_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_edit_menu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_company_options.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_company_options.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_edit_extra.xml" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -275,7 +273,14 @@
       <option name="project" value="LOCAL" />
       <updated>1606408253846</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="edit menus e extras">
+      <created>1606422087418</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1606422087418</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -299,6 +304,7 @@
     <MESSAGE value="updts company" />
     <MESSAGE value="updts" />
     <MESSAGE value="edit menus" />
-    <option name="LAST_COMMIT_MESSAGE" value="edit menus" />
+    <MESSAGE value="edit menus e extras" />
+    <option name="LAST_COMMIT_MESSAGE" value="edit menus e extras" />
   </component>
 </project>
