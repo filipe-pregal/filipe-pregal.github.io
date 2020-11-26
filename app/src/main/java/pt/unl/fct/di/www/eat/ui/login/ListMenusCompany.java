@@ -7,7 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,12 +70,11 @@ public class ListMenusCompany extends AppCompatActivity {
             email = extras.getString("user");
         }
 
-        listView = findViewById(R.id.listView);
         mref = FirebaseDatabase.getInstance().getReference();
         checkLogin();
 
-
         btnRequest = findViewById(R.id.seeRequests);
+        listView = findViewById(R.id.listView);
 
         MyAdapterRequest adapterR = new MyAdapterRequest(getApplicationContext());
         listView.setAdapter(adapterR);
@@ -92,7 +96,7 @@ public class ListMenusCompany extends AppCompatActivity {
                         RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                         setData(post);
                     }
-                    MyAdapterMenu adapter = new MyAdapterMenu(getApplicationContext());//, mTitle, mTags, mPrice, mTime, mAvailableDrinks, mAvailableDesserts, mAvailableMenus);
+                    MyAdapterMenu adapter = new MyAdapterMenu(getApplicationContext(), rest);
                     listView.setAdapter(adapter);
                 }
                 @Override
@@ -140,50 +144,55 @@ public class ListMenusCompany extends AppCompatActivity {
 
     class MyAdapterMenu extends ArrayAdapter<String> {
 
-        MyAdapterMenu(Context c){
-            super(c,R.layout.row_menu_user, R.id.titleMenu, mTitle);
+        DatabaseReference r;
+
+        MyAdapterMenu(Context c, DatabaseReference d){
+            super(c,R.layout.activity_edit_menu, R.id.titleMenu, mTitle);
+            this.r = d;
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.row_menu_user,parent, false);
+            View row = layoutInflater.inflate(R.layout.activity_edit_menu, parent, false);
             TextView myTitle = row.findViewById(R.id.titleMenu);
             TextView myDish = row.findViewById(R.id.dish);
             TextView myTag = row.findViewById(R.id.tagM);
-            TextView myPrice = row.findViewById(R.id.price);
-            TextView myTime = row.findViewById(R.id.timeM);
+            EditText myPrice = row.findViewById(R.id.price);
+            EditText myTime = row.findViewById(R.id.timeM);
+            Switch myAvailability = row.findViewById(R.id.switch1);
 
-            Spinner myDrinks = row.findViewById(R.id.drinks);
-            ArrayAdapter<String> adpt1 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, mDrinks);
-            adpt1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            myDrinks.setAdapter(adpt1);
-
-            Spinner myDesserts = row.findViewById(R.id.desserts);
-            ArrayAdapter<String> adpt2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, mDesserts);
-            adpt2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            myDesserts.setAdapter(adpt2);
-
-            Button b = row.findViewById(R.id.addCart);
+            Button b = row.findViewById(R.id.editMenu);
+            ImageView i = row.findViewById(R.id.imageView);
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    DatabaseReference aux = r.child("menu").child(mTitle.get(position));
+                    aux.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()) {
 
-                    openEditMenu(myDesserts.getSelectedItem().toString());
-                    //openEditMenu(myTitle.getText().toString());
-
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            System.out.println("The read failed: " + databaseError.getCode());
+                        }
+                    });
                 }
             });
-            b.setText("EDIT");
-            myTitle.setText(mTitle.get(position));
+
+            myTitle.setText("Menu: " + mTitle.get(position));
             myDish.setText(mTitle.get(position));
             myTag.setText(mTags.get(position));
-            myPrice.setText(mPrice.get(position));
-            myTime.setText(mTime.get(position));
+            myPrice.setText(mPrice.get(position).concat("€"));
+            myTime.setText(mTime.get(position).concat("m"));
+            myAvailability.setChecked(mAvailableMenus.get(position));
 
-            if(mAvailableMenus.get(position) == false)
-                row.setBackgroundColor(Color.GRAY);
+            i.setImageResource(R.drawable.clock_icon);
+
             return row;
         }
     }
@@ -207,14 +216,6 @@ public class ListMenusCompany extends AppCompatActivity {
             myB.setText(mB[position]);
             return row;
         }
-    }
-
-
-    private void openEditMenu(String menu){
-        Intent intent = new Intent(this, EditMenu.class);
-        intent.putExtra("user", email);
-        intent.putExtra("menu", menu);
-        startActivity(intent);
     }
 
     private void checkLogin(){

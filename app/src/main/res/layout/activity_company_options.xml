@@ -19,17 +19,25 @@
         android:id="@+id/seeRequests"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Check Requests"
-        android:layout_marginLeft="30dp"
+        android:text="Requests"
+        android:layout_marginLeft="20dp"
         android:layout_centerHorizontal="true"/>
 
     <Button
         android:id="@+id/editMenus"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Check Menus"
-        android:layout_marginLeft="40dp"
+        android:text="Edit Menus"
+        android:layout_marginLeft="20dp"
         android:layout_centerHorizontal="true"/>
+
+        <Button
+            android:id="@+id/editExtras"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Extras"
+            android:layout_marginLeft="20dp"
+            android:layout_centerHorizontal="true"/>
 
     </LinearLayout>
 

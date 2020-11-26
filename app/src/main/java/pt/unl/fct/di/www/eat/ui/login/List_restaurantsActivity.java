@@ -65,6 +65,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
         restaurants.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                resetData();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     RestaurantData post = child.getValue(RestaurantData.class);
                     abc.add(post);
@@ -95,8 +96,15 @@ public class List_restaurantsActivity extends AppCompatActivity {
             mEmail.add(r.getEmail().replace(".", "_"));
             mTag.add(r.getTag());
             mTime.add(r.getTime().substring(11));
-            //mAddress.add(r.getAddress());
         }
+    }
+
+    private void resetData(){
+        abc.clear();
+        mTitle.clear();
+        mTime.clear();
+        mEmail.clear();
+        mTag.clear();
     }
 
     private void openMenus(String restaurant){

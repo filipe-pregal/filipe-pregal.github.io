@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +67,7 @@ public class ListMenusUser extends AppCompatActivity {
         rest.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                resetData();
                 if(dataSnapshot.exists()) {
                     RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                     setData(post);
@@ -102,6 +104,15 @@ public class ListMenusUser extends AppCompatActivity {
                 mTags.add(menu.getTag());
             }
         }
+    }
+
+    private void resetData(){
+        mTitle.clear();
+        mDesserts.clear();
+        mDrinks.clear();
+        mTags.clear();
+        mPrice.clear();
+        mTime.clear();
     }
 
     class MyAdapter extends ArrayAdapter<String> {
