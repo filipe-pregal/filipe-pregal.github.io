@@ -2,7 +2,11 @@ package pt.unl.fct.di.www.eat.ui.login;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+
 import pt.unl.fct.di.www.eat.R;
 import pt.unl.fct.di.www.eat.data.Cart;
 import pt.unl.fct.di.www.eat.data.Menu;
@@ -13,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -48,10 +53,58 @@ public class ListMenusUser extends AppCompatActivity {
     ArrayList<Double> mTime = new ArrayList<>();
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.app_bar_search:
+
+                super.onOptionsItemSelected(item);
+                return true;
+
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.my_toolbar, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.app_bar_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                System.out.println(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                System.out.println(newText);
+                return false;
+            }
+        });
+        //SearchView searchView = (SearchView) searchItem.getActionView();
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_menus_user);
 
+        //Adicionado para a toolbar
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.list_menus_user);
+        setSupportActionBar(myToolbar);
+
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
+       
         mref = FirebaseDatabase.getInstance().getReference();
 
         Bundle extras = getIntent().getExtras();

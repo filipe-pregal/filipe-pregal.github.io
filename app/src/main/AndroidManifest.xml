@@ -25,9 +25,13 @@
             android:label="Company Details" />
         <activity
             android:name=".ui.login.ListMenusUser"
+            android:parentActivityName=".ui.login.List_restaurantsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:label="List of Menus" />
         <activity
             android:name=".ui.login.List_restaurantsActivity"
+            android:parentActivityName=".ui.login.UserLoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:label="Restaurant List" />
         <activity
             android:name=".ui.login.CompanyLoginActivity"
