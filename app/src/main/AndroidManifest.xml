@@ -25,26 +25,21 @@
             android:label="Company Details" />
         <activity
             android:name=".ui.login.ListMenusUser"
-            android:parentActivityName=".ui.login.List_restaurantsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:label="List of Menus" />
         <activity
             android:name=".ui.login.List_restaurantsActivity"
-            android:parentActivityName=".ui.login.UserLoginActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:label="Restaurant List" />
         <activity
             android:name=".ui.login.CompanyLoginActivity"
-            android:label="Company Login"
-            android:parentActivityName=".StartActivity" />
+            android:label="Company Login"/>
         <activity
             android:name=".ui.login.UserLoginActivity"
-            android:label="Client Login"
-            android:parentActivityName=".StartActivity" />
+            android:label="Client Login"/>
         <activity
             android:name=".ui.login.RegisterUser"
-            android:label="Sign up client"
-            android:parentActivityName=".ui.login.UserLoginActivity" />
+            android:label="Sign up client"/>
         <activity android:name=".StartActivity" />
     </application>
 

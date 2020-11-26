@@ -99,11 +99,6 @@ public class ListMenusUser extends AppCompatActivity {
         //Adicionado para a toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.list_menus_user);
         setSupportActionBar(myToolbar);
-
-        ActionBar ab = getSupportActionBar();
-
-        // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
        
         mref = FirebaseDatabase.getInstance().getReference();
 
@@ -208,7 +203,7 @@ public class ListMenusUser extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Cart cart = new Cart(myTitle.getText().toString(), myDrinks.getSelectedItem().toString(), myDesserts.getSelectedItem().toString(), Double.parseDouble(myPrice.getText().toString()), Double.parseDouble(myTime.getText().toString()));
+                    Cart cart = new Cart(myTitle.getText().toString(), myDrinks.getSelectedItem().toString(), myDesserts.getSelectedItem().toString(), Double.parseDouble(myPrice.getText().toString().substring(0, myPrice.getText().toString().length() -1)), convertDoubleTime(myTime.getText().toString()));
                     System.out.println(cart.toString());
                 }
             });
@@ -216,10 +211,33 @@ public class ListMenusUser extends AppCompatActivity {
             myTitle.setText(mTitle.get(position));
             myDish.setText(mTitle.get(position));
             myTag.setText(mTags.get(position));
-            myPrice.setText(mPrice.get(position).toString());
-            myTime.setText(mTime.get(position).toString());
+            myPrice.setText(mPrice.get(position).toString().concat("€"));
+            myTime.setText(convertTime(mTime.get(position)));
             return row;
         }
+    }
+
+    private Double convertDoubleTime(String time){
+        if(time.contains("h")){
+            String a[] = time.split("h");
+            if(a.length > 1){
+                return Double.parseDouble(a[0]) + (Double.parseDouble(a[1].substring(0, a[1].length()-1))/60);
+            }
+            return Double.parseDouble(a[0]);
+        }else{
+            return (Double.parseDouble(time.substring(0, time.length() -1))/60);
+        }
+    }
+
+    private String convertTime(double time){
+        String[] aux = String.valueOf(time).split("\\.");
+        int hours =  Integer.parseInt(aux[0]);
+        int minutes = (int) (Double.parseDouble("0." + aux[1]) *60);
+        if(minutes == 0)
+            return hours + "h";
+        if(hours == 0)
+            return minutes + "m";
+        return hours + "h" + minutes + "m";
     }
 
     private void checkLogin(){

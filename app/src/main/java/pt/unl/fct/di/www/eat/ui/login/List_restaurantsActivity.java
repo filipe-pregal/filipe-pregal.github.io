@@ -93,11 +93,6 @@ public class List_restaurantsActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar_restaurants);
         setSupportActionBar(myToolbar);
 
-        ActionBar ab = getSupportActionBar();
-
-        // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
-
         mref = FirebaseDatabase.getInstance().getReference();
 
         Bundle extras = getIntent().getExtras();

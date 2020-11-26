@@ -44,7 +44,7 @@ public class UserLoginActivity extends AppCompatActivity {
                 String em = email.getText().toString();
                 String emailToSearch = em.replace(".", "_");
                 DatabaseReference d = FirebaseDatabase.getInstance().getReference().child("Users").child(emailToSearch);
-                d.addValueEventListener(new ValueEventListener() {
+                d.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {

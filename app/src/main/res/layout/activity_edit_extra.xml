@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:isScrollContainer="true">
+
+    <TextView
+        android:id="@+id/seeDrinks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Drinks"
+        android:textColor="#000"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textAlignment="center"/>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewDrinks"
+        android:isScrollContainer="true">
+    </ListView>
+
+    <Button
+        android:id="@+id/editDrinks"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:text="Save Drinks "
+        android:enabled="true"/>
+
+    <TextView
+        android:id="@+id/seeDesserts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="150dp"
+        android:text="Desserts"
+        android:textColor="#000"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textAlignment="center"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewDesserts"
+        android:isScrollContainer="true">>
+    </ListView>
+
+    <Button
+        android:id="@+id/editDesserts"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:text="Save Desserts"
+        android:enabled="true"/>
+
+</LinearLayout>
