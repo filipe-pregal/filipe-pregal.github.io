@@ -1,6 +1,0 @@
-apply plugin: 'com.google.gms.google-services'
-
-dependencies{
-    implementation 'com.google.firebase:firebase-database:16.0.4'
-    implementation 'com.google.gms:google-services:4.3.4'
-}
