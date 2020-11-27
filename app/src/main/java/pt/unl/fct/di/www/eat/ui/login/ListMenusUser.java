@@ -15,7 +15,10 @@ import pt.unl.fct.di.www.eat.data.RestaurantData;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -35,7 +39,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ListMenusUser extends AppCompatActivity {
@@ -46,21 +54,18 @@ public class ListMenusUser extends AppCompatActivity {
     DatabaseReference mref;
 
     ArrayList<String> mTitle = new ArrayList<>();
-    ArrayList<String> mDesserts = new ArrayList<>();
-    ArrayList<String> mDrinks = new ArrayList<>();
+    ArrayList<String> menuKeys = new ArrayList<>();
     ArrayList<String> mTags = new ArrayList<>();
     ArrayList<Double> mPrice = new ArrayList<>();
     ArrayList<Double> mTime = new ArrayList<>();
+    ArrayList<Bitmap> mImg = new ArrayList<>();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.app_bar_search:
-
                 super.onOptionsItemSelected(item);
                 return true;
-
-
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -77,17 +82,18 @@ public class ListMenusUser extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                System.out.println(query);
+                DatabaseReference rest = mref.child("Restaurants").child(restaurant);
+                searchQuery(rest, query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                System.out.println(newText);
+                DatabaseReference rest = mref.child("Restaurants").child(restaurant);
+                searchQuery(rest, newText);
                 return false;
             }
         });
-        //SearchView searchView = (SearchView) searchItem.getActionView();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -99,7 +105,11 @@ public class ListMenusUser extends AppCompatActivity {
         //Adicionado para a toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.list_menus_user);
         setSupportActionBar(myToolbar);
-       
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+
         mref = FirebaseDatabase.getInstance().getReference();
 
         Bundle extras = getIntent().getExtras();
@@ -128,21 +138,14 @@ public class ListMenusUser extends AppCompatActivity {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            checkLogin();
+            redirectExtras(menuKeys.get(position));
+        });
     }
 
     private void setData(RestaurantData r){
-        for(Map.Entry<String, Option> drinks : r.getDrinks().entrySet()){
-            Option drink = drinks.getValue();
-            if(drink.getIsAvailable())
-                mDrinks.add(drink.getName());
-        }
-
-        for(Map.Entry<String, Option> desserts : r.getDesserts().entrySet()){
-            Option dessert = desserts.getValue();
-            if(dessert.getIsAvailable())
-                mDesserts.add(dessert.getName());
-        }
-
         for (Map.Entry<String, Menu> menus : r.getMenu().entrySet()){
             Menu menu = menus.getValue();
             if(menu.getIsAvailable()){
@@ -150,24 +153,41 @@ public class ListMenusUser extends AppCompatActivity {
                 mPrice.add(menu.getPrice());
                 mTime.add(menu.getTime());
                 mTags.add(menu.getTag());
+                menuKeys.add(menus.getKey());
+                setImage(menu.getImage_url());
             }
+        }
+    }
+
+    private void setImage(String u) {
+        System.out.println(u);
+        URL url = null;
+        try {
+            url = new URL(u);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Bitmap bmp;
+        try {
+            bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            mImg.add(bmp);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private void resetData(){
         mTitle.clear();
-        mDesserts.clear();
-        mDrinks.clear();
         mTags.clear();
         mPrice.clear();
         mTime.clear();
+        mImg.clear();
     }
 
     class MyAdapter extends ArrayAdapter<String> {
 
         MyAdapter(Context c){
             super(c,R.layout.row_menu_user, R.id.titleMenu, mTitle);
-            //super(c,R.layout.row_menu_user, R.id.dish, title);
         }
 
         @NonNull
@@ -180,53 +200,29 @@ public class ListMenusUser extends AppCompatActivity {
             TextView myTag = row.findViewById(R.id.tagM);
             TextView myPrice = row.findViewById(R.id.price);
             TextView myTime = row.findViewById(R.id.timeM);
+            ImageView i = row.findViewById(R.id.imageViewU);
+            ImageView img = row.findViewById(R.id.imgM);
 
-            Spinner myDrinks = row.findViewById(R.id.drinks);
-            if(!mDrinks.isEmpty()) {
-                ArrayAdapter<String> adpt1 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, mDrinks);
-                adpt1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                myDrinks.setAdapter(adpt1);
-            }else{
-                myDrinks.setVisibility(Spinner.INVISIBLE);
-            }
+            i.setImageResource(R.drawable.clock_icon);
 
-            Spinner myDesserts = row.findViewById(R.id.desserts);
-            if(!mDesserts.isEmpty()) {
-                ArrayAdapter<String> adpt2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, mDesserts);
-                adpt2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                myDesserts.setAdapter(adpt2);
-            }else{
-                myDesserts.setVisibility(Spinner.INVISIBLE);
-            }
-
-            btn = row.findViewById(R.id.addCart);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Cart cart = new Cart(myTitle.getText().toString(), myDrinks.getSelectedItem().toString(), myDesserts.getSelectedItem().toString(), Double.parseDouble(myPrice.getText().toString().substring(0, myPrice.getText().toString().length() -1)), convertDoubleTime(myTime.getText().toString()));
-                    System.out.println(cart.toString());
-                }
-            });
-
-            myTitle.setText(mTitle.get(position));
+            myTitle.setText("Menu: " + mTitle.get(position));
             myDish.setText(mTitle.get(position));
             myTag.setText(mTags.get(position));
             myPrice.setText(mPrice.get(position).toString().concat("€"));
             myTime.setText(convertTime(mTime.get(position)));
+
+            img.setImageBitmap(mImg.get(position));
             return row;
         }
     }
 
-    private Double convertDoubleTime(String time){
-        if(time.contains("h")){
-            String a[] = time.split("h");
-            if(a.length > 1){
-                return Double.parseDouble(a[0]) + (Double.parseDouble(a[1].substring(0, a[1].length()-1))/60);
-            }
-            return Double.parseDouble(a[0]);
-        }else{
-            return (Double.parseDouble(time.substring(0, time.length() -1))/60);
-        }
+    private void redirectExtras(String menu){
+        Intent intent = new Intent(this, ListMenusUserExtra.class);
+        intent.putExtra("user", email);
+        intent.putExtra("restaurant", restaurant);
+        intent.putExtra("menu", menu);
+        startActivity(intent);
+
     }
 
     private String convertTime(double time){
@@ -263,5 +259,39 @@ public class ListMenusUser extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+    }
+
+    private void searchQuery(DatabaseReference rest, String query) {
+        listView = findViewById(R.id.listViewMenuUser);
+
+        rest.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                resetData();
+                if(dataSnapshot.exists() && !query.isEmpty()) {
+                    for (DataSnapshot menu : dataSnapshot.child("menu").getChildren()) {
+                        if(menu.getKey().toLowerCase().contains(query.toLowerCase())) {
+                            RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
+                            Menu menuSelected = menu.getValue(Menu.class);
+                            Map<String, Menu> postMenu = new HashMap<String, Menu>();
+                            postMenu.put(menuSelected.getName(), menuSelected);
+                            post.setMenu(postMenu);
+                            setData(post);
+                        }
+                    }
+                }
+                else if(query.isEmpty()) {
+                    RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
+                    setData(post);
+                }
+                MyAdapter adapter = new MyAdapter(getApplicationContext());
+                listView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
     }
 }

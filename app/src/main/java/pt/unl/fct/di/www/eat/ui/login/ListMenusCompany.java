@@ -86,6 +86,7 @@ public class ListMenusCompany extends AppCompatActivity {
         listView1.setAdapter(adapterR);
 
         btnRequest.setOnClickListener(view -> {
+            checkLogin();
             setVisibility(8);
             MyAdapterRequest adapterR1 = new MyAdapterRequest(getApplicationContext());
             listView1.setAdapter(adapterR1);
@@ -96,6 +97,7 @@ public class ListMenusCompany extends AppCompatActivity {
         btnDessert = findViewById(R.id.editDesserts);
 
         btnMenu.setOnClickListener(view -> {
+            checkLogin();
             setVisibility(8);
             DatabaseReference rest = mref.child("Restaurants").child(email);
             rest.addValueEventListener(new ValueEventListener() {
@@ -118,6 +120,7 @@ public class ListMenusCompany extends AppCompatActivity {
 
         btnExtra = findViewById(R.id.editExtras);
         btnExtra.setOnClickListener(view -> {
+            checkLogin();
             setVisibility(0);
             DatabaseReference rest = mref.child("Restaurants").child(email);
             rest.addValueEventListener(new ValueEventListener() {
@@ -136,25 +139,52 @@ public class ListMenusCompany extends AppCompatActivity {
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
                     System.out.println("The read failed: " + databaseError.getCode());
                 }
             });
         });
 
-        btnDrink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println(mAvailableDrinks.toString());
-                System.out.println(tagDrinks.toString());
-            }
+        btnDrink.setOnClickListener(view -> {
+            checkLogin();
+            DatabaseReference d = mref.child("Restaurants").child(email).child("drinks");
+            d.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(int i = 0; i< tagDrinks.size(); i++){
+                        if(dataSnapshot.child(tagDrinks.get(i)).exists()){
+                            DatabaseReference aux =  d.child(tagDrinks.get(i)).child("isAvailable");
+                            aux.setValue(mAvailableDrinks.get(i));
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
+                    System.out.println("The read failed: " + databaseError.getCode());
+                }
+            });
         });
 
-        btnDessert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println(mAvailableDesserts.toString());
-                System.out.println(tagDesserts.toString());
-            }
+        btnDessert.setOnClickListener(view -> {
+            checkLogin();
+            DatabaseReference d = mref.child("Restaurants").child(email).child("desserts");
+            d.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(int i = 0; i< tagDesserts.size(); i++){
+                        if(dataSnapshot.child(tagDesserts.get(i)).exists()){
+                            DatabaseReference aux = d.child(tagDesserts.get(i)).child("isAvailable");
+                            aux.setValue(mAvailableDesserts.get(i));
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
+                    System.out.println("The read failed: " + databaseError.getCode());
+                }
+            });
         });
     }
 
@@ -288,27 +318,25 @@ public class ListMenusCompany extends AppCompatActivity {
                 }
             });
 
-            b.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    DatabaseReference aux = r.child("menu").child(mTitle.get(position));
-                    aux.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()) {
-                                if (myTime.getError() == null && myPrice.getError() == null) {
-                                    aux.child("time").setValue(convertDoubleTime(myTime.getText().toString()));
-                                    aux.child("price").setValue(convertPrice(myPrice.getText().toString()));
-                                    aux.child("isAvailable").setValue(myAvailability.isChecked());
-                                }
+            b.setOnClickListener(view -> {
+                checkLogin();
+                DatabaseReference aux = r.child("menu").child(mTitle.get(position));
+                aux.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            if (myTime.getError() == null && myPrice.getError() == null) {
+                                aux.child("time").setValue(convertDoubleTime(myTime.getText().toString()));
+                                aux.child("price").setValue(convertPrice(myPrice.getText().toString()));
+                                aux.child("isAvailable").setValue(myAvailability.isChecked());
                             }
                         }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            System.out.println("The read failed: " + databaseError.getCode());
-                        }
-                    });
-                }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        System.out.println("The read failed: " + databaseError.getCode());
+                    }
+                });
             });
             return row;
         }
@@ -384,6 +412,8 @@ public class ListMenusCompany extends AppCompatActivity {
                 }
                 if(minutes > 60)
                     return false;
+                if(minutes == 0)
+                    return false;
                 return true;
             }
         }else if(unit == 'h'){
@@ -427,9 +457,7 @@ public class ListMenusCompany extends AppCompatActivity {
         char unit = price.charAt(price.length()-1);
         if(unit != '€')
             return false;
-        System.out.println(price + " a");
         price = price.substring(0, price.length()-1);
-        System.out.println(price + " b");
         try {
             Double d = Double.parseDouble(price);
             if(d ==0)

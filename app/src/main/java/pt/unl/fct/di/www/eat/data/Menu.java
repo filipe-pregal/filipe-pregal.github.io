@@ -7,17 +7,27 @@ public class Menu {
     String name;
     String tag;
     Double time;
+    String image_url;
 
     public Menu(){
 
     }
 
-    public Menu(boolean isAvailable, Double price, String name, String tag, Double time){
+    public Menu(boolean isAvailable, Double price, String name, String tag, Double time, String image_url){
         this.isAvailable=isAvailable;
         this.price = price;
         this.name = name;
         this.tag = tag;
         this.time = time;
+        this.image_url = image_url;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 
     public boolean getIsAvailable() {
@@ -58,5 +68,10 @@ public class Menu {
 
     public void setTime(Double time) {
         this.time = time;
+    }
+
+    @Override
+    public String toString(){
+        return "isAvailable: " + isAvailable + " price: " + price +  " name: " + name + " tag: " + tag + " time: " + time;
     }
 }

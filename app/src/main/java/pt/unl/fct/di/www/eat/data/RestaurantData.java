@@ -9,13 +9,13 @@ public class RestaurantData {
     Map<String, Option> desserts;
     Map<String, Option> drinks;
     Map<String, Menu> menu;
-    String address, name, tag, email, time;
+    String address, name, tag, email, time,image_url;
 
     public RestaurantData(){
 
     }
 
-    public RestaurantData(Map<String, Option> desserts, String address, Map<String, Option> drinks, String name, String tag, Map<String, Menu> menu, String email, String time){
+    public RestaurantData(Map<String, Option> desserts, String address, Map<String, Option> drinks, String name, String tag, Map<String, Menu> menu, String email, String time, String image_url){
         this.desserts = desserts;
         this.address = address;
         this.drinks = drinks;
@@ -24,6 +24,15 @@ public class RestaurantData {
         this.menu = menu;
         this.email = email;
         this.time = time;
+        this.image_url = image_url;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 
     public String getTime() {

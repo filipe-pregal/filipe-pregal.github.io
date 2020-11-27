@@ -2,7 +2,10 @@ package pt.unl.fct.di.www.eat.ui.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,12 +25,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import pt.unl.fct.di.www.eat.R;
@@ -42,6 +58,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
     ArrayList<String> mTag = new ArrayList<>();
     ArrayList<String> mEmail = new ArrayList<>();
     ArrayList<String> mTime = new ArrayList<>();
+    ArrayList<Bitmap> mImg = new ArrayList<>();
     //ArrayList<String> mAddress = new ArrayList<>();
 
     @Override
@@ -89,6 +106,10 @@ public class List_restaurantsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_restaurants);
 
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+
         //Adicionado para a toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar_restaurants);
         setSupportActionBar(myToolbar);
@@ -105,7 +126,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
         checkLogin();
 
         DatabaseReference restaurants = mref.child("Restaurants");
-        restaurants.addValueEventListener(new ValueEventListener() {
+        restaurants.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 resetData();
@@ -126,19 +147,38 @@ public class List_restaurantsActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                checkLogin();
                 String s = (String) parent.getItemAtPosition(position);
                 openMenus(s);
             }
         });
     }
 
-    private void getDataInPlace(){
+    private void getDataInPlace() {
         for(int i=0; i< abc.size();i++){
             RestaurantData r = (RestaurantData) abc.get(i);
             mTitle.add(r.getName());
             mEmail.add(r.getEmail().replace(".", "_"));
             mTag.add(r.getTag());
-            mTime.add(r.getTime().substring(11));
+            mTime.add(r.getTime().substring(11, 16));
+            System.out.println(r.getImage_url() + " aaaaaaaaaaaaa");
+            setImage(r.getImage_url());
+        }
+    }
+
+    private void setImage(String u) {
+        URL url = null;
+        try {
+            url = new URL(u);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Bitmap bmp;
+        try {
+            bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            mImg.add(bmp);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -148,6 +188,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
         mTime.clear();
         mEmail.clear();
         mTag.clear();
+        mImg.clear();
     }
 
     private void openMenus(String restaurant){
@@ -196,12 +237,12 @@ public class List_restaurantsActivity extends AppCompatActivity {
             TextView myTitle = row.findViewById(R.id.titleRestaurant);
             TextView myTag = row.findViewById(R.id.tag);
             TextView myTime = row.findViewById(R.id.time);
-            //TextView myEmail = row.findViewById(R.id.emailR);
+            ImageView myImg = row.findViewById(R.id.imgR);
 
             myTitle.setText(mTitle.get(position));
             myTag.setText(mTag.get(position));
-            myTime.setText(mTime.get(position));
-            //myEmail.setText(rEmail.get(position));
+            myTime.setText("Close time: " + mTime.get(position));
+            myImg.setImageBitmap(mImg.get(position));
 
             return row;
         }
