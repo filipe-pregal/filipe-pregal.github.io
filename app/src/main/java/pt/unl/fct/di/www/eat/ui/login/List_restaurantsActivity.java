@@ -188,7 +188,6 @@ public class List_restaurantsActivity extends AppCompatActivity {
             mEmail.add(r.getEmail().replace(".", "_"));
             mTag.add(r.getTag());
             mTime.add(r.getTime().substring(11, 16));
-            System.out.println(r.getImage_url() + " aaaaaaaaaaaaa");
             setImage(r.getImage_url());
         }
     }
@@ -253,6 +252,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
     class MyAdapter extends ArrayAdapter<String> {
 
         MyAdapter(Context c){
+
             super(c,R.layout.row_restaurant, R.id.emailR, mEmail);
         }
 
