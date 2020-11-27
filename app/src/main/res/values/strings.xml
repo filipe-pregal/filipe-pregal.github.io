@@ -13,4 +13,9 @@
     <string name="login">LOGIN</string>
     <string name="register">REGISTER</string>
     <string name="search">Search</string>
+    <string name="cart">Add to Cart</string>
+    <string name="filter">Filter</string>
+    <string name="restaurant_dialog">Restaurant Tags</string>
+    <string name="ok">Apply</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,28 +15,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -65,21 +54,25 @@ public class List_restaurantsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.app_bar_search:
-
                 super.onOptionsItemSelected(item);
                 return true;
+            case R.id.action_cart:
 
+                return true;
+            case R.id.action_filter:
+                RestaurantTagsDialog d = new RestaurantTagsDialog();
+                d.show(getSupportFragmentManager(), "Restaurant Tags");
 
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
         getMenuInflater().inflate(R.menu.my_toolbar, menu);
 
         MenuItem searchItem = menu.findItem(R.id.app_bar_search);
@@ -87,17 +80,18 @@ public class List_restaurantsActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                System.out.println(query);
+                DatabaseReference rest = mref.child("Restaurants");
+                searchQuery(rest, query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                System.out.println(newText);
+                DatabaseReference rest = mref.child("Restaurants");
+                searchQuery(rest, newText);
                 return false;
             }
         });
-        //SearchView searchView = (SearchView) searchItem.getActionView();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -150,6 +144,39 @@ public class List_restaurantsActivity extends AppCompatActivity {
                 checkLogin();
                 String s = (String) parent.getItemAtPosition(position);
                 openMenus(s);
+            }
+        });
+    }
+
+    private void searchQuery(DatabaseReference rest, String query) {
+        listView = findViewById(R.id.listView);
+
+        rest.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                resetData();
+                if(dataSnapshot.exists() && !query.isEmpty()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        RestaurantData post = child.getValue(RestaurantData.class);
+                        if(post.getName().toLowerCase().contains(query.toLowerCase())) {
+                            abc.add(post);
+                        }
+                    }
+                }
+                else if(query.isEmpty()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        RestaurantData post = child.getValue(RestaurantData.class);
+                        abc.add(post);
+                    }
+                }
+                getDataInPlace();
+                MyAdapter adapter = new MyAdapter(getApplicationContext());
+                listView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
             }
         });
     }
