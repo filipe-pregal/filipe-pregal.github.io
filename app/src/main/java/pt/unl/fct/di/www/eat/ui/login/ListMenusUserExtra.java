@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
 
 import pt.unl.fct.di.www.eat.R;
 import pt.unl.fct.di.www.eat.data.Cart;
@@ -44,7 +45,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
     String dessert = "";
 
     ListView listView1, listView2;
-    Button btnAdd;
+    Button btnAdd, btnMenus, btnCart;
     TextView sDrinks, sDesserts;
     String email, restaurant, menu;
     DatabaseReference mref;
@@ -65,6 +66,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
         checkLogin();
 
         btnAdd = findViewById(R.id.addToCart);
+
         listView1 = findViewById(R.id.listViewDrinksUser);
         listView2 = findViewById(R.id.listViewDessertsUser);
         sDrinks = findViewById(R.id.seeDrinksUser);
@@ -74,6 +76,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
         rest.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                checkLogin();
                 if(dataSnapshot.exists()) {
                     resetDataExtra();
                     RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
@@ -116,8 +119,10 @@ public class ListMenusUserExtra extends AppCompatActivity {
                     if(dataSnapshot.exists()){
                         Menu menuValue = dataSnapshot.getValue(Menu.class);
                         Cart cart = new Cart(menuValue.getName(), drink, dessert,menuValue.getPrice(),menuValue.getTime());
-                        System.out.println(cart.toString());
-                        System.out.println(email);
+                        String random = UUID.randomUUID().toString().substring(0, 8);
+                        DatabaseReference addCart = mref.child("Carts").child(email).child(random);
+                        addCart.setValue(cart);
+                        openCart();
                     }
                 }
                 @Override
@@ -185,6 +190,13 @@ public class ListMenusUserExtra extends AppCompatActivity {
             });
             return row;
         }
+    }
+
+    private void openCart(){
+        Intent intent = new Intent(this, CartUser.class);
+        intent.putExtra("user", email);
+        intent.putExtra("restaurant", restaurant);
+        startActivity(intent);
     }
 
     private void setDataExtra(RestaurantData r){

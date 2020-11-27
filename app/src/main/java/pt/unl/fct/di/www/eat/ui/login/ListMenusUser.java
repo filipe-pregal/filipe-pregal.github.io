@@ -160,7 +160,6 @@ public class ListMenusUser extends AppCompatActivity {
     }
 
     private void setImage(String u) {
-        System.out.println(u);
         URL url = null;
         try {
             url = new URL(u);
@@ -222,7 +221,6 @@ public class ListMenusUser extends AppCompatActivity {
         intent.putExtra("restaurant", restaurant);
         intent.putExtra("menu", menu);
         startActivity(intent);
-
     }
 
     private String convertTime(double time){
