@@ -57,7 +57,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listViewDrinks"
-        android:isScrollContainer="true">
+        android:isScrollContainer="true"
+        android:layout_marginBottom="10dp">
     </ListView>
 
     <Button
@@ -65,7 +66,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="Save Drinks "
+        android:layout_marginLeft="-15dp"
+        android:text="Edit Drinks "
         android:enabled="true"
         android:visibility="gone"/>
 
@@ -86,7 +88,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/listViewDesserts"
         android:isScrollContainer="true"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:layout_marginBottom="10dp">
     </ListView>
 
     <Button
@@ -94,7 +97,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="Save Desserts"
+        android:layout_marginLeft="-15dp"
+        android:text="Edit Desserts"
         android:enabled="true"
         android:visibility="gone"/>
 
