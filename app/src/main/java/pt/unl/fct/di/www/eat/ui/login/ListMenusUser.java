@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -36,10 +37,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pt.unl.fct.di.www.eat.R;
+import pt.unl.fct.di.www.eat.StartActivity;
 import pt.unl.fct.di.www.eat.data.Menu;
 import pt.unl.fct.di.www.eat.data.RestaurantData;
 
-public class ListMenusUser extends AppCompatActivity {
+public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDialog.RestaurantTagsListener {
 
     ListView listView;
     Button btn;
@@ -52,12 +54,32 @@ public class ListMenusUser extends AppCompatActivity {
     ArrayList<Double> mPrice = new ArrayList<>();
     ArrayList<Double> mTime = new ArrayList<>();
     ArrayList<Bitmap> mImg = new ArrayList<>();
+    String[] mtags;
+    boolean[] mselectedTags;
+    ArrayList<String> msTags = new ArrayList<String>();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.app_bar_search:
                 super.onOptionsItemSelected(item);
+                return true;
+            case R.id.action_cart:
+                Intent intent = new Intent(this, CartUser.class);
+                intent.putExtra("user", email);
+                intent.putExtra("restaurant", restaurant );
+                startActivity(intent);
+                return true;
+            case R.id.action_filter:
+               RestaurantTagsDialog d = new RestaurantTagsDialog(mtags, mselectedTags, msTags);
+                d.show(getSupportFragmentManager(), "Menu Tags");
+                return true;
+            case R.id.action_logout:
+                Intent it = new Intent(this, StartActivity.class);
+                startActivity(it);
+                return true;
+            case R.id.action_settings:
+                //TODO
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -89,15 +111,68 @@ public class ListMenusUser extends AppCompatActivity {
         });
         return super.onCreateOptionsMenu(menu);
     }
+    private void searchFilter(DatabaseReference rest) {
+
+
+        listView = findViewById(R.id.listViewMenuUser);
+
+        rest.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                resetData();
+                if (dataSnapshot.exists() ) {
+                    for (DataSnapshot menu : dataSnapshot.child("menu").getChildren()) {
+
+                        RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
+                        Menu menuSelected = menu.getValue(Menu.class);
+
+                        if (msTags.contains(menuSelected.getTag())) {
+                            Map<String, Menu> postMenu = new HashMap<String, Menu>();
+                            postMenu.put(menuSelected.getName(), menuSelected);
+                            post.setMenu(postMenu);
+                            setData(post);
+                        }
+                    }
+                }
+                MyAdapter adapter = new MyAdapter(getApplicationContext());
+                listView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    @Override
+    public void onDialogPositiveClick(RestaurantTagsDialog dialog) {
+        msTags = dialog.sTags;
+        DatabaseReference rest = mref.child("Restaurants").child(restaurant);
+        searchFilter(rest);
+    }
+
+    @Override
+    public void onDialogNegativeClick(RestaurantTagsDialog dialog) {
+        msTags = dialog.sTags;
+        DatabaseReference rest = mref.child("Restaurants").child(restaurant);
+        searchFilter(rest);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_menus_user);
 
+        getMenuTags();
+
         //Adicionado para a toolbar
         Toolbar myToolbar = findViewById(R.id.list_menus_user);
         setSupportActionBar(myToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
@@ -136,6 +211,32 @@ public class ListMenusUser extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             checkLogin();
             redirectExtras(menuKeys.get(position));
+        });
+    }
+
+    private void getMenuTags() {
+        mref = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference rest = mref.child("select_lists").child("menu_tags");
+        rest.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    mtags = new String[(int) dataSnapshot.getChildrenCount()];
+                    mselectedTags = new boolean[(int) dataSnapshot.getChildrenCount()];
+                    int counter = 0;
+                    for (DataSnapshot tag : dataSnapshot.getChildren()) {
+                        mtags[counter] = tag.getValue(String.class);
+                        msTags.add(tag.getValue(String.class));
+                        mselectedTags[counter] = true;
+                        counter++;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
         });
     }
 

@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import pt.unl.fct.di.www.eat.R;
+import pt.unl.fct.di.www.eat.StartActivity;
 import pt.unl.fct.di.www.eat.data.RestaurantData;
 
 public class List_restaurantsActivity extends AppCompatActivity implements RestaurantTagsDialog.RestaurantTagsListener {
@@ -68,6 +69,13 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             case R.id.action_filter:
                 RestaurantTagsDialog d = new RestaurantTagsDialog(tags, selectedTags, sTags);
                 d.show(getSupportFragmentManager(), "Restaurant Tags");
+                return true;
+            case R.id.action_logout:
+                Intent it = new Intent(this, StartActivity.class);
+                startActivity(it);
+                return true;
+            case R.id.action_settings:
+                //TODO
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
