@@ -489,10 +489,10 @@ public class ListMenusCompany extends AppCompatActivity {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.row_edit_extra, parent, false);
 
-            TextView myD = row.findViewById(R.id.extra);
+            //TextView myD = row.findViewById(R.id.extra);
             Switch myS = row.findViewById(R.id.switch1);
 
-            myD.setText(rType.get(position));
+            myS.setText(rType.get(position));
             myS.setChecked(rAvailability.get(position));
 
             myS.setOnClickListener(view -> {
