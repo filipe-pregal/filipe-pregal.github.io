@@ -1,29 +1,25 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,8 +55,8 @@ public class ListMenusCompany extends AppCompatActivity {
     ArrayList<String> tagDrinks = new ArrayList<>();
     ArrayList<String> tagDesserts = new ArrayList<>();
 
-    String mT[] = {"a", "b", "c"};
-    String mB[] = {"d", "e", "f"};
+    String[] mT = {"a", "b", "c"};
+    String[] mB = {"d", "e", "f"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +99,7 @@ public class ListMenusCompany extends AppCompatActivity {
             rest.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()) {
+                    if (dataSnapshot.exists()) {
                         resetDataMenu();
                         RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                         setDataMenu(post);
@@ -111,6 +107,7 @@ public class ListMenusCompany extends AppCompatActivity {
                     MyAdapterMenu adapter = new MyAdapterMenu(getApplicationContext(), rest);
                     listView1.setAdapter(adapter);
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     System.out.println("The read failed: " + databaseError.getCode());
@@ -126,7 +123,7 @@ public class ListMenusCompany extends AppCompatActivity {
             rest.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()) {
+                    if (dataSnapshot.exists()) {
                         resetDataExtra();
                         RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                         setDataExtra(post);
@@ -137,6 +134,7 @@ public class ListMenusCompany extends AppCompatActivity {
                     MyAdapterExtra adapter2 = new MyAdapterExtra(getApplicationContext(), rest, mDesserts, mAvailableDesserts, "dessert");
                     listView2.setAdapter(adapter2);
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
@@ -151,13 +149,14 @@ public class ListMenusCompany extends AppCompatActivity {
             d.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(int i = 0; i< tagDrinks.size(); i++){
-                        if(dataSnapshot.child(tagDrinks.get(i)).exists()){
-                            DatabaseReference aux =  d.child(tagDrinks.get(i)).child("isAvailable");
+                    for (int i = 0; i < tagDrinks.size(); i++) {
+                        if (dataSnapshot.child(tagDrinks.get(i)).exists()) {
+                            DatabaseReference aux = d.child(tagDrinks.get(i)).child("isAvailable");
                             aux.setValue(mAvailableDrinks.get(i));
                         }
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
@@ -172,13 +171,14 @@ public class ListMenusCompany extends AppCompatActivity {
             d.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(int i = 0; i< tagDesserts.size(); i++){
-                        if(dataSnapshot.child(tagDesserts.get(i)).exists()){
+                    for (int i = 0; i < tagDesserts.size(); i++) {
+                        if (dataSnapshot.child(tagDesserts.get(i)).exists()) {
                             DatabaseReference aux = d.child(tagDesserts.get(i)).child("isAvailable");
                             aux.setValue(mAvailableDesserts.get(i));
                         }
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
@@ -188,7 +188,7 @@ public class ListMenusCompany extends AppCompatActivity {
         });
     }
 
-    private void setVisibility(int state){
+    private void setVisibility(int state) {
         btnDessert.setVisibility(state);
         btnDrink.setVisibility(state);
         sDrinks.setVisibility(state);
@@ -196,8 +196,8 @@ public class ListMenusCompany extends AppCompatActivity {
         listView2.setVisibility(state);
     }
 
-    private void setDataMenu(RestaurantData r){
-        for (Map.Entry<String, Menu> menus : r.getMenu().entrySet()){
+    private void setDataMenu(RestaurantData r) {
+        for (Map.Entry<String, Menu> menus : r.getMenu().entrySet()) {
             Menu menu = menus.getValue();
             mTitle.add(menu.getName());
             mPrice.add(menu.getPrice().toString());
@@ -207,15 +207,15 @@ public class ListMenusCompany extends AppCompatActivity {
         }
     }
 
-    private void setDataExtra(RestaurantData r){
-        for(Map.Entry<String, Option> drinks : r.getDrinks().entrySet()){
+    private void setDataExtra(RestaurantData r) {
+        for (Map.Entry<String, Option> drinks : r.getDrinks().entrySet()) {
             tagDrinks.add(drinks.getKey());
             Option drink = drinks.getValue();
             mDrinks.add(drink.getName());
             mAvailableDrinks.add(drink.getIsAvailable());
         }
 
-        for(Map.Entry<String, Option> desserts : r.getDesserts().entrySet()){
+        for (Map.Entry<String, Option> desserts : r.getDesserts().entrySet()) {
             tagDesserts.add(desserts.getKey());
             Option dessert = desserts.getValue();
             mDesserts.add(dessert.getName());
@@ -223,7 +223,7 @@ public class ListMenusCompany extends AppCompatActivity {
         }
     }
 
-    private void resetDataMenu(){
+    private void resetDataMenu() {
         mTitle.clear();
         mTags.clear();
         mPrice.clear();
@@ -231,7 +231,7 @@ public class ListMenusCompany extends AppCompatActivity {
         mAvailableMenus.clear();
     }
 
-    private void resetDataExtra(){
+    private void resetDataExtra() {
         mDesserts.clear();
         mDrinks.clear();
         mAvailableDesserts.clear();
@@ -240,12 +240,133 @@ public class ListMenusCompany extends AppCompatActivity {
         tagDrinks.clear();
     }
 
+    private boolean isNumeric(String time) {
+        time = time.trim();
+        if (time.equals(""))
+            return false;
+        char unit = time.charAt(time.length() - 1);
+        if (unit != 'm' && unit != 'h')
+            return false;
+        time = time.substring(0, time.length() - 1);
+        if (unit == 'm') {
+            if (time.contains("h")) {
+                String[] aux = time.split("h");
+                if (aux.length != 2) {
+                    return false;
+                }
+                int minutes;
+                try {
+                    int hours = Integer.parseInt(aux[0]);
+                    minutes = Integer.parseInt(aux[1]);
+                } catch (Exception e) {
+                    return false;
+                }
+                return minutes <= 60;
+            } else {
+                int minutes;
+                try {
+                    minutes = Integer.parseInt(time);
+                } catch (Exception e) {
+                    return false;
+                }
+                if (minutes > 60)
+                    return false;
+                return minutes != 0;
+            }
+        } else if (unit == 'h') {
+            try {
+                int hours = Integer.parseInt(time);
+                if (hours == 0)
+                    return false;
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isNumericPrice(String price) {
+        price = price.trim();
+        if (price.equals(""))
+            return false;
+        char unit = price.charAt(price.length() - 1);
+        if (unit != '€')
+            return false;
+        price = price.substring(0, price.length() - 1);
+        try {
+            Double d = Double.parseDouble(price);
+            if (d == 0)
+                return false;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private Double convertPrice(String price) {
+        price = price.substring(0, price.length() - 1);
+        return Double.parseDouble(price);
+    }
+
+    private String convertTime(double time) {
+        String[] aux = String.valueOf(time).split("\\.");
+        int hours = Integer.parseInt(aux[0]);
+        int minutes = (int) (Double.parseDouble("0." + aux[1]) * 60);
+        if (minutes == 0)
+            return hours + "h";
+        if (hours == 0)
+            return minutes + "m";
+        return hours + "h" + minutes + "m";
+    }
+
+    private Double convertDoubleTime(String time) {
+        if (isNumeric(time)) {
+            if (time.contains("h")) {
+                String[] a = time.split("h");
+                if (a.length > 1) {
+                    return Double.parseDouble(a[0]) + (Double.parseDouble(a[1].substring(0, a[1].length() - 1)) / 60);
+                }
+                return Double.parseDouble(a[0]);
+            } else {
+                return (Double.parseDouble(time.substring(0, time.length() - 1)) / 60);
+            }
+        }
+        return -1.0;
+    }
+
+    private void checkLogin() {
+        DatabaseReference user = mref.child("Users").child(email);
+        user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String token = dataSnapshot.child("token").getValue().toString();
+                    if (token.equals("")) {
+                        redirectLogin();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void redirectLogin() {
+        getIntent().removeExtra("user");
+        Intent intent = new Intent(this, CompanyLoginActivity.class);
+        startActivity(intent);
+    }
+
     class MyAdapterMenu extends ArrayAdapter<String> {
 
         DatabaseReference r;
 
-        MyAdapterMenu(Context c, DatabaseReference d){
-            super(c,R.layout.activity_edit_menu, R.id.titleMenu, mTitle);
+        MyAdapterMenu(Context c, DatabaseReference d) {
+            super(c, R.layout.activity_edit_menu, R.id.titleMenu, mTitle);
             this.r = d;
         }
 
@@ -278,15 +399,17 @@ public class ListMenusCompany extends AppCompatActivity {
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 }
+
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    if(!isNumeric(myTime.getText().toString()))
+                    if (!isNumeric(myTime.getText().toString()))
                         myTime.setError("Time must only contain numbers, m and h. Ex: 30m or 1h30m");
                     else {
                         b.setEnabled(true);
                         myTime.setError(null);
                     }
                 }
+
                 @Override
                 public void afterTextChanged(Editable editable) {
 
@@ -297,15 +420,17 @@ public class ListMenusCompany extends AppCompatActivity {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 }
+
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    if(!isNumericPrice(myPrice.getText().toString()))
+                    if (!isNumericPrice(myPrice.getText().toString()))
                         myPrice.setError("Price must only contain numbers, € and be valid.");
                     else {
                         b.setEnabled(true);
                         myPrice.setError(null);
                     }
                 }
+
                 @Override
                 public void afterTextChanged(Editable editable) {
                 }
@@ -324,7 +449,7 @@ public class ListMenusCompany extends AppCompatActivity {
                 aux.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) {
+                        if (dataSnapshot.exists()) {
                             if (myTime.getError() == null && myPrice.getError() == null) {
                                 aux.child("time").setValue(convertDoubleTime(myTime.getText().toString()));
                                 aux.child("price").setValue(convertPrice(myPrice.getText().toString()));
@@ -332,6 +457,7 @@ public class ListMenusCompany extends AppCompatActivity {
                             }
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         System.out.println("The read failed: " + databaseError.getCode());
@@ -349,8 +475,8 @@ public class ListMenusCompany extends AppCompatActivity {
         ArrayList<Boolean> rAvailability;
         String aux;
 
-        MyAdapterExtra(Context c, DatabaseReference d, ArrayList<String> type, ArrayList<Boolean> availability, String aux){
-            super(c,R.layout.row_edit_extra, R.id.extra, type);
+        MyAdapterExtra(Context c, DatabaseReference d, ArrayList<String> type, ArrayList<Boolean> availability, String aux) {
+            super(c, R.layout.row_edit_extra, R.id.extra, type);
             this.r = d;
             this.rType = type;
             this.rAvailability = availability;
@@ -370,76 +496,26 @@ public class ListMenusCompany extends AppCompatActivity {
             myS.setChecked(rAvailability.get(position));
 
             myS.setOnClickListener(view -> {
-                if(aux.equals("drink"))
+                if (aux.equals("drink"))
                     mAvailableDrinks.set(position, myS.isChecked());
-                if(aux.equals("dessert"))
+                if (aux.equals("dessert"))
                     mAvailableDesserts.set(position, myS.isChecked());
             });
             return row;
         }
     }
 
-    private boolean isNumeric(String time){
-        time = time.trim();
-        if(time.equals(""))
-            return false;
-        char unit = time.charAt(time.length()-1);
-        if(unit != 'm' && unit != 'h')
-            return false;
-        time = time.substring(0, time.length()-1);
-        if(unit == 'm'){
-            if(time.contains("h")){
-                String aux[] = time.split("h");
-                if(aux.length != 2){
-                    return false;
-                }
-                int minutes;
-                try {
-                    int hours = Integer.parseInt(aux[0]);
-                    minutes = Integer.parseInt(aux[1]);
-                }catch (Exception e){
-                    return false;
-                }
-                if(minutes > 60)
-                    return false;
-                return true;
-            }else{
-                int minutes;
-                try {
-                    minutes = Integer.parseInt(time);
-                }catch (Exception e){
-                    return false;
-                }
-                if(minutes > 60)
-                    return false;
-                if(minutes == 0)
-                    return false;
-                return true;
-            }
-        }else if(unit == 'h'){
-            try {
-                int hours = Integer.parseInt(time);
-                if (hours == 0)
-                    return false;
-            }catch (Exception e){
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
     class MyAdapterRequest extends ArrayAdapter<String> {
 
-        MyAdapterRequest(Context c){
-            super(c,R.layout.row_menu_user, R.id.titleMenu, mT);
+        MyAdapterRequest(Context c) {
+            super(c, R.layout.row_menu_user, R.id.titleMenu, mT);
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.row_request,parent, false);
+            View row = layoutInflater.inflate(R.layout.row_request, parent, false);
 
             TextView myT = row.findViewById(R.id.teste1);
             TextView myB = row.findViewById(R.id.teste2);
@@ -448,78 +524,5 @@ public class ListMenusCompany extends AppCompatActivity {
             myB.setText(mB[position]);
             return row;
         }
-    }
-
-    private boolean isNumericPrice(String price){
-        price = price.trim();
-        if(price.equals(""))
-            return false;
-        char unit = price.charAt(price.length()-1);
-        if(unit != '€')
-            return false;
-        price = price.substring(0, price.length()-1);
-        try {
-            Double d = Double.parseDouble(price);
-            if(d ==0)
-                return false;
-        }catch (Exception e){
-            return false;
-        }
-        return true;
-    }
-
-    private Double convertPrice(String price){
-        price = price.substring(0, price.length()-1);
-        return Double.parseDouble(price);
-    }
-    private String convertTime(double time){
-        String[] aux = String.valueOf(time).split("\\.");
-        int hours =  Integer.parseInt(aux[0]);
-        int minutes = (int) (Double.parseDouble("0." + aux[1]) *60);
-        if(minutes == 0)
-            return hours + "h";
-        if(hours == 0)
-            return minutes + "m";
-        return hours + "h" + minutes + "m";
-    }
-
-    private Double convertDoubleTime(String time){
-        if(isNumeric(time)){
-            if(time.contains("h")){
-                String a[] = time.split("h");
-                if(a.length > 1){
-                    return Double.parseDouble(a[0]) + (Double.parseDouble(a[1].substring(0, a[1].length()-1))/60);
-                }
-                return Double.parseDouble(a[0]);
-            }else{
-                return (Double.parseDouble(time.substring(0, time.length() -1))/60);
-            }
-        }
-        return -1.0;
-    }
-
-    private void checkLogin(){
-        DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String token = dataSnapshot.child("token").getValue().toString();
-                    if(token.equals("")){
-                        redirectLogin();
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-    }
-
-    private void redirectLogin(){
-        getIntent().removeExtra("user");
-        Intent intent = new Intent(this, CompanyLoginActivity.class);
-        startActivity(intent);
     }
 }

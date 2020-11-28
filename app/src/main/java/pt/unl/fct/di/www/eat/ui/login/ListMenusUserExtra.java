@@ -1,23 +1,21 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -77,7 +75,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 checkLogin();
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     resetDataExtra();
                     RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                     setDataExtra(post);
@@ -88,6 +86,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
                 MyAdapterExtra adapter2 = new MyAdapterExtra(getApplicationContext(), rest, mDesserts, "desserts");
                 listView2.setAdapter(adapter2);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
@@ -103,28 +102,29 @@ public class ListMenusUserExtra extends AppCompatActivity {
                 if (checkDrinks.get(i))
                     d = i;
             }
-            for (int i = 0; i < checkDesserts.size(); i++){
+            for (int i = 0; i < checkDesserts.size(); i++) {
                 if (checkDesserts.get(i))
                     ds = i;
             }
-            if(d!=-1)
+            if (d != -1)
                 drink = mDrinks.get(d);
-            if(ds!=-1)
+            if (ds != -1)
                 dessert = mDesserts.get(ds);
 
             DatabaseReference m = mref.child("Restaurants").child(restaurant).child("menu").child(menu);
             m.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
+                    if (dataSnapshot.exists()) {
                         Menu menuValue = dataSnapshot.getValue(Menu.class);
-                        Cart cart = new Cart(menuValue.getName(), drink, dessert,menuValue.getPrice(),menuValue.getTime());
+                        Cart cart = new Cart(menuValue.getName(), drink, dessert, menuValue.getPrice(), menuValue.getTime());
                         String random = UUID.randomUUID().toString().substring(0, 8);
                         DatabaseReference addCart = mref.child("Carts").child(email).child(random);
                         addCart.setValue(cart);
                         openCart();
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
@@ -134,14 +134,71 @@ public class ListMenusUserExtra extends AppCompatActivity {
         });
     }
 
+    private void openCart() {
+        Intent intent = new Intent(this, CartUser.class);
+        intent.putExtra("user", email);
+        intent.putExtra("restaurant", restaurant);
+        startActivity(intent);
+    }
+
+    private void setDataExtra(RestaurantData r) {
+        for (Map.Entry<String, Option> drinks : r.getDrinks().entrySet()) {
+            Option drink = drinks.getValue();
+            if (drink.getIsAvailable()) {
+                mDrinks.add(drink.getName());
+                checkDrinks.add(false);
+            }
+        }
+        for (Map.Entry<String, Option> desserts : r.getDesserts().entrySet()) {
+            Option dessert = desserts.getValue();
+            if (dessert.getIsAvailable()) {
+                mDesserts.add(dessert.getName());
+                checkDesserts.add(false);
+            }
+        }
+    }
+
+    private void resetDataExtra() {
+        mDesserts.clear();
+        mDrinks.clear();
+        checkDesserts.clear();
+        checkDrinks.clear();
+    }
+
+    private void checkLogin() {
+        DatabaseReference user = mref.child("Users").child(email);
+        user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String token = dataSnapshot.child("token").getValue().toString();
+                    if (token.equals("")) {
+                        redirectLogin();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void redirectLogin() {
+        getIntent().removeExtra("user");
+        Intent intent = new Intent(this, UserLoginActivity.class);
+        startActivity(intent);
+    }
+
     class MyAdapterExtra extends ArrayAdapter<String> {
 
         DatabaseReference r;
         ArrayList<String> rType;
         String type;
 
-        MyAdapterExtra(Context c, DatabaseReference d, ArrayList<String> type, String aux){
-            super(c,R.layout.row_extra_user, R.id.extraU, type);
+        MyAdapterExtra(Context c, DatabaseReference d, ArrayList<String> type, String aux) {
+            super(c, R.layout.row_extra_user, R.id.extraU, type);
             this.r = d;
             this.rType = type;
             this.type = aux;
@@ -158,30 +215,28 @@ public class ListMenusUserExtra extends AppCompatActivity {
 
             myD.setText(rType.get(position));
 
-            if(type.equals("drinks"))
+            if (type.equals("drinks"))
                 c.setChecked(checkDrinks.get(position));
-            if(type.equals("desserts"))
+            if (type.equals("desserts"))
                 c.setChecked(checkDesserts.get(position));
 
             c.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(type.equals("drinks")){
-                        if(checkDrinks.contains(true)) {
+                    if (type.equals("drinks")) {
+                        if (checkDrinks.contains(true)) {
                             checkDrinks.set(position, false);
                             c.setChecked(false);
-                        }
-                        else {
+                        } else {
                             c.setChecked(true);
                             checkDrinks.set(position, true);
                         }
                     }
-                    if(type.equals("desserts")){
-                        if(checkDesserts.contains(true)){
+                    if (type.equals("desserts")) {
+                        if (checkDesserts.contains(true)) {
                             checkDesserts.set(position, false);
                             c.setChecked(false);
-                        }
-                        else {
+                        } else {
                             checkDesserts.set(position, true);
                             c.setChecked(true);
                         }
@@ -190,61 +245,5 @@ public class ListMenusUserExtra extends AppCompatActivity {
             });
             return row;
         }
-    }
-
-    private void openCart(){
-        Intent intent = new Intent(this, CartUser.class);
-        intent.putExtra("user", email);
-        intent.putExtra("restaurant", restaurant);
-        startActivity(intent);
-    }
-
-    private void setDataExtra(RestaurantData r){
-        for(Map.Entry<String, Option> drinks : r.getDrinks().entrySet()){
-            Option drink = drinks.getValue();
-            if(drink.getIsAvailable()) {
-                mDrinks.add(drink.getName());
-                checkDrinks.add(false);
-            }
-        }
-        for(Map.Entry<String, Option> desserts : r.getDesserts().entrySet()){
-            Option dessert = desserts.getValue();
-            if(dessert.getIsAvailable()) {
-                mDesserts.add(dessert.getName());
-                checkDesserts.add(false);
-            }
-        }
-    }
-
-    private void resetDataExtra(){
-        mDesserts.clear();
-        mDrinks.clear();
-        checkDesserts.clear();
-        checkDrinks.clear();
-    }
-
-    private void checkLogin(){
-        DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String token = dataSnapshot.child("token").getValue().toString();
-                    if(token.equals("")){
-                        redirectLogin();
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-    }
-
-    private void redirectLogin(){
-        getIntent().removeExtra("user");
-        Intent intent = new Intent(this, UserLoginActivity.class);
-        startActivity(intent);
     }
 }

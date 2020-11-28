@@ -1,14 +1,14 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,23 +49,24 @@ public class CompanyLoginActivity extends AppCompatActivity {
                             String role = dataSnapshot.child("role").getValue().toString();
                             String token = dataSnapshot.child("token").getValue().toString();
 
-                            if (emailT.equals(em) && pwdT.equals(pwd.getText().toString())){
-                                if(role.equals("COMPANY")){
+                            if (emailT.equals(em) && pwdT.equals(pwd.getText().toString())) {
+                                if (role.equals("COMPANY")) {
                                     if (token.equals("")) {
                                         String random = UUID.randomUUID().toString().substring(0, 8);
                                         d.child("token").setValue(random);
                                     }
                                     openMenus(emailToSearch);
-                                }else {
-                                    Toast.makeText(getApplicationContext(),"Not logging with an company account.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Not logging with an company account.", Toast.LENGTH_SHORT).show();
                                 }
-                            }else{
-                                Toast.makeText(getApplicationContext(),"Email or password are incorrect.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Email or password are incorrect.", Toast.LENGTH_SHORT).show();
                             }
-                        }else {
+                        } else {
                             Toast.makeText(getApplicationContext(), "Email or password are incorrect.", Toast.LENGTH_SHORT).show();
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
@@ -75,7 +76,7 @@ public class CompanyLoginActivity extends AppCompatActivity {
         });
     }
 
-    private void openMenus(String email){
+    private void openMenus(String email) {
         Intent intent = new Intent(this, ListMenusCompany.class);
         intent.putExtra("user", email);
         startActivity(intent);
