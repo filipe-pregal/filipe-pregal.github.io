@@ -82,9 +82,17 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
                 //TODO
                 return true;
             default:
+                /*
+                System.out.println(item.get);
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
+
+                 */
+                Intent i1 = new Intent(this, List_restaurantsActivity.class);
+                i1.putExtra("user", email);
+                startActivity(i1);
+                return true;
         }
     }
 
@@ -168,6 +176,12 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
 
         getMenuTags();
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            email = extras.getString("user");
+            restaurant = extras.getString("restaurant");
+        }
+
         //Adicionado para a toolbar
         Toolbar myToolbar = findViewById(R.id.list_menus_user);
         setSupportActionBar(myToolbar);
@@ -181,12 +195,6 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         mref = FirebaseDatabase.getInstance().getReference();
 
         btn = findViewById(R.id.cartBtn);
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            email = extras.getString("user");
-            restaurant = extras.getString("restaurant");
-        }
 
         listView = findViewById(R.id.listViewMenuUser);
         checkLogin();

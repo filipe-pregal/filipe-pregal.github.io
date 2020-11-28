@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -116,6 +117,12 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_restaurants);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            email = extras.getString("user");
+        }
+
+        System.out.println(email + " aaaaa");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
@@ -123,13 +130,12 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         //Adicionado para a toolbar
         Toolbar myToolbar = findViewById(R.id.toolbar_restaurants);
         setSupportActionBar(myToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mref = FirebaseDatabase.getInstance().getReference();
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            email = extras.getString("user");
-        }
+
 
         listView = findViewById(R.id.listView);
 
@@ -300,6 +306,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
     }
 
     private void checkLogin() {
+        System.out.println(email);
         DatabaseReference user = mref.child("Users").child(email);
         user.addValueEventListener(new ValueEventListener() {
             @Override
