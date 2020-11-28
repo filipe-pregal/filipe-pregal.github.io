@@ -5,7 +5,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.login.ListMenusUser">
+    tools:context=".ui.login.ListMenusUser"
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/list_menus_user"
@@ -17,20 +18,25 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         tools:ignore="MissingConstraints"></androidx.appcompat.widget.Toolbar>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ListView
+        android:id="@+id/listViewMenuUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/list_menus_user">
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        app:layout_constraintBottom_toTopOf="@id/cartBtn"
+        app:layout_constraintTop_toBottomOf="@id/list_menus_user"
+        app:layout_constrainedHeight="true"></ListView>
 
-        <ListView
-            android:id="@+id/listViewMenuUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            ></ListView>
+    <Button
+        android:id="@+id/cartBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Checkout"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="#0a72cb"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@id/container"/>
 
-    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

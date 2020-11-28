@@ -8,7 +8,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         android:layout_width="320dp"
         android:layout_height="180dp"
         android:shadowColor="#000000"

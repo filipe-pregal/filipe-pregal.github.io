@@ -105,6 +105,8 @@ public class ListMenusUser extends AppCompatActivity {
 
         mref = FirebaseDatabase.getInstance().getReference();
 
+        btn = findViewById(R.id.cartBtn);
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             email = extras.getString("user");
@@ -136,6 +138,11 @@ public class ListMenusUser extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             checkLogin();
             redirectExtras(menuKeys.get(position));
+        });
+
+        btn.setOnClickListener(view -> {
+            checkLogin();
+            redirectCart();
         });
     }
 
@@ -182,6 +189,13 @@ public class ListMenusUser extends AppCompatActivity {
         intent.putExtra("user", email);
         intent.putExtra("restaurant", restaurant);
         intent.putExtra("menu", menu);
+        startActivity(intent);
+    }
+
+    private void redirectCart(){
+        Intent intent = new Intent(this, CartUser.class);
+        intent.putExtra("user", email);
+        intent.putExtra("restaurant", restaurant);
         startActivity(intent);
     }
 
@@ -266,19 +280,15 @@ public class ListMenusUser extends AppCompatActivity {
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.row_menu_user, parent, false);
-            //TextView myTitle = row.findViewById(R.id.titleMenu);
             TextView myDish = row.findViewById(R.id.dish);
             TextView myTag = row.findViewById(R.id.tagM);
             TextView myPrice = row.findViewById(R.id.price);
             TextView myTime = row.findViewById(R.id.timeM);
-            //ImageView i = row.findViewById(R.id.imageViewU);
             ImageView img = row.findViewById(R.id.imgM);
 
-            //i.setImageResource(R.drawable.clock_icon);
 
-            //myTitle.setText("Menu: " + mTitle.get(position));
             myDish.setText(mTitle.get(position));
-            myTag.setText(mTags.get(position));
+            myTag.setText("#" + mTags.get(position));
             myPrice.setText(mPrice.get(position).toString().concat("€"));
             myTime.setText(convertTime(mTime.get(position)));
 
