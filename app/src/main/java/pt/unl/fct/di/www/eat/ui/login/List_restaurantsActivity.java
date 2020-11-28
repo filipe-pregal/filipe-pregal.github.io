@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import pt.unl.fct.di.www.eat.R;
 import pt.unl.fct.di.www.eat.data.RestaurantData;
 
-public class List_restaurantsActivity extends AppCompatActivity {
+public class List_restaurantsActivity extends AppCompatActivity implements RestaurantTagsDialog.RestaurantTagsListener {
 
     ListView listView;
     String email;
@@ -51,6 +51,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
     //ArrayList<String> mAddress = new ArrayList<>();
     String[] tags;
     boolean[] selectedTags;
+    ArrayList<String> sTags = new ArrayList<String>();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -65,11 +66,8 @@ public class List_restaurantsActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.action_filter:
-                getRestaurantTags();
-                RestaurantTagsDialog d = new RestaurantTagsDialog(tags, selectedTags);
+                RestaurantTagsDialog d = new RestaurantTagsDialog(tags, selectedTags, sTags);
                 d.show(getSupportFragmentManager(), "Restaurant Tags");
-
-
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -104,6 +102,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getRestaurantTags();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_restaurants);
 
@@ -168,10 +167,38 @@ public class List_restaurantsActivity extends AppCompatActivity {
                     int counter = 0;
                     for (DataSnapshot tag : dataSnapshot.getChildren()) {
                         tags[counter] = tag.getValue(String.class);
+                        sTags.add(tag.getValue(String.class));
                         selectedTags[counter] = true;
                         counter++;
                     }
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void searchFilter(DatabaseReference rest) {
+        listView = findViewById(R.id.listView);
+
+        rest.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                resetData();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        RestaurantData post = child.getValue(RestaurantData.class);
+                        if (sTags.contains(post.getTag())) {
+                            abc.add(post);
+                        }
+                    }
+                }
+                getDataInPlace();
+                MyAdapter adapter = new MyAdapter(getApplicationContext());
+                listView.setAdapter(adapter);
             }
 
             @Override
@@ -280,6 +307,20 @@ public class List_restaurantsActivity extends AppCompatActivity {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+    }
+
+    @Override
+    public void onDialogPositiveClick(RestaurantTagsDialog dialog) {
+        sTags = dialog.sTags;
+        DatabaseReference rest = mref.child("Restaurants");
+        searchFilter(rest);
+    }
+
+    @Override
+    public void onDialogNegativeClick(RestaurantTagsDialog dialog) {
+        sTags = dialog.sTags;
+        DatabaseReference rest = mref.child("Restaurants");
+        searchFilter(rest);
     }
 
     class MyAdapter extends ArrayAdapter<String> {
