@@ -3,11 +3,11 @@ package pt.unl.fct.di.www.eat.data;
 public class UserData {
     String Email, Name, Password, Role, Token;
 
-    public UserData(){
+    public UserData() {
 
     }
 
-    public UserData(String Email, String Name, String Password){
+    public UserData(String Email, String Name, String Password) {
         this.Email = Email;
         this.Name = Name;
         this.Password = Password;

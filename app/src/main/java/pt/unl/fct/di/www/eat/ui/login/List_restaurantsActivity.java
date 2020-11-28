@@ -49,6 +49,8 @@ public class List_restaurantsActivity extends AppCompatActivity {
     ArrayList<String> mTime = new ArrayList<>();
     ArrayList<Bitmap> mImg = new ArrayList<>();
     //ArrayList<String> mAddress = new ArrayList<>();
+    String[] tags;
+    boolean[] selectedTags;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -57,11 +59,16 @@ public class List_restaurantsActivity extends AppCompatActivity {
                 super.onOptionsItemSelected(item);
                 return true;
             case R.id.action_cart:
-
+                Intent intent = new Intent(this, CartUser.class);
+                intent.putExtra("user", email);
+                intent.putExtra("restaurant", "");
+                startActivity(intent);
                 return true;
             case R.id.action_filter:
-                RestaurantTagsDialog d = new RestaurantTagsDialog();
+                getRestaurantTags();
+                RestaurantTagsDialog d = new RestaurantTagsDialog(tags, selectedTags);
                 d.show(getSupportFragmentManager(), "Restaurant Tags");
+
 
                 return true;
             default:
@@ -105,7 +112,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         //Adicionado para a toolbar
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar_restaurants);
+        Toolbar myToolbar = findViewById(R.id.toolbar_restaurants);
         setSupportActionBar(myToolbar);
 
         mref = FirebaseDatabase.getInstance().getReference();
@@ -132,6 +139,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
                 MyAdapter adapter = new MyAdapter(getApplicationContext());
                 listView.setAdapter(adapter);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -148,6 +156,31 @@ public class List_restaurantsActivity extends AppCompatActivity {
         });
     }
 
+    private void getRestaurantTags() {
+        mref = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference rest = mref.child("select_lists").child("restaurant_tags");
+        rest.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    tags = new String[(int) dataSnapshot.getChildrenCount()];
+                    selectedTags = new boolean[(int) dataSnapshot.getChildrenCount()];
+                    int counter = 0;
+                    for (DataSnapshot tag : dataSnapshot.getChildren()) {
+                        tags[counter] = tag.getValue(String.class);
+                        selectedTags[counter] = true;
+                        counter++;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
     private void searchQuery(DatabaseReference rest, String query) {
         listView = findViewById(R.id.listView);
 
@@ -155,15 +188,14 @@ public class List_restaurantsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 resetData();
-                if(dataSnapshot.exists() && !query.isEmpty()) {
+                if (dataSnapshot.exists() && !query.isEmpty()) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         RestaurantData post = child.getValue(RestaurantData.class);
-                        if(post.getName().toLowerCase().contains(query.toLowerCase())) {
+                        if (post.getName().toLowerCase().contains(query.toLowerCase())) {
                             abc.add(post);
                         }
                     }
-                }
-                else if(query.isEmpty()) {
+                } else if (query.isEmpty()) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         RestaurantData post = child.getValue(RestaurantData.class);
                         abc.add(post);
@@ -182,7 +214,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
     }
 
     private void getDataInPlace() {
-        for(int i=0; i< abc.size();i++){
+        for (int i = 0; i < abc.size(); i++) {
             RestaurantData r = (RestaurantData) abc.get(i);
             mTitle.add(r.getName());
             mEmail.add(r.getEmail().replace(".", "_"));
@@ -208,7 +240,7 @@ public class List_restaurantsActivity extends AppCompatActivity {
         }
     }
 
-    private void resetData(){
+    private void resetData() {
         abc.clear();
         mTitle.clear();
         mTime.clear();
@@ -217,31 +249,32 @@ public class List_restaurantsActivity extends AppCompatActivity {
         mImg.clear();
     }
 
-    private void openMenus(String restaurant){
+    private void openMenus(String restaurant) {
         Intent intent = new Intent(this, ListMenusUser.class);
         intent.putExtra("user", email);
         intent.putExtra("restaurant", restaurant);
         startActivity(intent);
     }
 
-    private void redirectLogin(){
+    private void redirectLogin() {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
     }
 
-    private void checkLogin(){
+    private void checkLogin() {
         DatabaseReference user = mref.child("Users").child(email);
         user.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String token = dataSnapshot.child("token").getValue().toString();
-                    if(token.equals("")){
+                    if (token.equals("")) {
                         redirectLogin();
                     }
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -251,16 +284,16 @@ public class List_restaurantsActivity extends AppCompatActivity {
 
     class MyAdapter extends ArrayAdapter<String> {
 
-        MyAdapter(Context c){
+        MyAdapter(Context c) {
 
-            super(c,R.layout.row_restaurant, R.id.emailR, mEmail);
+            super(c, R.layout.row_restaurant, R.id.emailR, mEmail);
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.row_restaurant,parent, false);
+            View row = layoutInflater.inflate(R.layout.row_restaurant, parent, false);
             TextView myTitle = row.findViewById(R.id.titleRestaurant);
             TextView myTag = row.findViewById(R.id.tag);
             TextView myTime = row.findViewById(R.id.time);

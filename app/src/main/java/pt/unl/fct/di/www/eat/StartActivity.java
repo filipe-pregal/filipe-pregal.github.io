@@ -1,14 +1,14 @@
 package pt.unl.fct.di.www.eat;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import pt.unl.fct.di.www.eat.ui.login.CompanyLoginActivity;
-import pt.unl.fct.di.www.eat.ui.login.UserLoginActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import pt.unl.fct.di.www.eat.ui.login.CompanyLoginActivity;
+import pt.unl.fct.di.www.eat.ui.login.UserLoginActivity;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -34,12 +34,12 @@ public class StartActivity extends AppCompatActivity {
         });
     }
 
-    public void openUser(){
+    public void openUser() {
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
     }
 
-    public void openCompany(){
+    public void openCompany() {
         Intent intent = new Intent(this, CompanyLoginActivity.class);
         startActivity(intent);
     }
