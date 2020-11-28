@@ -15,8 +15,7 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        tools:ignore="MissingConstraints">
-    </androidx.appcompat.widget.Toolbar>
+        tools:ignore="MissingConstraints"></androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
