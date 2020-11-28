@@ -1,18 +1,5 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-
-import pt.unl.fct.di.www.eat.R;
-import pt.unl.fct.di.www.eat.data.Cart;
-import pt.unl.fct.di.www.eat.data.Menu;
-import pt.unl.fct.di.www.eat.data.Option;
-import pt.unl.fct.di.www.eat.data.RestaurantData;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,15 +10,17 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,6 +34,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import pt.unl.fct.di.www.eat.R;
+import pt.unl.fct.di.www.eat.data.Menu;
+import pt.unl.fct.di.www.eat.data.RestaurantData;
 
 public class ListMenusUser extends AppCompatActivity {
 
@@ -103,7 +96,7 @@ public class ListMenusUser extends AppCompatActivity {
         setContentView(R.layout.activity_list_menus_user);
 
         //Adicionado para a toolbar
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.list_menus_user);
+        Toolbar myToolbar = findViewById(R.id.list_menus_user);
         setSupportActionBar(myToolbar);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -126,13 +119,14 @@ public class ListMenusUser extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 resetData();
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                     setData(post);
                 }
                 MyAdapter adapter = new MyAdapter(getApplicationContext());
                 listView.setAdapter(adapter);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -145,10 +139,10 @@ public class ListMenusUser extends AppCompatActivity {
         });
     }
 
-    private void setData(RestaurantData r){
-        for (Map.Entry<String, Menu> menus : r.getMenu().entrySet()){
+    private void setData(RestaurantData r) {
+        for (Map.Entry<String, Menu> menus : r.getMenu().entrySet()) {
             Menu menu = menus.getValue();
-            if(menu.getIsAvailable()){
+            if (menu.getIsAvailable()) {
                 mTitle.add(menu.getName());
                 mPrice.add(menu.getPrice());
                 mTime.add(menu.getTime());
@@ -175,7 +169,7 @@ public class ListMenusUser extends AppCompatActivity {
         }
     }
 
-    private void resetData(){
+    private void resetData() {
         mTitle.clear();
         mTags.clear();
         mPrice.clear();
@@ -183,17 +177,95 @@ public class ListMenusUser extends AppCompatActivity {
         mImg.clear();
     }
 
+    private void redirectExtras(String menu) {
+        Intent intent = new Intent(this, ListMenusUserExtra.class);
+        intent.putExtra("user", email);
+        intent.putExtra("restaurant", restaurant);
+        intent.putExtra("menu", menu);
+        startActivity(intent);
+    }
+
+    private String convertTime(double time) {
+        String[] aux = String.valueOf(time).split("\\.");
+        int hours = Integer.parseInt(aux[0]);
+        int minutes = (int) (Double.parseDouble("0." + aux[1]) * 60);
+        if (minutes == 0)
+            return hours + "h";
+        if (hours == 0)
+            return minutes + "m";
+        return hours + "h" + minutes + "m";
+    }
+
+    private void checkLogin() {
+        DatabaseReference user = mref.child("Users").child(email);
+        user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String token = dataSnapshot.child("token").getValue().toString();
+                    if (token.equals("")) {
+                        redirectLogin();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void redirectLogin() {
+        getIntent().removeExtra("user");
+        Intent intent = new Intent(this, UserLoginActivity.class);
+        startActivity(intent);
+    }
+
+    private void searchQuery(DatabaseReference rest, String query) {
+        listView = findViewById(R.id.listViewMenuUser);
+
+        rest.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                resetData();
+                if (dataSnapshot.exists() && !query.isEmpty()) {
+                    for (DataSnapshot menu : dataSnapshot.child("menu").getChildren()) {
+                        if (menu.getKey().toLowerCase().contains(query.toLowerCase())) {
+                            RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
+                            Menu menuSelected = menu.getValue(Menu.class);
+                            Map<String, Menu> postMenu = new HashMap<String, Menu>();
+                            postMenu.put(menuSelected.getName(), menuSelected);
+                            post.setMenu(postMenu);
+                            setData(post);
+                        }
+                    }
+                } else if (query.isEmpty()) {
+                    RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
+                    setData(post);
+                }
+                MyAdapter adapter = new MyAdapter(getApplicationContext());
+                listView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
     class MyAdapter extends ArrayAdapter<String> {
 
-        MyAdapter(Context c){
-            super(c,R.layout.row_menu_user, R.id.titleMenu, mTitle);
+        MyAdapter(Context c) {
+            super(c, R.layout.row_menu_user, R.id.titleMenu, mTitle);
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.row_menu_user,parent, false);
+            View row = layoutInflater.inflate(R.layout.row_menu_user, parent, false);
             TextView myTitle = row.findViewById(R.id.titleMenu);
             TextView myDish = row.findViewById(R.id.dish);
             TextView myTag = row.findViewById(R.id.tagM);
@@ -213,83 +285,5 @@ public class ListMenusUser extends AppCompatActivity {
             img.setImageBitmap(mImg.get(position));
             return row;
         }
-    }
-
-    private void redirectExtras(String menu){
-        Intent intent = new Intent(this, ListMenusUserExtra.class);
-        intent.putExtra("user", email);
-        intent.putExtra("restaurant", restaurant);
-        intent.putExtra("menu", menu);
-        startActivity(intent);
-    }
-
-    private String convertTime(double time){
-        String[] aux = String.valueOf(time).split("\\.");
-        int hours =  Integer.parseInt(aux[0]);
-        int minutes = (int) (Double.parseDouble("0." + aux[1]) *60);
-        if(minutes == 0)
-            return hours + "h";
-        if(hours == 0)
-            return minutes + "m";
-        return hours + "h" + minutes + "m";
-    }
-
-    private void checkLogin(){
-        DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String token = dataSnapshot.child("token").getValue().toString();
-                    if(token.equals("")){
-                        redirectLogin();
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-    }
-
-    private void redirectLogin(){
-        getIntent().removeExtra("user");
-        Intent intent = new Intent(this, UserLoginActivity.class);
-        startActivity(intent);
-    }
-
-    private void searchQuery(DatabaseReference rest, String query) {
-        listView = findViewById(R.id.listViewMenuUser);
-
-        rest.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                resetData();
-                if(dataSnapshot.exists() && !query.isEmpty()) {
-                    for (DataSnapshot menu : dataSnapshot.child("menu").getChildren()) {
-                        if(menu.getKey().toLowerCase().contains(query.toLowerCase())) {
-                            RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
-                            Menu menuSelected = menu.getValue(Menu.class);
-                            Map<String, Menu> postMenu = new HashMap<String, Menu>();
-                            postMenu.put(menuSelected.getName(), menuSelected);
-                            post.setMenu(postMenu);
-                            setData(post);
-                        }
-                    }
-                }
-                else if(query.isEmpty()) {
-                    RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
-                    setData(post);
-                }
-                MyAdapter adapter = new MyAdapter(getApplicationContext());
-                listView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
     }
 }

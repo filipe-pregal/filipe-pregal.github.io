@@ -1,9 +1,5 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -67,7 +66,7 @@ public class CartUser extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 checkLogin();
                 resetData();
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Cart cart = child.getValue(Cart.class);
                         setData(child.getKey(), cart);
@@ -76,6 +75,7 @@ public class CartUser extends AppCompatActivity {
                 MyAdapter adapter = new MyAdapter(getApplicationContext());
                 listView.setAdapter(adapter);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -93,17 +93,82 @@ public class CartUser extends AppCompatActivity {
         });
     }
 
+    private void setData(String key, Cart cart) {
+        cartKey.add(key);
+        mTitle.add(cart.getName());
+        mDrink.add(cart.getDrink());
+        mDessert.add(cart.getDessert());
+        mPrice.add(cart.getPrice());
+        Double t = cart.getTime();
+        if (t > time)
+            time = t;
+    }
+
+    private void resetData() {
+        time = 0.0;
+        mTitle.clear();
+        mDrink.clear();
+        mDessert.clear();
+        mPrice.clear();
+        cartKey.clear();
+    }
+
+    private void openMenus() {
+        Intent intent = new Intent(this, ListMenusUser.class);
+        intent.putExtra("user", email);
+        intent.putExtra("restaurant", restaurant);
+        startActivity(intent);
+    }
+
+    private void openCheckout() {
+        //Intent intent = new Intent(this, Checkout.class);
+        Double price = 0.0;
+        for (Double i : mPrice)
+            price += i;
+        //intent.putExtra("user", email);
+        //intent.putExtra("restaurant", restaurant);
+        //intent.putExtra("time", time);
+        //intent.putExtra("price", price);
+        //startActivity(intent);
+    }
+
+    private void checkLogin() {
+        DatabaseReference user = mref.child("Users").child(email);
+        user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String token = dataSnapshot.child("token").getValue().toString();
+                    if (token.equals("")) {
+                        redirectLogin();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void redirectLogin() {
+        getIntent().removeExtra("user");
+        Intent intent = new Intent(this, UserLoginActivity.class);
+        startActivity(intent);
+    }
+
     class MyAdapter extends ArrayAdapter<String> {
 
-        MyAdapter(Context c){
-            super(c,R.layout.row_cart, R.id.menuTitle, mTitle);
+        MyAdapter(Context c) {
+            super(c, R.layout.row_cart, R.id.menuTitle, mTitle);
         }
 
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.row_cart,parent, false);
+            View row = layoutInflater.inflate(R.layout.row_cart, parent, false);
 
             TextView myTitle = row.findViewById(R.id.menuTitle);
             TextView myDrink = row.findViewById(R.id.menuDrink);
@@ -118,10 +183,11 @@ public class CartUser extends AppCompatActivity {
                 cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
+                        if (dataSnapshot.exists()) {
                             cartRef.removeValue();
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
@@ -129,12 +195,12 @@ public class CartUser extends AppCompatActivity {
             });
 
             String drink = mDrink.get(position);
-            if(drink.equals("")){
+            if (drink.equals("")) {
                 myDrink.setVisibility(View.GONE);
             }
 
             String dessert = mDessert.get(position);
-            if(dessert.equals("")){
+            if (dessert.equals("")) {
                 myDessert.setVisibility(View.GONE);
             }
 
@@ -145,69 +211,5 @@ public class CartUser extends AppCompatActivity {
 
             return row;
         }
-    }
-
-    private void setData(String key, Cart cart){
-        cartKey.add(key);
-        mTitle.add(cart.getName());
-        mDrink.add(cart.getDrink());
-        mDessert.add(cart.getDessert());
-        mPrice.add(cart.getPrice());
-        Double t = cart.getTime();
-        if(t > time)
-            time = t;
-    }
-
-    private void resetData(){
-        time = 0.0;
-        mTitle.clear();
-        mDrink.clear();
-        mDessert.clear();
-        mPrice.clear();
-        cartKey.clear();
-    }
-
-    private void openMenus(){
-        Intent intent = new Intent(this, ListMenusUser.class);
-        intent.putExtra("user", email);
-        intent.putExtra("restaurant", restaurant);
-        startActivity(intent);
-    }
-
-    private void openCheckout(){
-        //Intent intent = new Intent(this, Checkout.class);
-        Double price = 0.0;
-        for (Double i : mPrice)
-            price+= i;
-        //intent.putExtra("user", email);
-        //intent.putExtra("restaurant", restaurant);
-        //intent.putExtra("time", time);
-        //intent.putExtra("price", price);
-        //startActivity(intent);
-    }
-
-    private void checkLogin(){
-        DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String token = dataSnapshot.child("token").getValue().toString();
-                    if(token.equals("")){
-                        redirectLogin();
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-    }
-
-    private void redirectLogin(){
-        getIntent().removeExtra("user");
-        Intent intent = new Intent(this, UserLoginActivity.class);
-        startActivity(intent);
     }
 }

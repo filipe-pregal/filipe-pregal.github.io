@@ -1,7 +1,5 @@
 package pt.unl.fct.di.www.eat.data;
 
-import android.graphics.Path;
-
 import java.util.Map;
 
 public class RestaurantData {
@@ -9,13 +7,13 @@ public class RestaurantData {
     Map<String, Option> desserts;
     Map<String, Option> drinks;
     Map<String, Menu> menu;
-    String address, name, tag, email, time,image_url;
+    String address, name, tag, email, time, image_url;
 
-    public RestaurantData(){
+    public RestaurantData() {
 
     }
 
-    public RestaurantData(Map<String, Option> desserts, String address, Map<String, Option> drinks, String name, String tag, Map<String, Menu> menu, String email, String time, String image_url){
+    public RestaurantData(Map<String, Option> desserts, String address, Map<String, Option> drinks, String name, String tag, Map<String, Menu> menu, String email, String time, String image_url) {
         this.desserts = desserts;
         this.address = address;
         this.drinks = drinks;
