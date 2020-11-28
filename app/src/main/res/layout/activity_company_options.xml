@@ -58,7 +58,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listViewDrinks"
-        android:isScrollContainer="true">
+        android:isScrollContainer="true"
+        android:divider="@null"
+        android:dividerHeight="0dp">
     </ListView>
 
     <Button
@@ -88,7 +90,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/listViewDesserts"
         android:isScrollContainer="true"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:divider="@null"
+        android:dividerHeight="0dp">
     </ListView>
 
     <Button

@@ -26,7 +26,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/listViewDrinksUser"
         android:isScrollContainer="true"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:divider="@null"
+        android:dividerHeight="0dp">
     </ListView>
 
     <TextView
@@ -46,7 +48,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/listViewDessertsUser"
         android:isScrollContainer="true"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="15dp"
+        android:divider="@null"
+        android:dividerHeight="0dp">
     </ListView>
 
     <Button

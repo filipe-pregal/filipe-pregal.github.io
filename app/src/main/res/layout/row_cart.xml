@@ -1,10 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingLeft="10dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
     tools:context=".ui.login.CartUser">
 
     <LinearLayout
@@ -60,11 +62,12 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:backgroundTint="#00FFFFFF"
-        android:layout_gravity="center"
         android:scaleType="fitXY"
-        android:layout_marginLeft="150dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="30dp"
         app:srcCompat="@drawable/remove" />
 
 
-</LinearLayout>
+</RelativeLayout>
 

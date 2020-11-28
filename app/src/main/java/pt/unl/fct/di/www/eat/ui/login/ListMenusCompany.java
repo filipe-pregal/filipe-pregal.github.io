@@ -476,7 +476,7 @@ public class ListMenusCompany extends AppCompatActivity {
         String aux;
 
         MyAdapterExtra(Context c, DatabaseReference d, ArrayList<String> type, ArrayList<Boolean> availability, String aux) {
-            super(c, R.layout.row_edit_extra, R.id.extra, type);
+            super(c, R.layout.row_edit_extra, R.id.switch1, type);
             this.r = d;
             this.rType = type;
             this.rAvailability = availability;
@@ -489,7 +489,6 @@ public class ListMenusCompany extends AppCompatActivity {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.row_edit_extra, parent, false);
 
-            //TextView myD = row.findViewById(R.id.extra);
             Switch myS = row.findViewById(R.id.switch1);
 
             myS.setText(rType.get(position));
