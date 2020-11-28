@@ -122,7 +122,6 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             email = extras.getString("user");
         }
 
-        System.out.println(email + " aaaaa");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
@@ -306,7 +305,6 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
     }
 
     private void checkLogin() {
-        System.out.println(email);
         DatabaseReference user = mref.child("Users").child(email);
         user.addValueEventListener(new ValueEventListener() {
             @Override

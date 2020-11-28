@@ -1,5 +1,6 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -81,18 +82,15 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
             case R.id.action_settings:
                 //TODO
                 return true;
-            default:
-                /*
-                System.out.println(item.get);
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-                 */
+            case android.R.id.home:
                 Intent i1 = new Intent(this, List_restaurantsActivity.class);
                 i1.putExtra("user", email);
                 startActivity(i1);
                 return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
         }
     }
 
