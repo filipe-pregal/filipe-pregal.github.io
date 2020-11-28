@@ -1,43 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".ui.login.ListMenusUser"
-    >
+    tools:context=".ui.login.ListMenusUser">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/seeRequests"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Requests"
-        android:layout_marginLeft="20dp"
-        android:layout_centerHorizontal="true"/>
+        <Button
+            android:id="@+id/seeRequests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:text="Requests" />
 
-    <Button
-        android:id="@+id/editMenus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit Menus"
-        android:layout_marginLeft="20dp"
-        android:layout_centerHorizontal="true"/>
+        <Button
+            android:id="@+id/editMenus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:text="Edit Menus" />
 
         <Button
             android:id="@+id/editExtras"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Extras"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="20dp"
-            android:layout_centerHorizontal="true"/>
+            android:text="Edit Extras" />
 
     </LinearLayout>
 
@@ -47,27 +44,26 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="Drinks"
+        android:textAlignment="center"
         android:textColor="#000"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:textAlignment="center"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ListView
+        android:id="@+id/listViewDrinks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listViewDrinks"
-        android:isScrollContainer="true">
-    </ListView>
+        android:isScrollContainer="true"></ListView>
 
     <Button
         android:id="@+id/editDrinks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="Save Drinks "
         android:enabled="true"
-        android:visibility="gone"/>
+        android:text="Save Drinks "
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/seeDesserts"
@@ -75,27 +71,26 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="150dp"
         android:text="Desserts"
+        android:textAlignment="center"
         android:textColor="#000"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:textAlignment="center"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ListView
+        android:id="@+id/listViewDesserts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listViewDesserts"
         android:isScrollContainer="true"
-        android:visibility="gone">
-    </ListView>
+        android:visibility="gone"></ListView>
 
     <Button
         android:id="@+id/editDesserts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="Save Desserts"
         android:enabled="true"
-        android:visibility="gone"/>
+        android:text="Save Desserts"
+        android:visibility="gone" />
 
 </LinearLayout>

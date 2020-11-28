@@ -9,12 +9,12 @@ public class Menu {
     Double time;
     String image_url;
 
-    public Menu(){
+    public Menu() {
 
     }
 
-    public Menu(boolean isAvailable, Double price, String name, String tag, Double time, String image_url){
-        this.isAvailable=isAvailable;
+    public Menu(boolean isAvailable, Double price, String name, String tag, Double time, String image_url) {
+        this.isAvailable = isAvailable;
         this.price = price;
         this.name = name;
         this.tag = tag;
@@ -71,7 +71,7 @@ public class Menu {
     }
 
     @Override
-    public String toString(){
-        return "isAvailable: " + isAvailable + " price: " + price +  " name: " + name + " tag: " + tag + " time: " + time;
+    public String toString() {
+        return "isAvailable: " + isAvailable + " price: " + price + " name: " + name + " tag: " + tag + " time: " + time;
     }
 }

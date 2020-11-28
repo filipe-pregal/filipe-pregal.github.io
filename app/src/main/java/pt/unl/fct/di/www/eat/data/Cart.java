@@ -5,11 +5,11 @@ public class Cart {
     String name, drink, dessert;
     Double price, time;
 
-    public Cart(){
+    public Cart() {
 
     }
 
-    public Cart(String name, String drink, String dessert, Double price, Double time){
+    public Cart(String name, String drink, String dessert, Double price, Double time) {
         this.name = name;
         this.drink = drink;
         this.dessert = dessert;
@@ -58,7 +58,7 @@ public class Cart {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "name: " + name + " drink: " + drink + " dessert: " + dessert + " price: " + price + " time: " + time;
     }
 }

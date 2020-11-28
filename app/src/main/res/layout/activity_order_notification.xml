@@ -53,8 +53,8 @@
                 android:id="@+id/centeredDiv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_below="@id/bodyTitle"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="55dp">
 
                 <ImageView
@@ -71,29 +71,30 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="30dp"
                     android:layout_toRightOf="@id/clock_icon"
-                    android:textSize="24sp"
-                    android:text="15min" />
+                    android:text="15min"
+                    android:textSize="24sp" />
             </RelativeLayout>
 
             <TextView
                 android:id="@+id/mapsTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="Open on Maps"
                 android:layout_above="@id/maps_url"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="20dp"
+                android:text="Open on Maps"
                 android:textSize="24sp">
 
             </TextView>
+
             <ImageButton
                 android:id="@+id/maps_url"
-                android:background="@drawable/maps_icon"
                 android:layout_width="60dp"
-                android:layout_centerHorizontal="true"
                 android:layout_height="60dp"
                 android:layout_above="@id/labelCode"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="50dp"
+                android:background="@drawable/maps_icon"
                 android:text="Route"
                 android:textSize="26sp"></ImageButton>
 
@@ -101,20 +102,20 @@
                 android:id="@+id/labelCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="20sp"
                 android:layout_above="@id/orderCode"
-                android:text="Your code:" />
+                android:gravity="center"
+                android:text="Your code:"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/orderCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:textColor="#212121"
                 android:gravity="center"
-                android:textSize="28sp"
-                android:text="C4UT5" />
+                android:text="C4UT5"
+                android:textColor="#212121"
+                android:textSize="28sp" />
 
         </RelativeLayout>
 

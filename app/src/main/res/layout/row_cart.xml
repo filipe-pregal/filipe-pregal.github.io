@@ -10,59 +10,54 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-
-    <TextView
-        android:id="@+id/menuTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="Menu title"
-        android:textColor="#000"
-        android:textSize="18dp"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/menuDrink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="Menu drink"
-        android:textColor="#000"
-        android:textSize="18dp"
-        />
+        android:orientation="vertical">
 
         <TextView
-        android:id="@+id/menuDessert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="Menu dessert"
-        android:textColor="#000"
-        android:textSize="18dp"
-        />
+            android:id="@+id/menuTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Menu title"
+            android:textColor="#000"
+            android:textSize="18dp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/menuPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="Menu price"
-        android:textColor="#000"
-        android:textSize="18dp"
-        />
+        <TextView
+            android:id="@+id/menuDrink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Menu drink"
+            android:textColor="#000"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/menuDessert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Menu dessert"
+            android:textColor="#000"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/menuPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Menu price"
+            android:textColor="#000"
+            android:textSize="18dp" />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/remove"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:srcCompat="@drawable/remove"
-        android:scaleType="fitXY"
+        android:layout_marginLeft="30dp"
         android:layout_marginTop="30dp"
-        android:layout_marginLeft="30dp"/>
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/remove" />
 
 
 </LinearLayout>

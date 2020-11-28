@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.login.ListMenusUserExtra"
-    >
+    tools:context=".ui.login.ListMenusUserExtra">
 
     <TextView
         android:id="@+id/seeDrinksUser"
@@ -14,18 +12,16 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="Drinks"
+        android:textAlignment="center"
         android:textColor="#000"
         android:textSize="20dp"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        />
+        android:textStyle="bold" />
 
     <ListView
+        android:id="@+id/listViewDrinksUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listViewDrinksUser"
-        android:isScrollContainer="true">
-    </ListView>
+        android:isScrollContainer="true"></ListView>
 
     <TextView
         android:id="@+id/seeDessertsUser"
@@ -33,19 +29,17 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="140dp"
         android:text="Desserts"
+        android:textAlignment="center"
         android:textColor="#000"
         android:textSize="20dp"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        />
+        android:textStyle="bold" />
 
     <ListView
+        android:id="@+id/listViewDessertsUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listViewDessertsUser"
-        android:isScrollContainer="true"
-        android:layout_marginTop="15dp">
-    </ListView>
+        android:layout_marginTop="15dp"
+        android:isScrollContainer="true"></ListView>
 
     <Button
         android:id="@+id/addToCart"
@@ -53,8 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="30dp"
-        android:text="Add to Cart"
         android:enabled="true"
-        />
+        android:text="Add to Cart" />
 
 </LinearLayout>

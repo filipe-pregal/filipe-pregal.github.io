@@ -15,21 +15,19 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        tools:ignore="MissingConstraints">
-    </androidx.appcompat.widget.Toolbar>
+        tools:ignore="MissingConstraints"></androidx.appcompat.widget.Toolbar>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        app:layout_constraintTop_toBottomOf="@+id/list_menus_user"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/list_menus_user">
 
         <ListView
+            android:id="@+id/listViewMenuUser"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/listViewMenuUser">
-        </ListView>
+            android:layout_height="wrap_content"></ListView>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

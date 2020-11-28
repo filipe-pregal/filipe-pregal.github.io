@@ -5,11 +5,11 @@ public class Option {
     String name;
     boolean isAvailable;
 
-    public Option(){
+    public Option() {
 
     }
 
-    public Option(boolean isAvailable, String name){
+    public Option(boolean isAvailable, String name) {
         this.isAvailable = isAvailable;
         this.name = name;
     }
