@@ -71,6 +71,8 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 d.show(getSupportFragmentManager(), "Restaurant Tags");
                 return true;
             case R.id.action_logout:
+                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
+                user.setValue("");
                 Intent it = new Intent(this, StartActivity.class);
                 startActivity(it);
                 return true;
