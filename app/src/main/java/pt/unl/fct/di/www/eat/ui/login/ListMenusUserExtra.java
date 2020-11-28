@@ -213,10 +213,11 @@ public class ListMenusUserExtra extends AppCompatActivity {
             TextView myD = row.findViewById(R.id.extraU);
             CheckBox c = row.findViewById(R.id.checkBox);
 
-            myD.setText(rType.get(position));
+            c.setText(rType.get(position));
 
-            if (type.equals("drinks"))
+            if (type.equals("drinks")) {
                 c.setChecked(checkDrinks.get(position));
+            }
             if (type.equals("desserts"))
                 c.setChecked(checkDesserts.get(position));
 

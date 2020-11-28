@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.login.ListMenusUserExtra">
+    android:padding="16dp"
+    tools:context=".ui.login.ListMenusUserExtra"
+    >
 
     <TextView
         android:id="@+id/seeDrinksUser"
@@ -12,42 +15,48 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="Drinks"
-        android:textAlignment="center"
         android:textColor="#000"
         android:textSize="20dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textAlignment="center"
+        />
 
     <ListView
-        android:id="@+id/listViewDrinksUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:isScrollContainer="true"></ListView>
+        android:id="@+id/listViewDrinksUser"
+        android:isScrollContainer="true"
+        android:layout_marginBottom="16dp">
+    </ListView>
 
     <TextView
         android:id="@+id/seeDessertsUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="140dp"
+        android:layout_marginLeft="145dp"
         android:text="Desserts"
-        android:textAlignment="center"
         android:textColor="#000"
         android:textSize="20dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textAlignment="center"
+        />
 
     <ListView
-        android:id="@+id/listViewDessertsUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:isScrollContainer="true"></ListView>
+        android:id="@+id/listViewDessertsUser"
+        android:isScrollContainer="true"
+        android:layout_marginTop="15dp">
+    </ListView>
 
     <Button
         android:id="@+id/addToCart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="30dp"
+        android:layout_gravity="right"
+        android:layout_marginRight="35dp"
+        android:text="Add to Cart"
         android:enabled="true"
-        android:text="Add to Cart" />
+        />
 
 </LinearLayout>
