@@ -64,6 +64,10 @@
         <activity
             android:name=".StartActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".ui.login.OrderNotificationActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
+        </activity>
     </application>
 
 </manifest>
