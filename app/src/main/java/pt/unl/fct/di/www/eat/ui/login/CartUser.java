@@ -3,6 +3,7 @@ package pt.unl.fct.di.www.eat.ui.login;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -94,7 +95,6 @@ public class CartUser extends AppCompatActivity {
         listView = findViewById(R.id.listViewCart);
         checkLogin();
 
-       // btnMenu = findViewById(R.id.backMenus);
         btnPayment = findViewById(R.id.payment);
 
         DatabaseReference cartRef = mref.child("Carts").child(restaurant).child(email);
@@ -118,8 +118,6 @@ public class CartUser extends AppCompatActivity {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-
-
 
         btnPayment.setOnClickListener(view -> {
             checkLogin();
@@ -242,8 +240,8 @@ public class CartUser extends AppCompatActivity {
             }
 
             myTitle.setText(mTitle.get(position));
-            myDrink.setText(drink);
-            myDessert.setText(dessert);
+            myDrink.setText(Html.fromHtml("<b>Drink</b> " + drink));
+            myDessert.setText(Html.fromHtml("<b>Dessert</b> " + dessert));
             myPrice.setText(mPrice.get(position).toString().concat("€"));
 
             return row;
