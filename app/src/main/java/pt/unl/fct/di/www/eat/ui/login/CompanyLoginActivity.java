@@ -31,6 +31,7 @@ public class CompanyLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company_login);
 
+
         email = findViewById(R.id.usernameCompany);
         pwd = findViewById(R.id.passwordCompany);
         loginBtn = findViewById(R.id.loginCompany);
@@ -53,7 +54,7 @@ public class CompanyLoginActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(email.getError() == null)
-                    loginBtn.setClickable(true);
+                    loginBtn.setEnabled(true);
             }
         });
 

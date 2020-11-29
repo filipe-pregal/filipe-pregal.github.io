@@ -75,6 +75,7 @@ public class ListMenusCompany extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.app_bar_search:
+
                 super.onOptionsItemSelected(item);
                 return true;
             case R.id.action_logout:
@@ -84,13 +85,13 @@ public class ListMenusCompany extends AppCompatActivity {
                 startActivity(it);
                 return true;
             case R.id.action_settings:
-                //TODO
+                Intent i2 = new Intent(this, Settings_page.class);
+                i2.putExtra("user", email);
+                startActivity(i2);
                 return true;
-            /*case android.R.id.home:
-                Intent i1 = new Intent(this, List_restaurantsActivity.class);
-                i1.putExtra("user", email);
-                startActivity(i1);
-                return true;*/
+            case android.R.id.home:
+               finish();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -136,8 +137,8 @@ public class ListMenusCompany extends AppCompatActivity {
         mref = FirebaseDatabase.getInstance().getReference();
         checkLogin();
 
-        btnRequest = findViewById(R.id.seeRequests);
         listView1 = findViewById(R.id.listViewDrinks);
+        btnRequest = findViewById(R.id.seeRequests);
         listView2 = findViewById(R.id.listViewDesserts);
         sDrinks = findViewById(R.id.seeDrinks);
         sDesserts = findViewById(R.id.seeDesserts);
@@ -274,13 +275,13 @@ public class ListMenusCompany extends AppCompatActivity {
     }
 
     private void searchQuery(DatabaseReference rest, String query) {
-        listView1 = findViewById(R.id.listViewMenuUser);
+        listView1 = findViewById(R.id.listViewDrinks);
 
         rest.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 resetDataMenu();
-                resetDataExtra();
+               // resetDataExtra();
                 if (dataSnapshot.exists() && !query.isEmpty()) {
                     for (DataSnapshot menu : dataSnapshot.child("menu").getChildren()) {
                         if (menu.getKey().toLowerCase().contains(query.toLowerCase())) {
@@ -290,13 +291,13 @@ public class ListMenusCompany extends AppCompatActivity {
                             postMenu.put(menuSelected.getName(), menuSelected);
                             post.setMenu(postMenu);
                             setDataMenu(post);
-                            setDataExtra(post);
+                           // setDataExtra(post);
                         }
                     }
                 } else if (query.isEmpty()) {
                     RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                     setDataMenu(post);
-                    setDataExtra(post);
+                  //  setDataExtra(post);
                 }
                 MyAdapterRequest adapterR = new MyAdapterRequest(getApplicationContext());
                 listView1.setAdapter(adapterR);
