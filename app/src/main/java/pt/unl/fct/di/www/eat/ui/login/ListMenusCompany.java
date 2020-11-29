@@ -143,36 +143,12 @@ public class ListMenusCompany extends AppCompatActivity {
         sDrinks = findViewById(R.id.seeDrinks);
         sDesserts = findViewById(R.id.seeDesserts);
 
-        DatabaseReference requestRef = mref.child("Requests").child(email);
-        requestRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                checkLogin();
-                resetDataRequest();
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Iterator<DataSnapshot> it = child.getChildren().iterator();
-                        while (it.hasNext()){
-                            DataSnapshot data = it.next();
-                            Request request = data.getValue(Request.class);
-                            setDataRequest(request, data.getKey());
-                        }
-                    }
-                }
-                MyAdapterRequest adapterR1 = new MyAdapterRequest(getApplicationContext());
-                listView1.setAdapter(adapterR1);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
+        requests();
 
         btnRequest.setOnClickListener(view -> {
             checkLogin();
             setVisibility(8);
-            MyAdapterRequest adapterR1 = new MyAdapterRequest(getApplicationContext());
-            listView1.setAdapter(adapterR1);
+            requests();
         });
 
         btnMenu = findViewById(R.id.editMenus);
@@ -271,6 +247,33 @@ public class ListMenusCompany extends AppCompatActivity {
                     System.out.println("The read failed: " + databaseError.getCode());
                 }
             });
+        });
+    }
+
+    private void requests(){
+        DatabaseReference requestRef = mref.child("Requests").child(email);
+        requestRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                checkLogin();
+                resetDataRequest();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Iterator<DataSnapshot> it = child.getChildren().iterator();
+                        while (it.hasNext()){
+                            DataSnapshot data = it.next();
+                            Request request = data.getValue(Request.class);
+                            setDataRequest(request, data.getKey());
+                        }
+                    }
+                }
+                MyAdapterRequest adapterR1 = new MyAdapterRequest(getApplicationContext());
+                listView1.setAdapter(adapterR1);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
         });
     }
 
