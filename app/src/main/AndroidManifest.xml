@@ -11,14 +11,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.login.Settings_page"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity android:name=".ui.login.RequestUser"
-            android:parentActivityName=".ui.login.List_restaurantsActivity"></activity>
-        <activity android:name=".ui.login.PickTableActivity" />
-        <activity android:name=".ui.login.EatOptionsActivity" />
-        <activity android:name=".ui.login.PaymentActivity" />
+            android:parentActivityName=".ui.login.List_restaurantsActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+        <activity android:name=".ui.login.PickTableActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+        <activity android:name=".ui.login.EatOptionsActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+        <activity android:name=".ui.login.PaymentActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity
             android:name=".ui.login.CartUser"
-            android:label="Cart page"
+            android:label="Your order"
             android:parentActivityName=".ui.login.ListMenusUser"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
@@ -42,12 +48,12 @@
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".ui.login.ListMenusUser"
-            android:label="List of Menus"
+            android:label="Choose your meal"
             android:parentActivityName=".ui.login.List_restaurantsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.login.List_restaurantsActivity"
-            android:label="Restaurant List"
+            android:label="Restaurants"
             android:parentActivityName=".ui.login.UserLoginActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity

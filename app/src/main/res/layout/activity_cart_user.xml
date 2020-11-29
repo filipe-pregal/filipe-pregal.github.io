@@ -1,50 +1,32 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".ui.login.CartUser">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/backMenus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="65dp"
-            android:enabled="true"
-            android:text="Menus" />
-
-        <Button
-            android:id="@+id/payment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="115dp"
-            android:enabled="true"
-            android:text="Payment" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/titleMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="Menus in your cart"
-        android:textAlignment="center"
-        android:textColor="#000"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+    tools:context=".ui.login.CartUser"
+    android:id="@+id/container">
 
     <ListView
         android:id="@+id/listViewCart"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/container"
+        app:layout_constraintBottom_toTopOf="@id/payment"
         android:divider="@null"
         android:dividerHeight="0dp"
-        android:isScrollContainer="true"></ListView>
+        android:isScrollContainer="true"
+        app:layout_constrainedHeight="true"></ListView>
+        <Button
+            android:id="@+id/payment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@color/colorMainButton"
+            android:textColor="@color/colorWhite"
+            android:enabled="true"
+            android:text="Proceed to Payment"
+            app:layout_constraintBottom_toBottomOf="@id/container"/>
 
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

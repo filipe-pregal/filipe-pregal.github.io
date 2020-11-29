@@ -10,7 +10,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,12 +42,14 @@ public class OrderNotificationActivity extends AppCompatActivity {
                 startActivity(it);
                 return true;
             case R.id.action_settings:
-                //TODO
+                Intent i2 = new Intent(this, Settings_page.class);
+                i2.putExtra("user", email);
+                i2.putExtra("restaurant", restaurant);
+                startActivity(i2);
                 return true;
             case android.R.id.home:
-                Intent i1 = new Intent(this, ListMenusUser.class);
+                Intent i1 = new Intent(this, List_restaurantsActivity.class);
                 i1.putExtra("user", email);
-                i1.putExtra("restaurant", restaurant);
                 startActivity(i1);
                 return true;
             default:
@@ -64,6 +68,9 @@ public class OrderNotificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_notification);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         ImageButton maps = findViewById(R.id.maps_url);
         Bundle extras = getIntent().getExtras();
