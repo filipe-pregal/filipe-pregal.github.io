@@ -1,0 +1,93 @@
+package pt.unl.fct.di.www.eat.ui.login;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+
+import pt.unl.fct.di.www.eat.R;
+
+public class PaymentActivity extends AppCompatActivity {
+
+    Button localBtn, optionsBtn;
+    String email, restaurant, payment;
+    Double time, price;
+    DatabaseReference mref;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_payment);
+
+        mref = FirebaseDatabase.getInstance().getReference();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            email = extras.getString("user");
+            restaurant = extras.getString("restaurant");
+            time = extras.getDouble("time");
+            price = extras.getDouble("price");
+        }
+
+        checkLogin();
+
+        localBtn = findViewById(R.id.local);
+        optionsBtn = findViewById(R.id.options);
+
+        localBtn.setOnClickListener(view -> {
+            payment = "Cash";
+            openEat();
+        });
+
+        optionsBtn.setOnClickListener(view -> {
+            payment =  "Paid";
+            openEat();
+        });
+
+    }
+
+    private void openEat(){
+        Intent intent = new Intent(this, EatOptionsActivity.class);
+        intent.putExtra("user", email);
+        intent.putExtra("restaurant", restaurant);
+        intent.putExtra("time", time);
+        intent.putExtra("price", price);
+        intent.putExtra("payment", payment);
+        startActivity(intent);
+    }
+
+    private void checkLogin() {
+        DatabaseReference user = mref.child("Users").child(email);
+        user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String token = dataSnapshot.child("token").getValue().toString();
+                    if (token.equals("")) {
+                        redirectLogin();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void redirectLogin() {
+        getIntent().removeExtra("user");
+        Intent intent = new Intent(this, UserLoginActivity.class);
+        startActivity(intent);
+    }
+}

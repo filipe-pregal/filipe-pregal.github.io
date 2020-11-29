@@ -19,12 +19,12 @@
             android:text="Menus" />
 
         <Button
-            android:id="@+id/checkout"
+            android:id="@+id/payment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="115dp"
             android:enabled="true"
-            android:text="Checkout" />
+            android:text="Payment" />
 
     </LinearLayout>
 

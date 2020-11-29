@@ -31,7 +31,7 @@ import pt.unl.fct.di.www.eat.data.Cart;
 
 public class CartUser extends AppCompatActivity {
 
-    Button btnMenu, btnCheckout;
+    Button btnMenu, btnPayment;
     ListView listView;
     String email, restaurant;
     DatabaseReference mref;
@@ -90,9 +90,9 @@ public class CartUser extends AppCompatActivity {
         checkLogin();
 
         btnMenu = findViewById(R.id.backMenus);
-        btnCheckout = findViewById(R.id.checkout);
+        btnPayment = findViewById(R.id.payment);
 
-        DatabaseReference cartRef = mref.child("Carts").child(email);
+        DatabaseReference cartRef = mref.child("Carts").child(restaurant).child(email);
         cartRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -119,9 +119,9 @@ public class CartUser extends AppCompatActivity {
             openMenus();
         });
 
-        btnCheckout.setOnClickListener(view -> {
+        btnPayment.setOnClickListener(view -> {
             checkLogin();
-            openCheckout();
+            openPayment();
         });
     }
 
@@ -152,16 +152,16 @@ public class CartUser extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void openCheckout() {
-        //Intent intent = new Intent(this, Checkout.class);
+    private void openPayment() {
+        Intent intent = new Intent(this, PaymentActivity.class);
         Double price = 0.0;
         for (Double i : mPrice)
             price += i;
-        //intent.putExtra("user", email);
-        //intent.putExtra("restaurant", restaurant);
-        //intent.putExtra("time", time);
-        //intent.putExtra("price", price);
-        //startActivity(intent);
+        intent.putExtra("user", email);
+        intent.putExtra("restaurant", restaurant);
+        intent.putExtra("time", time);
+        intent.putExtra("price", price);
+        startActivity(intent);
     }
 
     private void checkLogin() {

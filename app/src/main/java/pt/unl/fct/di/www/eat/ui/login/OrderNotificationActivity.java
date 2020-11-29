@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,12 +18,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.UUID;
+
 import pt.unl.fct.di.www.eat.R;
 import pt.unl.fct.di.www.eat.StartActivity;
 
 
 public class OrderNotificationActivity extends AppCompatActivity {
-    String address, email, restaurant = "";
+
+    String address, email, restaurant, payment, code;
+    Double price, time;
+    TextView timeView, codeView;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -61,24 +67,35 @@ public class OrderNotificationActivity extends AppCompatActivity {
 
         ImageButton maps = findViewById(R.id.maps_url);
         Bundle extras = getIntent().getExtras();
+
         if (extras != null) {
-            email = extras.getString("email");
+            email = extras.getString("user");
             restaurant = extras.getString("restaurant");
-            DatabaseReference rest = FirebaseDatabase.getInstance().getReference().child("Restaurants").child(restaurant).child("address");
-
-            rest.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    address = dataSnapshot.getValue(String.class);
-                    address = address.replace(" ", "+");
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    System.out.println("The read failed: " + databaseError.getCode());
-                }
-            });
+            time = extras.getDouble("time");
+            price = extras.getDouble("price");
+            payment = extras.getString("payment");
+            code = extras.getString("code");
         }
+
+        timeView = findViewById(R.id.time);
+        codeView = findViewById(R.id.orderCode);
+
+        DatabaseReference rest = FirebaseDatabase.getInstance().getReference().child("Restaurants").child(restaurant).child("address");
+
+        rest.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                address = dataSnapshot.getValue(String.class);
+                address = address.replace(" ", "+");
+                timeView.setText(convertTime(time));
+                codeView.setText(code);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
 
         maps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,5 +110,16 @@ public class OrderNotificationActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private String convertTime(double time) {
+        String[] aux = String.valueOf(time).split("\\.");
+        int hours = Integer.parseInt(aux[0]);
+        int minutes = (int) (Double.parseDouble("0." + aux[1]) * 60);
+        if (minutes == 0)
+            return hours + "h";
+        if (hours == 0)
+            return minutes + "m";
+        return hours + "h" + minutes + "m";
     }
 }

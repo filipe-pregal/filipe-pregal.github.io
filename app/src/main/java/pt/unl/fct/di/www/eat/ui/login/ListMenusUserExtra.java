@@ -115,12 +115,15 @@ public class ListMenusUserExtra extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 checkLogin();
                 resetDataExtra();
+                RestaurantData aux = null ;
                 if (dataSnapshot.exists()) {
-                    RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
-                    setDataExtra(post);
+                    aux = dataSnapshot.getValue(RestaurantData.class);
                 }
-                addRadioDrinks();
-                addRadioDesserts(mDrinks.size());
+                if(aux != null) {
+                    setDataExtra(aux);
+                    addRadioDrinks();
+                    addRadioDesserts(mDrinks.size());
+                }
             }
 
             @Override
@@ -147,7 +150,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
                         Menu menuValue = dataSnapshot.getValue(Menu.class);
                         Cart cart = new Cart(menuValue.getName(), drink, dessert, menuValue.getPrice(), menuValue.getTime());
                         String random = UUID.randomUUID().toString().substring(0, 8);
-                        DatabaseReference addCart = mref.child("Carts").child(email).child(random);
+                        DatabaseReference addCart = mref.child("Carts").child(restaurant).child(email).child(random);
                         addCart.setValue(cart);
                         openMenu();
                     }
@@ -223,6 +226,8 @@ public class ListMenusUserExtra extends AppCompatActivity {
     private void resetDataExtra() {
         mDesserts.clear();
         mDrinks.clear();
+        radioDrink.removeAllViews();
+        radioDessert.removeAllViews();
     }
 
     private void checkLogin() {
