@@ -54,7 +54,7 @@ public class CompanyLoginActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(email.getError() == null)
-                    loginBtn.setClickable(true);
+                    loginBtn.setEnabled(true);
             }
         });
 
