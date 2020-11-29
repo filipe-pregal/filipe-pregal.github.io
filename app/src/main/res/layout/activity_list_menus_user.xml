@@ -34,8 +34,8 @@
         android:layout_height="wrap_content"
         android:text="Checkout"
         style="?android:attr/borderlessButtonStyle"
-        android:background="#0a72cb"
-        android:textColor="#FFFFFF"
+        android:background="@color/colorMainButton"
+        android:textColor="@color/colorWhite"
         app:layout_constraintBottom_toBottomOf="@id/container"/>
 
 

@@ -3,6 +3,7 @@ package pt.unl.fct.di.www.eat.ui.login;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +33,7 @@ import pt.unl.fct.di.www.eat.data.Cart;
 
 public class CartUser extends AppCompatActivity {
 
-    Button btnMenu, btnPayment;
+    Button btnPayment;
     ListView listView;
     String email, restaurant, res_name;
     DatabaseReference mref;
@@ -91,7 +92,6 @@ public class CartUser extends AppCompatActivity {
         listView = findViewById(R.id.listViewCart);
         checkLogin();
 
-        btnMenu = findViewById(R.id.backMenus);
         btnPayment = findViewById(R.id.payment);
 
         DatabaseReference cartRef = mref.child("Carts").child(restaurant).child(email);
@@ -114,11 +114,6 @@ public class CartUser extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
-        });
-
-        btnMenu.setOnClickListener(view -> {
-            checkLogin();
-            openMenus();
         });
 
         btnPayment.setOnClickListener(view -> {
@@ -242,8 +237,8 @@ public class CartUser extends AppCompatActivity {
             }
 
             myTitle.setText(mTitle.get(position));
-            myDrink.setText(drink);
-            myDessert.setText(dessert);
+            myDrink.setText(Html.fromHtml("<b>Drink</b> " + drink));
+            myDessert.setText(Html.fromHtml("<b>Dessert</b> " + dessert));
             myPrice.setText(mPrice.get(position).toString().concat("€"));
 
             return row;
