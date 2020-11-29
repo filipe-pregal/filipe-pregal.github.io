@@ -10,21 +10,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/backMenus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="65dp"
-            android:enabled="true"
-            android:text="Menus" />
 
         <Button
             android:id="@+id/payment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="115dp"
+            android:layout_marginLeft="0dp"
             android:enabled="true"
-            android:text="Payment" />
+            android:text="Payment"
+            android:translationX="150dp" />
 
     </LinearLayout>
 

@@ -2,12 +2,14 @@ package pt.unl.fct.di.www.eat.ui.login;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -41,10 +43,28 @@ public class RequestUser extends AppCompatActivity {
     ArrayList<String> mTimeR = new ArrayList<>();
     ArrayList<List<RequestItem>> mItem = new ArrayList<>();
 
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent i2 = new Intent(this, List_restaurantsActivity.class);
+                i2.putExtra("user", email);
+                startActivity(i2);
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_user);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

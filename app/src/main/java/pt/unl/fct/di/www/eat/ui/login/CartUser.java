@@ -32,7 +32,7 @@ import pt.unl.fct.di.www.eat.data.Cart;
 
 public class CartUser extends AppCompatActivity {
 
-    Button btnMenu, btnPayment;
+    Button btnPayment;
     ListView listView;
     String email, restaurant, res_name;
     DatabaseReference mref;
@@ -94,7 +94,7 @@ public class CartUser extends AppCompatActivity {
         listView = findViewById(R.id.listViewCart);
         checkLogin();
 
-        btnMenu = findViewById(R.id.backMenus);
+       // btnMenu = findViewById(R.id.backMenus);
         btnPayment = findViewById(R.id.payment);
 
         DatabaseReference cartRef = mref.child("Carts").child(restaurant).child(email);
@@ -119,10 +119,7 @@ public class CartUser extends AppCompatActivity {
             }
         });
 
-        btnMenu.setOnClickListener(view -> {
-            checkLogin();
-            openMenus();
-        });
+
 
         btnPayment.setOnClickListener(view -> {
             checkLogin();
