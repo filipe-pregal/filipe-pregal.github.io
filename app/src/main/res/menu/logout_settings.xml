@@ -3,33 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/app_bar_search"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:title="@string/search"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
-
-    <item
         android:id="@+id/points"
         android:icon="@drawable/menu_icon"
         android:title="@string/menu_icon"
         app:showAsAction="always">
-
         <menu>
-
-
-            <item
-                android:id="@+id/action_cart"
-                android:icon="@drawable/icon_cart"
-                android:title="@string/cart"
-                app:showAsAction="always" />
-
-            <item
-                android:id="@+id/action_filter"
-                android:icon="@drawable/icon_filter"
-                android:title="@string/filter"
-                app:showAsAction="always" />
-
             <item
                 android:id="@+id/action_settings"
                 android:icon="@drawable/settings_icon"
@@ -41,13 +19,7 @@
                 android:icon="@drawable/logout_icon"
                 android:title="@string/logout"
                 app:showAsAction="always" />
-
-
-        </menu></item>
-
-
-
-
-
+        </menu>
+    </item>
 
 </menu>

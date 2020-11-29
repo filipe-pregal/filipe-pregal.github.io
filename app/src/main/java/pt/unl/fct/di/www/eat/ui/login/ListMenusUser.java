@@ -1,6 +1,5 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -68,14 +67,16 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
             case R.id.action_cart:
                 Intent intent = new Intent(this, CartUser.class);
                 intent.putExtra("user", email);
-                intent.putExtra("restaurant", restaurant );
+                intent.putExtra("restaurant", restaurant);
                 startActivity(intent);
                 return true;
             case R.id.action_filter:
-               RestaurantTagsDialog d = new RestaurantTagsDialog(mtags, mselectedTags, msTags);
+                RestaurantTagsDialog d = new RestaurantTagsDialog(mtags, mselectedTags, msTags);
                 d.show(getSupportFragmentManager(), "Menu Tags");
                 return true;
             case R.id.action_logout:
+                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
+                user.setValue("");
                 Intent it = new Intent(this, StartActivity.class);
                 startActivity(it);
                 return true;
@@ -96,7 +97,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        getMenuInflater().inflate(R.menu.my_toolbar, menu);
+        getMenuInflater().inflate(R.menu.lists_restaurants_menus_user, menu);
 
         MenuItem searchItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
@@ -117,9 +118,8 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         });
         return super.onCreateOptionsMenu(menu);
     }
+
     private void searchFilter(DatabaseReference rest) {
-
-
         listView = findViewById(R.id.listViewMenuUser);
 
         rest.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -127,7 +127,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 resetData();
-                if (dataSnapshot.exists() ) {
+                if (dataSnapshot.exists()) {
                     for (DataSnapshot menu : dataSnapshot.child("menu").getChildren()) {
 
                         RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
@@ -299,7 +299,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         startActivity(intent);
     }
 
-    private void redirectCart(){
+    private void redirectCart() {
         Intent intent = new Intent(this, CartUser.class);
         intent.putExtra("user", email);
         intent.putExtra("restaurant", restaurant);

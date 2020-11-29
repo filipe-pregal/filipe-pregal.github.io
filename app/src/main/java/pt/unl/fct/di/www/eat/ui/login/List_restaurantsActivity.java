@@ -62,10 +62,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 super.onOptionsItemSelected(item);
                 return true;
             case R.id.action_cart:
-                Intent intent = new Intent(this, CartUser.class);
-                intent.putExtra("user", email);
-                intent.putExtra("restaurant", "");
-                startActivity(intent);
+                //TODO Requests page
                 return true;
             case R.id.action_filter:
                 RestaurantTagsDialog d = new RestaurantTagsDialog(tags, selectedTags, sTags);
@@ -89,9 +86,11 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        getMenuInflater().inflate(R.menu.my_toolbar, menu);
+        getMenuInflater().inflate(R.menu.lists_restaurants_menus_user, menu);
 
         MenuItem searchItem = menu.findItem(R.id.app_bar_search);
+        MenuItem cart = menu.findItem(R.id.action_cart);
+        cart.setTitle("Requests");
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -133,7 +132,6 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mref = FirebaseDatabase.getInstance().getReference();
-
 
 
         listView = findViewById(R.id.listView);

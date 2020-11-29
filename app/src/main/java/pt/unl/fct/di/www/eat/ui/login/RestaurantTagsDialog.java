@@ -79,6 +79,7 @@ public class RestaurantTagsDialog extends DialogFragment {
 
     public interface RestaurantTagsListener {
         void onDialogPositiveClick(RestaurantTagsDialog dialog);
+
         void onDialogNegativeClick(RestaurantTagsDialog dialog);
     }
 }

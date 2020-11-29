@@ -1,8 +1,9 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
 import pt.unl.fct.di.www.eat.R;
 
 public class Checkout extends AppCompatActivity {

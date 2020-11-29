@@ -1,27 +1,22 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,10 +29,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import pt.unl.fct.di.www.eat.R;
+import pt.unl.fct.di.www.eat.StartActivity;
 import pt.unl.fct.di.www.eat.data.Cart;
 import pt.unl.fct.di.www.eat.data.Menu;
 import pt.unl.fct.di.www.eat.data.Option;
@@ -56,6 +51,36 @@ public class ListMenusUserExtra extends AppCompatActivity {
     String email, restaurant, menu;
     DatabaseReference mref;
     ImageView img;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
+                user.setValue("");
+                Intent it = new Intent(this, StartActivity.class);
+                startActivity(it);
+                return true;
+            case R.id.action_settings:
+                //TODO
+                return true;
+            case android.R.id.home:
+                Intent i1 = new Intent(this, ListMenusUser.class);
+                i1.putExtra("user", email);
+                i1.putExtra("restaurant", restaurant);
+                startActivity(i1);
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.logout_settings, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,10 +134,10 @@ public class ListMenusUserExtra extends AppCompatActivity {
             checkLogin();
             RadioButton b = findViewById(radioDrink.getCheckedRadioButtonId());
             RadioButton a = findViewById(radioDessert.getCheckedRadioButtonId());
-            if(b!=null)
-            drink = b.getText().toString();
-            if(a!=null)
-            dessert = a.getText().toString();
+            if (b != null)
+                drink = b.getText().toString();
+            if (a != null)
+                dessert = a.getText().toString();
 
             DatabaseReference m = mref.child("Restaurants").child(restaurant).child("menu").child(menu);
             m.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -127,6 +152,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
                         openMenu();
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
@@ -158,8 +184,8 @@ public class ListMenusUserExtra extends AppCompatActivity {
         }
     }
 
-    private void addRadioDrinks(){
-        for(int i=0; i<mDrinks.size(); i++) {
+    private void addRadioDrinks() {
+        for (int i = 0; i < mDrinks.size(); i++) {
             RadioButton b = new RadioButton(this);
             b.setText(mDrinks.get(i));
             b.setId(i);
@@ -168,10 +194,10 @@ public class ListMenusUserExtra extends AppCompatActivity {
         }
     }
 
-    private void addRadioDesserts(int a){
-        for(int i=a; i<mDesserts.size() + a; i++) {
+    private void addRadioDesserts(int a) {
+        for (int i = a; i < mDesserts.size() + a; i++) {
             RadioButton b = new RadioButton(this);
-            b.setText(mDesserts.get(i-a));
+            b.setText(mDesserts.get(i - a));
             b.setId(i);
             b.setTextSize(18);
             radioDessert.addView(b);

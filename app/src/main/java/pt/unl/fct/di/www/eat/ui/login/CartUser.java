@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -25,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import pt.unl.fct.di.www.eat.R;
+import pt.unl.fct.di.www.eat.StartActivity;
 import pt.unl.fct.di.www.eat.data.Cart;
 
 public class CartUser extends AppCompatActivity {
@@ -40,6 +42,36 @@ public class CartUser extends AppCompatActivity {
     ArrayList<Double> mPrice = new ArrayList<>();
     ArrayList<String> cartKey = new ArrayList<>();
     Double time = 0.0;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
+                user.setValue("");
+                Intent it = new Intent(this, StartActivity.class);
+                startActivity(it);
+                return true;
+            case R.id.action_settings:
+                //TODO
+                return true;
+            case android.R.id.home:
+                Intent i1 = new Intent(this, ListMenusUser.class);
+                i1.putExtra("user", email);
+                i1.putExtra("restaurant", restaurant);
+                startActivity(i1);
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.logout_settings, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

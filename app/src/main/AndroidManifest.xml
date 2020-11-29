@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     package="pt.unl.fct.di.www.eat">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,11 +15,13 @@
         <activity
             android:name=".ui.login.CartUser"
             android:label="Cart page"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:parentActivityName=".ui.login.ListMenusUser"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".ui.login.ListMenusUserExtra"
             android:label="Pick extra options"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:parentActivityName=".ui.login.ListMenusUser"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".ui.login.SplashScreen"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -33,31 +34,36 @@
         <activity
             android:name=".ui.login.ListMenusCompany"
             android:label="Company Details"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:parentActivityName=".ui.login.CompanyLoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".ui.login.ListMenusUser"
             android:label="List of Menus"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:parentActivityName=".ui.login.List_restaurantsActivity"
-           />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.login.List_restaurantsActivity"
             android:label="Restaurant List"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:parentActivityName=".ui.login.UserLoginActivity"/>
+            android:parentActivityName=".ui.login.UserLoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.login.CompanyLoginActivity"
             android:label="Company Login"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:parentActivityName=".StartActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".ui.login.UserLoginActivity"
             android:label="Client Login"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:parentActivityName=".StartActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".ui.login.RegisterUser"
-            android:label="Sign up client" />
-        <activity android:name=".StartActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+            android:label="Sign up client"
+            android:parentActivityName=".StartActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".StartActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
     </application>
 
 </manifest>
