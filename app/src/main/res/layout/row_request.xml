@@ -11,6 +11,16 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/restName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="name"
+            android:textColor="#000"
+            android:textSize="18dp"
+            android:visibility="gone"/>
+
+        <TextView
             android:id="@+id/codeR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -21,7 +21,7 @@ import pt.unl.fct.di.www.eat.R;
 public class PaymentActivity extends AppCompatActivity {
 
     Button localBtn, optionsBtn;
-    String email, restaurant, payment;
+    String email, restaurant, payment, res_name;
     Double time, price;
     DatabaseReference mref;
 
@@ -56,6 +56,7 @@ public class PaymentActivity extends AppCompatActivity {
             restaurant = extras.getString("restaurant");
             time = extras.getDouble("time");
             price = extras.getDouble("price");
+            res_name = extras.getString("res_name");
         }
 
         checkLogin();
@@ -82,6 +83,7 @@ public class PaymentActivity extends AppCompatActivity {
         intent.putExtra("time", time);
         intent.putExtra("price", price);
         intent.putExtra("payment", payment);
+        intent.putExtra("res_name", res_name);
         startActivity(intent);
     }
 

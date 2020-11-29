@@ -34,7 +34,7 @@ public class CartUser extends AppCompatActivity {
 
     Button btnMenu, btnPayment;
     ListView listView;
-    String email, restaurant;
+    String email, restaurant, res_name;
     DatabaseReference mref;
 
     ArrayList<String> mTitle = new ArrayList<>();
@@ -88,6 +88,7 @@ public class CartUser extends AppCompatActivity {
         if (extras != null) {
             email = extras.getString("user");
             restaurant = extras.getString("restaurant");
+            res_name = extras.getString("res_name");
         }
 
         listView = findViewById(R.id.listViewCart);
@@ -168,6 +169,7 @@ public class CartUser extends AppCompatActivity {
         intent.putExtra("restaurant", restaurant);
         intent.putExtra("time", time);
         intent.putExtra("price", price);
+        intent.putExtra("res_name", res_name);
         startActivity(intent);
     }
 
@@ -183,7 +185,6 @@ public class CartUser extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
