@@ -53,7 +53,10 @@ public class CartUser extends AppCompatActivity {
                 startActivity(it);
                 return true;
             case R.id.action_settings:
-                //TODO
+                Intent i2 = new Intent(this, Settings_page.class);
+                i2.putExtra("user", email);
+                i2.putExtra("restaurant", restaurant);
+                startActivity(i2);
                 return true;
             case android.R.id.home:
                 Intent i1 = new Intent(this, ListMenusUser.class);

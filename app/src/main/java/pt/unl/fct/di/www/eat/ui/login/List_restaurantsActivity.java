@@ -75,7 +75,9 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 startActivity(it);
                 return true;
             case R.id.action_settings:
-                //TODO
+                Intent i2 = new Intent(this, Settings_page.class);
+                i2.putExtra("user", email);
+                startActivity(i2);
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
