@@ -27,6 +27,10 @@ public class RequestItem {
     }
 
     public void setQuantity(Double quantity) {
-        this.quantity += quantity;
+        this.quantity = quantity;
+    }
+
+    public void aux(){
+        this.quantity+=1.0;
     }
 }

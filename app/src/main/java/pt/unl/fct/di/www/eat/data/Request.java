@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Request {
 
-    String code, payment, eat;
+    String payment, eat;
     List<RequestItem> items;
     Double price, time;
 
@@ -12,21 +12,12 @@ public class Request {
 
     }
 
-    public Request(String code, Double time, Double price, String payment, String eat, List<RequestItem> items){
-        this.code = code;
+    public Request(Double time, Double price, String payment, String eat, List<RequestItem> items){
         this.time = time;
         this.price = price;
         this.payment = payment;
         this.eat = eat;
         this.items = items;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getPayment() {

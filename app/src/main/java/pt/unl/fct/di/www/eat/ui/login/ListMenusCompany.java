@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -31,12 +32,16 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import pt.unl.fct.di.www.eat.R;
 import pt.unl.fct.di.www.eat.StartActivity;
 import pt.unl.fct.di.www.eat.data.Menu;
 import pt.unl.fct.di.www.eat.data.Option;
+import pt.unl.fct.di.www.eat.data.Request;
+import pt.unl.fct.di.www.eat.data.RequestItem;
 import pt.unl.fct.di.www.eat.data.RestaurantData;
 
 public class ListMenusCompany extends AppCompatActivity {
@@ -59,8 +64,12 @@ public class ListMenusCompany extends AppCompatActivity {
     ArrayList<String> tagDrinks = new ArrayList<>();
     ArrayList<String> tagDesserts = new ArrayList<>();
 
-    String[] mT = {"a", "b", "c"};
-    String[] mB = {"d", "e", "f"};
+    ArrayList<String> mCode = new ArrayList<>();
+    ArrayList<String> mPayment = new ArrayList<>();
+    ArrayList<Double> mPriceR = new ArrayList<>();
+    ArrayList<String> mTimeR = new ArrayList<>();
+    ArrayList<List<RequestItem>> mItem = new ArrayList<>();
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -133,8 +142,30 @@ public class ListMenusCompany extends AppCompatActivity {
         sDrinks = findViewById(R.id.seeDrinks);
         sDesserts = findViewById(R.id.seeDesserts);
 
-        MyAdapterRequest adapterR = new MyAdapterRequest(getApplicationContext());
-        listView1.setAdapter(adapterR);
+        DatabaseReference requestRef = mref.child("Requests").child(email);
+        requestRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                checkLogin();
+                resetDataRequest();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Iterator<DataSnapshot> it = child.getChildren().iterator();
+                        while (it.hasNext()){
+                            DataSnapshot data = it.next();
+                            Request request = data.getValue(Request.class);
+                            setDataRequest(request, data.getKey());
+                        }
+                    }
+                }
+                MyAdapterRequest adapterR1 = new MyAdapterRequest(getApplicationContext());
+                listView1.setAdapter(adapterR1);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
 
         btnRequest.setOnClickListener(view -> {
             checkLogin();
@@ -233,7 +264,6 @@ public class ListMenusCompany extends AppCompatActivity {
                         }
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
@@ -312,6 +342,22 @@ public class ListMenusCompany extends AppCompatActivity {
             mDesserts.add(dessert.getName());
             mAvailableDesserts.add(dessert.getIsAvailable());
         }
+    }
+
+    private void setDataRequest(Request r, String code){
+        mCode.add(code);
+        mPayment.add(r.getPayment());
+        mPriceR.add(r.getPrice());
+        mTimeR.add(convertTime(r.getTime()));
+        mItem.add(r.getItems());
+    }
+
+    private void resetDataRequest(){
+        mCode.clear();
+        mPayment.clear();
+        mPriceR.clear();
+        mTimeR.clear();
+        mItem.clear();
     }
 
     private void resetDataMenu() {
@@ -598,7 +644,7 @@ public class ListMenusCompany extends AppCompatActivity {
     class MyAdapterRequest extends ArrayAdapter<String> {
 
         MyAdapterRequest(Context c) {
-            super(c, R.layout.row_menu_user, R.id.titleMenu, mT);
+            super(c, R.layout.row_request, R.id.codeR, mCode);
         }
 
         @NonNull
@@ -607,11 +653,57 @@ public class ListMenusCompany extends AppCompatActivity {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.row_request, parent, false);
 
-            TextView myT = row.findViewById(R.id.teste1);
-            TextView myB = row.findViewById(R.id.teste2);
+            TextView myCode = row.findViewById(R.id.codeR);
+            TextView myPayment = row.findViewById(R.id.paymentR);
+            TextView myPrice = row.findViewById(R.id.priceR);
+            TextView myTime = row.findViewById(R.id.timeR);
 
-            myT.setText(mT[position]);
-            myB.setText(mB[position]);
+
+            ListView list = row.findViewById(R.id.itemsR);
+
+            ArrayList<String> item = new ArrayList<>();
+            ArrayList<Double> quantity = new ArrayList<>();
+
+            for(RequestItem a : mItem.get(position)){
+                item.add(a.getItem());
+                quantity.add(a.getQuantity());
+            }
+
+            myCode.setText("Code " +mCode.get(position));
+            myPayment.setText(mPayment.get(position));
+            myPrice.setText(mPriceR.get(position).toString().concat("€"));
+            myTime.setText(mTimeR.get(position));
+
+            MyAdapterAux adpt = new MyAdapterAux(getApplicationContext(), item, quantity);
+            list.setAdapter(adpt);
+
+            return row;
+        }
+    }
+
+    class MyAdapterAux extends ArrayAdapter<String> {
+
+        ArrayList<String> rItems;
+        ArrayList<Double> rQuantity;
+
+        MyAdapterAux(Context c, ArrayList<String> items, ArrayList<Double> quantity) {
+            super(c, R.layout.row_item_request, R.id.codeR, items);
+            this.rItems = items;
+            this.rQuantity = quantity;
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View row = layoutInflater.inflate(R.layout.row_item_request, parent, false);
+
+            TextView myItem = row.findViewById(R.id.itemR);
+            TextView myQuantity = row.findViewById(R.id.quantityR);
+
+            myItem.setText(rItems.get(position));
+            myQuantity.setText("x"+ rQuantity.get(position).toString());
+
             return row;
         }
     }

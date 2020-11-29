@@ -62,7 +62,9 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 super.onOptionsItemSelected(item);
                 return true;
             case R.id.action_cart:
-                //TODO Requests page
+                Intent i = new Intent(this, RequestUser.class);
+                i.putExtra("user", email);
+                startActivity(i);
                 return true;
             case R.id.action_filter:
                 RestaurantTagsDialog d = new RestaurantTagsDialog(tags, selectedTags, sTags);

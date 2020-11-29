@@ -7,24 +7,50 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/teste1"
+            android:id="@+id/codeR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="ahhhhh"
+            android:text="code"
+            android:textColor="#000"
+            android:textSize="18dp" />
+
+        <ListView
+            android:id="@+id/itemsR"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            ></ListView>
+
+        <TextView
+            android:id="@+id/paymentR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="payment"
             android:textColor="#000"
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/teste2"
+            android:id="@+id/priceR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="gggg"
+            android:text="price"
+            android:textColor="#000"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/timeR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="time"
             android:textColor="#000"
             android:textSize="18dp" />
 

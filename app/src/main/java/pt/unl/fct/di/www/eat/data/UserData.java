@@ -15,6 +15,14 @@ public class UserData {
         this.Token = "";
     }
 
+    public String getToken() {
+        return Token;
+    }
+
+    public void setToken(String token) {
+        Token = token;
+    }
+
     public String getRole() {
         return Role;
     }

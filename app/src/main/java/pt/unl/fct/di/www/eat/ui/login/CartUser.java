@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -124,7 +125,10 @@ public class CartUser extends AppCompatActivity {
 
         btnPayment.setOnClickListener(view -> {
             checkLogin();
-            openPayment();
+            if(!cartKey.isEmpty())
+                openPayment();
+            else
+                Toast.makeText(getApplicationContext(), "You can't advance with an empty cart!", Toast.LENGTH_SHORT).show();
         });
     }
 
