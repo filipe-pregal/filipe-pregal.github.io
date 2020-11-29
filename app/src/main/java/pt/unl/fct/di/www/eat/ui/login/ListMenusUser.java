@@ -45,7 +45,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
 
     ListView listView;
     Button btn;
-    String email, restaurant;
+    String email, restaurant, res_name;
     DatabaseReference mref;
 
     ArrayList<String> mTitle = new ArrayList<>();
@@ -265,6 +265,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
                 setImage(menu.getImage_url());
             }
         }
+        res_name = r.getName();
     }
 
     private void setImage(String u) {
@@ -303,6 +304,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         Intent intent = new Intent(this, CartUser.class);
         intent.putExtra("user", email);
         intent.putExtra("restaurant", restaurant);
+        intent.putExtra("res_name", res_name);
         startActivity(intent);
     }
 

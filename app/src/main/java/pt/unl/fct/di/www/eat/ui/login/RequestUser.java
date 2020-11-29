@@ -34,6 +34,7 @@ public class RequestUser extends AppCompatActivity {
     String email;
     DatabaseReference mref;
     ListView listView;
+    ArrayList<String> mRest = new ArrayList<>();
     ArrayList<String> mCode = new ArrayList<>();
     ArrayList<String> mPayment = new ArrayList<>();
     ArrayList<Double> mPriceR = new ArrayList<>();
@@ -103,11 +104,12 @@ public class RequestUser extends AppCompatActivity {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.row_request, parent, false);
 
+            TextView myRest = row.findViewById(R.id.restName);
+            myRest.setVisibility(View.VISIBLE);
             TextView myCode = row.findViewById(R.id.codeR);
             TextView myPayment = row.findViewById(R.id.paymentR);
             TextView myPrice = row.findViewById(R.id.priceR);
             TextView myTime = row.findViewById(R.id.timeR);
-
 
             ListView list = row.findViewById(R.id.itemsR);
 
@@ -119,6 +121,7 @@ public class RequestUser extends AppCompatActivity {
                 quantity.add(a.getQuantity());
             }
 
+            myRest.setText(mRest.get(position));
             myCode.setText("Code " +mCode.get(position));
             myPayment.setText(mPayment.get(position));
             myPrice.setText(mPriceR.get(position).toString().concat("€"));
@@ -164,6 +167,7 @@ public class RequestUser extends AppCompatActivity {
         mPriceR.add(r.getPrice());
         mTimeR.add(convertTime(r.getTime()));
         mItem.add(r.getItems());
+        mRest.add(r.getRestaurant());
     }
 
     private void resetDataRequest(){

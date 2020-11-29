@@ -26,7 +26,7 @@ import pt.unl.fct.di.www.eat.data.RequestItem;
 public class EatOptionsActivity extends AppCompatActivity {
 
     Button pickUpBtn, restBtn;
-    String email, restaurant, payment, eat, code;
+    String email, restaurant, payment, eat, code, res_name;
     Double time, price;
     DatabaseReference mref;
     HashMap<String, RequestItem> aux = new HashMap<>();
@@ -46,6 +46,7 @@ public class EatOptionsActivity extends AppCompatActivity {
             time = extras.getDouble("time");
             price = extras.getDouble("price");
             payment = extras.getString("payment");
+            res_name = extras.getString("res_name");
         }
 
         checkLogin();
@@ -81,7 +82,7 @@ public class EatOptionsActivity extends AppCompatActivity {
                     }
                     for (Map.Entry<String, RequestItem> i : aux.entrySet())
                         items.add(i.getValue());
-                    Request request = new Request(time,price,payment,eat, items);
+                    Request request = new Request(time,price,payment,eat, items, res_name);
                     addRequest.child(code).setValue(request);
                     cartRef.removeValue();
                 }
