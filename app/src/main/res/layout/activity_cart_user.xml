@@ -23,8 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="?android:attr/borderlessButtonStyle"
-            android:background="@color/colorMainButton"
-            android:textColor="@color/colorWhite"
+            android:background="@drawable/main_button_background"
+            android:textColor="@drawable/main_button_text_color"
             android:enabled="true"
             android:text="Proceed to Payment"
             app:layout_constraintBottom_toBottomOf="@id/container"/>

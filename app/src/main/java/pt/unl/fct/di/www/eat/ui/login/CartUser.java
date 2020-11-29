@@ -107,7 +107,14 @@ public class CartUser extends AppCompatActivity {
                         setData(child.getKey(), cart);
                     }
                 }
-                btnPayment.setText("Proceed to Payment (" + format2decimal(getTotalPrice()) +"€)");
+                double total = getTotalPrice();
+                if (total == 0.0) {
+                    btnPayment.setText("Proceed to Payment");
+                    btnPayment.setEnabled(false);
+                } else {
+                    btnPayment.setText("Proceed to Payment (" + format2decimal(total) +"€)");
+                    btnPayment.setEnabled(true);
+                }
                 MyAdapter adapter = new MyAdapter(getApplicationContext());
                 listView.setAdapter(adapter);
             }
