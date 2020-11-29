@@ -653,7 +653,6 @@ public class ListMenusCompany extends AppCompatActivity {
             LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.row_request, parent, false);
 
-            System.out.println("entrei" + position);
             TextView myCode = row.findViewById(R.id.codeR);
             TextView myPayment = row.findViewById(R.id.paymentR);
             TextView myPrice = row.findViewById(R.id.priceR);
@@ -670,13 +669,13 @@ public class ListMenusCompany extends AppCompatActivity {
                 quantity.add(a.getQuantity());
             }
 
-            MyAdapterAux adpt = new MyAdapterAux(getApplicationContext(), item, quantity);
-            list.setAdapter(adpt);
-
-            myCode.setText(mCode.get(position));
+            myCode.setText("Code " +mCode.get(position));
             myPayment.setText(mPayment.get(position));
             myPrice.setText(mPriceR.get(position).toString().concat("€"));
             myTime.setText(mTimeR.get(position));
+
+            MyAdapterAux adpt = new MyAdapterAux(getApplicationContext(), item, quantity);
+            list.setAdapter(adpt);
 
             return row;
         }

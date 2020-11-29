@@ -19,18 +19,13 @@
             android:textColor="#000"
             android:textSize="18dp" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
         <ListView
             android:id="@+id/itemsR"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:divider="@null"
             android:dividerHeight="0dp"
-            android:isScrollContainer="true"></ListView>
-        </ScrollView>
+            ></ListView>
 
         <TextView
             android:id="@+id/paymentR"
