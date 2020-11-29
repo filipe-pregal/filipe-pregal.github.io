@@ -216,7 +216,7 @@ public class CartUser extends AppCompatActivity {
             myRemove.setImageResource(R.drawable.remove);
 
             myRemove.setOnClickListener(view -> {
-                DatabaseReference cartRef = mref.child("Carts").child(email).child(cartKey.get(position));
+                DatabaseReference cartRef = mref.child("Carts").child(restaurant).child(email).child(cartKey.get(position));
                 cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -224,7 +224,6 @@ public class CartUser extends AppCompatActivity {
                             cartRef.removeValue();
                         }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
