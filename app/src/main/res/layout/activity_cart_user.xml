@@ -15,6 +15,7 @@
         app:layout_constraintBottom_toTopOf="@id/payment"
         android:divider="@null"
         android:dividerHeight="0dp"
+        app:layout_constraintVertical_bias="0.0"
         android:isScrollContainer="true"
         app:layout_constrainedHeight="true"></ListView>
         <Button
