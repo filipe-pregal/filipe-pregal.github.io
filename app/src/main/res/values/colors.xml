@@ -7,4 +7,6 @@
     <color name="colorGray">#222222</color>
     <color name="colorSecondaryGray">#444444</color>
     <color name="colorMainButton">#0A72CB</color>
+    <color name="backgroundDisabled">#f1f1f1</color>
+    <color name="textDisabled">#c3c3c3</color>
 </resources>
