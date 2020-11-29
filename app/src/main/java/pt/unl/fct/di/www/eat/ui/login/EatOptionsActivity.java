@@ -81,8 +81,9 @@ public class EatOptionsActivity extends AppCompatActivity {
                     }
                     for (Map.Entry<String, RequestItem> i : aux.entrySet())
                         items.add(i.getValue());
-                    Request request = new Request(code,time,price,payment,eat, items);
-                    addRequest.setValue(request);
+                    Request request = new Request(time,price,payment,eat, items);
+                    addRequest.child(code).setValue(request);
+                    cartRef.removeValue();
                 }
             }
             @Override
@@ -104,7 +105,7 @@ public class EatOptionsActivity extends AppCompatActivity {
     private void setAux(String type){
         if (!type.equals("")) {
             if (aux.containsKey(type))
-                aux.get(type).setQuantity(1.0);
+                aux.get(type).aux();
             else
                 aux.put(type, new RequestItem(type, 1.0));
         }
