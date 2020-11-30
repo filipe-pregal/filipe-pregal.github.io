@@ -36,6 +36,7 @@ public class CartUser extends AppCompatActivity {
 
     Button btnPayment;
     ListView listView;
+    TextView emptyText;
     String email, restaurant, res_name;
     DatabaseReference mref;
 
@@ -94,6 +95,7 @@ public class CartUser extends AppCompatActivity {
         }
 
         listView = findViewById(R.id.listViewCart);
+        emptyText = findViewById(R.id.emptyText);
         checkLogin();
 
         btnPayment = findViewById(R.id.payment);
@@ -104,6 +106,7 @@ public class CartUser extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 checkLogin();
                 resetData();
+                listView.setEmptyView(emptyText);
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Cart cart = child.getValue(Cart.class);

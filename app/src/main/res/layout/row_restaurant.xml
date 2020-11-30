@@ -1,60 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="20dp"
     android:orientation="horizontal"
-    android:padding="16dp">
+    app:cardCornerRadius="10dp"
+    android:outlineSpotShadowColor="@color/colorGray"
+    android:elevation="@dimen/cardview_default_elevation">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#164f35">
+        <ImageView
+            android:contentDescription="Logo"
+            android:id="@+id/imgR"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
         <TextView
             android:id="@+id/titleRestaurant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginTop="5dp"
             android:text="Restaurant Title"
-            android:textAlignment="center"
             android:textColor="#000"
             android:textSize="20dp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/imgR"
-            android:layout_width="match_parent"
-            android:layout_height="70dp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/imgR"/>
 
             <TextView
                 android:id="@+id/tag"
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
-                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="tag"
                 android:textColor="#000"
-                android:textSize="18dp" />
-
-            <TextView
-                android:id="@+id/emailR"
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_margin="0dp"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="emailR"
-                android:textColor="#000"
                 android:textSize="18dp"
-                android:visibility="gone" />
+                app:layout_constraintTop_toBottomOf="@id/titleRestaurant"
+                app:layout_constraintLeft_toLeftOf="parent"/>
 
             <TextView
                 android:id="@+id/time"
@@ -64,10 +55,16 @@
                 android:text="time"
                 android:textAlignment="center"
                 android:textColor="#000"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                android:layout_marginTop="15dp"
+                app:layout_constraintTop_toBottomOf="@id/tag"
+                app:layout_constraintLeft_toLeftOf="parent"/>
 
-        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/emailR"/>
 
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.cardview.widget.CardView>
