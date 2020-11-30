@@ -2,6 +2,7 @@ package pt.unl.fct.di.www.eat.ui.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ import pt.unl.fct.di.www.eat.StartActivity;
 import pt.unl.fct.di.www.eat.data.RestaurantData;
 
 public class List_restaurantsActivity extends AppCompatActivity implements RestaurantTagsDialog.RestaurantTagsListener {
-
+    SharedPreferences sp ;
     ListView listView;
     String email;
     ArrayList abc = new ArrayList<RestaurantData>();
@@ -364,5 +365,14 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
 
             return row;
         }
+    }
+
+
+    @Override
+    protected void onStop() {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("email", email);
+        editor.commit();
+        super.onStop();
     }
 }

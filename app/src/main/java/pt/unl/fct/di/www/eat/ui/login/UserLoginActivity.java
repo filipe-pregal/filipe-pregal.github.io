@@ -1,6 +1,8 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +29,7 @@ public class UserLoginActivity extends AppCompatActivity {
     EditText email, pwd;
     Button loginBtn, registerBtn;
     DatabaseReference d;
+    SharedPreferences sp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,5 +135,13 @@ public class UserLoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, List_restaurantsActivity.class);
         intent.putExtra("user", email);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+
+
+
+        super.onResume();
     }
 }
