@@ -689,7 +689,7 @@ public class ListMenusCompany extends AppCompatActivity {
             TextView myTime = row.findViewById(R.id.timeR);
             ImageView img = row.findViewById(R.id.removeR);
 
-            img.setImageResource(R.drawable.remove);
+            img.setImageResource(R.drawable.done);
 
             img.setOnClickListener(view -> {
                 DatabaseReference rRef = mref.child("Requests").child(email).child(rKeys.get(position)).child(mCode.get(position));
