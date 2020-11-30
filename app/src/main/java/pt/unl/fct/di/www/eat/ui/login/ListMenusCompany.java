@@ -108,6 +108,7 @@ public class ListMenusCompany extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                System.out.println(email);
                 DatabaseReference rest = mref.child("Restaurants").child(email);
                 searchQuery(rest, query);
                 return false;
@@ -306,7 +307,7 @@ public class ListMenusCompany extends AppCompatActivity {
                     setDataMenu(post);
                   //  setDataExtra(post);
                 }
-                MyAdapterRequest adapterR = new MyAdapterRequest(getApplicationContext());
+                MyAdapterMenu adapterR = new MyAdapterMenu(getApplicationContext(), rest);
                 listView1.setAdapter(adapterR);
             }
 
