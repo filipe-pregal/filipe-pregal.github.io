@@ -189,5 +189,6 @@ public class RegisterUser extends AppCompatActivity {
     public void openLogin() {
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 }

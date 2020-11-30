@@ -108,6 +108,7 @@ public class ListMenusCompany extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                System.out.println(email);
                 DatabaseReference rest = mref.child("Restaurants").child(email);
                 searchQuery(rest, query);
                 return false;
@@ -143,36 +144,12 @@ public class ListMenusCompany extends AppCompatActivity {
         sDrinks = findViewById(R.id.seeDrinks);
         sDesserts = findViewById(R.id.seeDesserts);
 
-        DatabaseReference requestRef = mref.child("Requests").child(email);
-        requestRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                checkLogin();
-                resetDataRequest();
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Iterator<DataSnapshot> it = child.getChildren().iterator();
-                        while (it.hasNext()){
-                            DataSnapshot data = it.next();
-                            Request request = data.getValue(Request.class);
-                            setDataRequest(request, data.getKey());
-                        }
-                    }
-                }
-                MyAdapterRequest adapterR1 = new MyAdapterRequest(getApplicationContext());
-                listView1.setAdapter(adapterR1);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
+        menus();
 
         btnRequest.setOnClickListener(view -> {
             checkLogin();
             setVisibility(8);
-            MyAdapterRequest adapterR1 = new MyAdapterRequest(getApplicationContext());
-            listView1.setAdapter(adapterR1);
+            requests();
         });
 
         btnMenu = findViewById(R.id.editMenus);
@@ -182,24 +159,7 @@ public class ListMenusCompany extends AppCompatActivity {
         btnMenu.setOnClickListener(view -> {
             checkLogin();
             setVisibility(8);
-            DatabaseReference rest = mref.child("Restaurants").child(email);
-            rest.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        resetDataMenu();
-                        RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
-                        setDataMenu(post);
-                    }
-                    MyAdapterMenu adapter = new MyAdapterMenu(getApplicationContext(), rest);
-                    listView1.setAdapter(adapter);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    System.out.println("The read failed: " + databaseError.getCode());
-                }
-            });
+            menus();
         });
 
         btnExtra = findViewById(R.id.editExtras);
@@ -274,6 +234,54 @@ public class ListMenusCompany extends AppCompatActivity {
         });
     }
 
+    private void menus(){
+        DatabaseReference rest = mref.child("Restaurants").child(email);
+        rest.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    resetDataMenu();
+                    RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
+                    setDataMenu(post);
+                }
+                MyAdapterMenu adapter = new MyAdapterMenu(getApplicationContext(), rest);
+                listView1.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void requests(){
+        DatabaseReference requestRef = mref.child("Requests").child(email);
+        requestRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                checkLogin();
+                resetDataRequest();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Iterator<DataSnapshot> it = child.getChildren().iterator();
+                        while (it.hasNext()){
+                            DataSnapshot data = it.next();
+                            Request request = data.getValue(Request.class);
+                            setDataRequest(request, data.getKey());
+                        }
+                    }
+                }
+                MyAdapterRequest adapterR1 = new MyAdapterRequest(getApplicationContext());
+                listView1.setAdapter(adapterR1);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
     private void searchQuery(DatabaseReference rest, String query) {
         listView1 = findViewById(R.id.listViewDrinks);
 
@@ -299,7 +307,7 @@ public class ListMenusCompany extends AppCompatActivity {
                     setDataMenu(post);
                   //  setDataExtra(post);
                 }
-                MyAdapterRequest adapterR = new MyAdapterRequest(getApplicationContext());
+                MyAdapterMenu adapterR = new MyAdapterMenu(getApplicationContext(), rest);
                 listView1.setAdapter(adapterR);
             }
 
@@ -497,6 +505,7 @@ public class ListMenusCompany extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, CompanyLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     class MyAdapterMenu extends ArrayAdapter<String> {

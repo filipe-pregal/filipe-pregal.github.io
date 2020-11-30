@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import pt.unl.fct.di.www.eat.R;
@@ -109,6 +110,14 @@ public class CartUser extends AppCompatActivity {
                         setData(child.getKey(), cart);
                     }
                 }
+                double total = getTotalPrice();
+                if (total == 0.0) {
+                    btnPayment.setText("Proceed to Payment");
+                    btnPayment.setEnabled(false);
+                } else {
+                    btnPayment.setText("Proceed to Payment (" + format2decimal(total) +"€)");
+                    btnPayment.setEnabled(true);
+                }
                 MyAdapter adapter = new MyAdapter(getApplicationContext());
                 listView.setAdapter(adapter);
             }
@@ -157,15 +166,20 @@ public class CartUser extends AppCompatActivity {
 
     private void openPayment() {
         Intent intent = new Intent(this, PaymentActivity.class);
-        Double price = 0.0;
-        for (Double i : mPrice)
-            price += i;
+        Double price = getTotalPrice();
         intent.putExtra("user", email);
         intent.putExtra("restaurant", restaurant);
         intent.putExtra("time", time);
         intent.putExtra("price", price);
         intent.putExtra("res_name", res_name);
         startActivity(intent);
+    }
+
+    private double getTotalPrice() {
+        Double price = 0.0;
+        for (Double i : mPrice)
+            price += i;
+        return price;
     }
 
     private void checkLogin() {
@@ -191,6 +205,7 @@ public class CartUser extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     class MyAdapter extends ArrayAdapter<String> {
@@ -214,7 +229,7 @@ public class CartUser extends AppCompatActivity {
             myRemove.setImageResource(R.drawable.remove);
 
             myRemove.setOnClickListener(view -> {
-                DatabaseReference cartRef = mref.child("Carts").child(email).child(cartKey.get(position));
+                DatabaseReference cartRef = mref.child("Carts").child(restaurant).child(email).child(cartKey.get(position));
                 cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -222,7 +237,6 @@ public class CartUser extends AppCompatActivity {
                             cartRef.removeValue();
                         }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
@@ -242,9 +256,13 @@ public class CartUser extends AppCompatActivity {
             myTitle.setText(mTitle.get(position));
             myDrink.setText(Html.fromHtml("<b>Drink</b> " + drink));
             myDessert.setText(Html.fromHtml("<b>Dessert</b> " + dessert));
-            myPrice.setText(mPrice.get(position).toString().concat("€"));
+            myPrice.setText(format2decimal(mPrice.get(position)).concat("€"));
 
             return row;
         }
+    }
+
+    private String format2decimal(double num) {
+        return String.format("%.2f", num);
     }
 }

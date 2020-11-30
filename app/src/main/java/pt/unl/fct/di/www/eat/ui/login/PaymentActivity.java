@@ -85,6 +85,7 @@ public class PaymentActivity extends AppCompatActivity {
         intent.putExtra("payment", payment);
         intent.putExtra("res_name", res_name);
         startActivity(intent);
+        finish();
     }
 
     private void checkLogin() {
@@ -111,5 +112,6 @@ public class PaymentActivity extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 }

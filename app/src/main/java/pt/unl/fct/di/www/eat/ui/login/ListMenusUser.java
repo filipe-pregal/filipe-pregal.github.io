@@ -47,6 +47,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
     Button btn;
     String email, restaurant, res_name;
     DatabaseReference mref;
+    int numOfItemsInMenu;
 
     ArrayList<String> mTitle = new ArrayList<>();
     ArrayList<String> menuKeys = new ArrayList<>();
@@ -205,6 +206,23 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 resetData();
+                DatabaseReference cartRef = mref.child("Carts").child(restaurant).child(email);
+                cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        numOfItemsInMenu = (int) dataSnapshot.getChildrenCount();
+                        // TODO
+                        if (numOfItemsInMenu==0)
+                            btn.setText("Checkout");
+                        else
+                            btn.setText("Checkout (" + numOfItemsInMenu + ")");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
                 if (dataSnapshot.exists()) {
                     RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                     setData(post);
@@ -228,6 +246,10 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
             checkLogin();
             redirectCart();
         });
+    }
+
+    private void executeNrOfItemsInCart(DatabaseReference mref) {
+
     }
 
     private void getMenuTags() {
@@ -309,6 +331,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         intent.putExtra("restaurant", restaurant);
         intent.putExtra("res_name", res_name);
         startActivity(intent);
+        finish();
     }
 
     private String convertTime(double time) {
@@ -346,6 +369,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void searchQuery(DatabaseReference rest, String query) {
