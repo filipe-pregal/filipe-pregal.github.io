@@ -505,6 +505,7 @@ public class ListMenusCompany extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, CompanyLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     class MyAdapterMenu extends ArrayAdapter<String> {

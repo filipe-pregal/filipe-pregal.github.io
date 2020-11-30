@@ -331,6 +331,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         intent.putExtra("restaurant", restaurant);
         intent.putExtra("res_name", res_name);
         startActivity(intent);
+        finish();
     }
 
     private String convertTime(double time) {
@@ -368,6 +369,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void searchQuery(DatabaseReference rest, String query) {

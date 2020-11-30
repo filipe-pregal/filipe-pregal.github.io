@@ -105,6 +105,7 @@ public class PickTableActivity extends AppCompatActivity {
         intent.putExtra("eat", eat);
         intent.putExtra("code", code);
         startActivity(intent);
+        finish();
     }
 
     private void createRequest(){
@@ -175,6 +176,7 @@ public class PickTableActivity extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void aux(Button b, String a){

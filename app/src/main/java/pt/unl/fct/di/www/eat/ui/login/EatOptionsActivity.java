@@ -146,6 +146,7 @@ public class EatOptionsActivity extends AppCompatActivity {
         intent.putExtra("eat", eat);
         intent.putExtra("code", code);
         startActivity(intent);
+        finish();
     }
 
     private void checkLogin() {
@@ -171,5 +172,6 @@ public class EatOptionsActivity extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 }
