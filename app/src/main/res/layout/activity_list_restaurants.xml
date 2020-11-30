@@ -22,11 +22,12 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_restaurants">
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@null"
-            android:dividerHeight="0dp"></ListView>
+            android:dividerHeight="0dp"
+            android:orientation="horizontal"></androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

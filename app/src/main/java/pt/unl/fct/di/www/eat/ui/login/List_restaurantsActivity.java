@@ -22,6 +22,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -161,7 +162,6 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -359,7 +359,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
 
             myTitle.setText(mTitle.get(position));
             myTag.setText(mTag.get(position));
-            myTime.setText("Close time: " + mTime.get(position));
+            myTime.setText("Closes at: " + mTime.get(position));
             myImg.setImageBitmap(mImg.get(position));
 
             return row;

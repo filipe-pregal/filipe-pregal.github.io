@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
     String email, restaurant, res_name;
     DatabaseReference mref;
     int numOfItemsInMenu;
+    DecimalFormat priceFormatter = new DecimalFormat("#.##");
 
     ArrayList<String> mTitle = new ArrayList<>();
     ArrayList<String> menuKeys = new ArrayList<>();
@@ -211,7 +213,6 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         numOfItemsInMenu = (int) dataSnapshot.getChildrenCount();
-                        // TODO
                         if (numOfItemsInMenu==0)
                             btn.setText("Checkout");
                         else
@@ -423,7 +424,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
 
             myDish.setText(mTitle.get(position));
             myTag.setText("#" + mTags.get(position));
-            myPrice.setText(mPrice.get(position).toString().concat("€"));
+            myPrice.setText(priceFormatter.format(mPrice.get(position)).concat("€"));
             myTime.setText(convertTime(mTime.get(position)));
 
             img.setImageBitmap(mImg.get(position));
