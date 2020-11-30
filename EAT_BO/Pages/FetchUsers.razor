@@ -1,0 +1,101 @@
+@page "/Users"
+@using Firebase.Database;
+@using Firebase.Database.Query;
+@using System.Threading.Tasks;
+@using Blazored.LocalStorage;
+
+@using EAT_BO.Models;
+
+@inject NavigationManager navigationManager
+@inject ILocalStorageService session
+
+@{
+    var sessKey = ((LocalStorageService)session).Key(0);
+    var hasSession = sessKey != null ? ((LocalStorageService)session).GetItem<string>(sessKey).Equals("BO_ADMIN") : false;
+}
+
+@if (hasSession)
+{
+    <h1>Users</h1>
+
+    <a href="/CreateUser" class="AddUser">
+        <i class="fas fa-2x fa-user-plus logspan"></i>
+    </a>
+    <br />
+    <br />
+    <br />
+
+
+    @if (users == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in users)
+                {
+                    <tr>
+                        <td>@user.name</td>
+                        <td>@user.email</td>
+                        <td>@user.role</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <style>
+        .AddUser {
+            float: right;
+            color: #4b4a4d;
+        }
+
+        .bo-admin {
+            display: block;
+        }
+
+            .bo-admin a {
+                padding-left: 5px;
+                text-decoration: none;
+            }
+    </style>
+}
+else if (sessKey != null && ((LocalStorageService)session).GetItem<string>(sessKey).Equals("COMPANY"))
+{
+    navigationManager.NavigateTo("/Restaurant");
+}
+else
+{
+    navigationManager.NavigateTo($"/?returnUrl={Uri.EscapeDataString(navigationManager.Uri)}");
+}
+
+@code {
+    private List<UserFirebaseModel> users = new List<UserFirebaseModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var sessKey = ((LocalStorageService)session).Key(0);
+        var hasSession = sessKey != null ? ((LocalStorageService)session).GetItem<string>(sessKey).Equals("BO_ADMIN") : false;
+
+        if (hasSession)
+        {
+            var firebaseClient = new FirebaseClient("https://eat-backoffice.firebaseio.com/");
+            var dbLogins = await firebaseClient.Child("Users").OrderByKey().OnceAsync<UserFirebaseModel>();
+
+            foreach (var dbLogin in dbLogins)
+            {
+                users.Add(dbLogin.Object);
+            }
+        }
+    }
+}
+

@@ -1,0 +1,77 @@
+﻿@using Blazored.LocalStorage;
+
+@inject NavigationManager Navigation
+@inject ILocalStorageService session
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <span class="navbar-brand">EAT - Backoffice</span>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3 bo-admin">
+            <NavLink class="nav-link" href="/Users">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Users
+            </NavLink>
+        </li>
+        <li class="nav-item px-3 bo-admin">
+            <NavLink class="nav-link" href="/CreateUser">
+                <span class="oi oi-plus" aria-hidden="true"></span> Create User
+            </NavLink>
+        </li>
+        <li class="nav-item px-3 restaurant" style="margin-top: 10px">
+            <NavLink class="nav-link" href="/Restaurant">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Menu
+            </NavLink>
+        </li>
+        <li class="nav-item px-3 restaurant">
+            <NavLink class="nav-link" href="/CreateMenuItem">
+                <span class="oi oi-plus" aria-hidden="true"></span> Create Menu Item
+            </NavLink>
+        </li>
+        <li class="nav-item px-3 restaurant">
+            <NavLink class="nav-link" href="/CreateDrink">
+                <span class="oi oi-plus" aria-hidden="true"></span> Create Drink
+            </NavLink>
+        </li>
+        <li class="nav-item px-3 restaurant">
+            <NavLink class="nav-link" href="/CreateDessert">
+                <span class="oi oi-plus" aria-hidden="true"></span> Create Dessert
+            </NavLink>
+        </li>
+        <li class="nav-item px-3 restaurant">
+            <a href="/AccountSettings"><span class="oi oi-cog" aria-hidden="true"></span>Account Settings</a>
+        </li>
+        <li class="nav-item px-3 bo-admin restaurant" @onclick="DoLogout">
+            <a href=""><span class="oi oi-account-logout" aria-hidden="true"></span>Logout</a>
+        </li>
+    </ul>
+</div>
+
+<style>
+
+    .restaurant, .bo-admin {
+        display: none;
+    }
+</style>
+
+@code {
+
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected async Task DoLogout()
+    {
+        await session.ClearAsync();
+        Navigation.NavigateTo("/");
+    }
+}

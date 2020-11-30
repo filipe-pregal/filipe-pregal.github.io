@@ -1,0 +1,159 @@
+﻿@page "/CreateMenuItem"
+@using Firebase.Database;
+@using Firebase.Database.Query;
+@using System.Threading.Tasks;
+@using Blazored.LocalStorage;
+
+@using EAT_BO.Models;
+
+@inject NavigationManager navigationManager
+@inject ILocalStorageService session
+
+@{
+    var sessKey = ((LocalStorageService)session).Key(0);
+    var hasSession = sessKey != null ? ((LocalStorageService)session).GetItem<string>(sessKey).Equals("COMPANY") : false;
+}
+
+@if (hasSession)
+{
+    <h1>Create Menu Item</h1>
+    <br />
+    <br />
+    <br />
+
+    <div class="BodyContent">
+        <div class="form-group">
+            <input type="text" @bind="@name" class="form-control input-lg" placeholder="Name" autofocus />
+        </div>
+        <div class="form-group">
+            <select class="form-control input-lg" @bind="@tag">
+                @foreach (var option in menu_tags)
+                {
+                    <option value="@option">
+                        @option
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" @bind="@price" class="form-control input-lg" placeholder="Price" />
+        </div>
+        <div class="form-group">
+            <input type="text" @bind="@time" class="form-control input-lg" placeholder="Time" />
+        </div>
+        <div class="form-group">
+            <input type="text" @bind="@image_url" class="form-control input-lg" placeholder="Image" />
+        </div>
+        <div class="form-group" style="display: flex;">
+            <label for="isAvailable" class="col-md-2 col-lg-2 com-xs-2 col-sm-2 form-check-label" style="align-items: center; display: flex;">Available?</label>
+            <input type="checkbox" name="isAvailable" @bind="@isAvailable" class="col-md-4 col-lg-4 col-xs-4 col-sm-4 form-check-inline form-control" style="text-align: left;" />
+        </div>
+
+        <div class="form-group" style="text-align: center">
+            <div class="text-danger">@errorsDisplay</div>
+            <button class="btn btn-gray" @onclick="DoCreate" style="margin-top:30px; width: 300px; height: 45px; background-color:#4B4A4D; font-size: medium; color: #fff;" id="loginButton">Save Item</button>
+
+        </div>
+    </div>
+
+    <style>
+        .form-check-inline:focus {
+            display: none;
+        }
+
+        .restaurant {
+            display: block;
+        }
+
+            .restaurant a {
+                padding-left: 5px;
+                text-decoration: none;
+            }
+    </style>
+}
+else if (sessKey != null && ((LocalStorageService)session).GetItem<string>(sessKey).Equals("BO_ADMIN"))
+{
+    navigationManager.NavigateTo("/Users");
+}
+else
+{
+    navigationManager.NavigateTo($"/?returnUrl={Uri.EscapeDataString(navigationManager.Uri)}");
+}
+
+@code {
+    string name = "";
+    string tag = "BEEF";
+    List<string> menu_tags = new List<string>();
+    string price = "";
+    string time = "";
+    string image_url = "";
+    string errorsDisplay = "";
+    bool isAvailable = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var sessKey = ((LocalStorageService)session).Key(0);
+        var hasSession = sessKey != null ? ((LocalStorageService)session).GetItem<string>(sessKey).Equals("COMPANY") : false;
+
+        if(hasSession)
+        {
+            var firebaseClient = new FirebaseClient("https://eat-backoffice.firebaseio.com/");
+            var dbTags = await firebaseClient.Child("select_lists").Child("menu_tags").OnceAsync<string>();
+
+            foreach (var tag in dbTags)
+            {
+                menu_tags.Add(tag.Object);
+            }
+        }
+    }
+
+    protected async Task DoCreate()
+    {
+
+        if (String.IsNullOrEmpty(name))
+        {
+            errorsDisplay = "Name Required";
+        }
+        if (String.IsNullOrEmpty(tag))
+        {
+            errorsDisplay = "Tag Required";
+        }
+        if (String.IsNullOrEmpty(price))
+        {
+            errorsDisplay = "Prices Required";
+        }
+        if (String.IsNullOrEmpty(time))
+        {
+            errorsDisplay = "time Required";
+        }
+
+        if (!String.IsNullOrEmpty(name) && !String.IsNullOrEmpty(tag) && !String.IsNullOrEmpty(price) && !String.IsNullOrEmpty(time))
+        {
+
+            var firebaseClient = new FirebaseClient("https://eat-backoffice.firebaseio.com/");
+
+            var menu = new MenuModel()
+            {
+                name = name,
+                tag = tag,
+                price = Double.Parse(price),
+                time = Double.Parse(time),
+                isAvailable = isAvailable,
+                image_url = image_url,
+            };
+
+            await firebaseClient
+                  .Child("Restaurants")
+                  .Child(GetKeyEmail())
+                  .Child("menu")
+                  .Child(name)
+                  .PutAsync(menu);
+            navigationManager.NavigateTo("/Restaurant");
+        }
+    }
+
+    string GetKeyEmail()
+    {
+        return ((LocalStorageService)session).Key(0).Replace(".", "_").ToString();
+    }
+}

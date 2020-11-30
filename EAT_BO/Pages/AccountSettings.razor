@@ -1,0 +1,175 @@
+﻿@page "/AccountSettings"
+@using Firebase.Database;
+@using Firebase.Database.Query;
+@using System.Threading.Tasks;
+@using Blazored.LocalStorage;
+
+@using EAT_BO.Models;
+
+@inject NavigationManager navigationManager
+@inject ILocalStorageService session
+
+@{
+    var sessKey = ((LocalStorageService)session).Key(0);
+    var hasSession = sessKey != null ? ((LocalStorageService)session).GetItem<string>(sessKey).Equals("COMPANY") : false;
+}
+
+@if (hasSession)
+{
+    <h1>Account Settings</h1>
+    <br />
+    <br />
+    <br />
+
+    <div class="BodyContent">
+        <div class="form-group">
+            <input type="text" @bind="@name" class="form-control input-lg" placeholder="Name" autofocus />
+        </div>
+        <div class="form-group">
+            <select class="form-control input-lg" @bind="@tag">
+                @foreach (var option in restaurant_tags)
+                {
+                    <option value="@option">
+                        @option
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <span class="input-lg">e.g: R. #, zip code City</span>
+            <input type="text" @bind="@address" class="form-control input-lg" placeholder="Address" />
+        </div>
+        <div class="form-group">
+            <input type="text" @bind="@image_url" class="form-control input-lg" placeholder="Logo Image" />
+        </div>
+        <div class="form-group">
+            <input type="text" @bind="@theme_color" class="form-control input-lg" placeholder="Theme Color" />
+        </div>
+        <div class="form-group">
+            <input type="time" @bind="@time" class="form-control input-lg" placeholder="Close Time" />
+        </div>
+
+        <div class="form-group" style="text-align: center">
+            <div class="text-danger">@errorsDisplay</div>
+            <button class="btn btn-gray" @onclick="DoCreate" style="margin-top:30px; width: 300px; height: 45px; background-color:#4B4A4D; font-size: medium; color: #fff;" id="loginButton">Save Settings</button>
+        </div>
+    </div>
+
+    <style>
+        .restaurant {
+            display: block;
+        }
+
+            .restaurant a {
+                padding-left: 5px;
+                text-decoration: none;
+            }
+    </style>
+}
+else if (sessKey != null && ((LocalStorageService)session).GetItem<string>(sessKey).Equals("BO_ADMIN"))
+{
+    navigationManager.NavigateTo("/Users");
+}
+else
+{
+    navigationManager.NavigateTo($"/?returnUrl={Uri.EscapeDataString(navigationManager.Uri)}");
+}
+
+@code {
+    string name = "";
+    string tag = "";
+    string address = "";
+    string image_url = "";
+    string theme_color = "";
+    DateTime time;
+    List<string> restaurant_tags = new List<string>();
+    string errorsDisplay = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var sessKey = ((LocalStorageService)session).Key(0);
+        var hasSession = sessKey != null ? ((LocalStorageService)session).GetItem<string>(sessKey).Equals("COMPANY") : false;
+
+        if (hasSession)
+        {
+            var firebaseClient = new FirebaseClient("https://eat-backoffice.firebaseio.com/");
+            var restaurant = await firebaseClient
+                                    .Child("Restaurants")
+                                    .OrderBy("email").EqualTo(sessKey).LimitToFirst(1)
+                                    .OnceAsync<FirebaseRestaurantModel>();
+
+            if (restaurant.Count() == 1 && restaurant.ElementAt(0).Object != null)
+            {
+                var r = restaurant.ElementAt(0).Object;
+
+                name = r.name;
+                tag = r.tag;
+                address = r.address;
+                time = r.time;
+                image_url = r.image_url;
+                theme_color = r.themeColor;
+            }
+
+            var dbTags = await firebaseClient.Child("select_lists").Child("restaurant_tags").OnceAsync<string>();
+
+            foreach (var tag in dbTags)
+            {
+                restaurant_tags.Add(tag.Object);
+            }
+        }
+    }
+
+    protected async Task DoCreate()
+    {
+        if (String.IsNullOrEmpty(name))
+        {
+            errorsDisplay = "Name Required";
+        }
+        if (String.IsNullOrEmpty(tag))
+        {
+            errorsDisplay = "Tag Required";
+        }
+        if (String.IsNullOrEmpty(address))
+        {
+            errorsDisplay = "Address Required";
+        }
+
+        if (!String.IsNullOrEmpty(name) && !String.IsNullOrEmpty(tag) && !String.IsNullOrEmpty(address))
+        {
+            var sessKey = ((LocalStorageService)session).Key(0);
+            var firebaseClient = new FirebaseClient("https://eat-backoffice.firebaseio.com/");
+            var restaurant = await firebaseClient
+                               .Child("Restaurants")
+                               .OrderBy("email").EqualTo(sessKey).LimitToFirst(1)
+                               .OnceAsync<FirebaseRestaurantModel>();
+
+            var newRestaurant = new FirebaseRestaurantModel();
+
+            if (restaurant.Count() == 1 && restaurant.ElementAt(0).Object != null)
+            {
+                var r = restaurant.ElementAt(0).Object;
+
+                newRestaurant = r;
+
+                newRestaurant.name = name;
+                newRestaurant.address = address;
+                newRestaurant.tag = tag;
+                newRestaurant.time = time;
+                newRestaurant.themeColor = theme_color;
+                newRestaurant.image_url = image_url;
+
+                await firebaseClient
+                               .Child("Restaurants")
+                               .Child(GetKeyEmail())
+                               .PutAsync(newRestaurant);
+
+                navigationManager.NavigateTo("/Restaurant");
+            }
+        }
+    }
+
+    string GetKeyEmail()
+    {
+        return ((LocalStorageService)session).Key(0).Replace(".", "_").ToString();
+    }
+}

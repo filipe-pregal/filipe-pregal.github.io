@@ -1,0 +1,182 @@
+﻿@page "/CreateUser"
+@using Firebase.Database;
+@using Firebase.Database.Query;
+@using System.Threading.Tasks;
+@using Blazored.LocalStorage;
+
+@using EAT_BO.Models;
+
+@inject NavigationManager navigationManager
+@inject ILocalStorageService session
+
+@{
+    var sessKey = ((LocalStorageService)session).Key(0);
+    var hasSession = sessKey != null ? ((LocalStorageService)session).GetItem<string>(sessKey).Equals("BO_ADMIN") : false;
+}
+
+@if (hasSession)
+{
+    <h1>Create User</h1>
+    <br />
+    <br />
+    <br />
+
+    <div class="BodyContent">
+        <div class="form-group">
+            <input type="text" @bind="@name" class="form-control input-lg" placeholder="Name" autofocus />
+        </div>
+        <div class="form-group">
+            <input type="email" @bind="@email" class="form-control input-lg" placeholder="Email" />
+        </div>
+        <div class="form-group">
+            <input type="password" @bind="@password" class="form-control input-lg" placeholder="Password" />
+        </div>
+        <div class="form-group">
+            <select class="form-control input-lg" id="role_id" @onchange="CheckChanged">
+                @foreach (var option in roles)
+                {
+                    <option value="@option">
+                        @option
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" @bind="@company_name" class="form-control input-lg" placeholder="Company" style=@display />
+        </div>
+        <div class="form-group" style="text-align: center">
+            <div class="text-danger">@errorsDisplay</div>
+            <button class="btn btn-gray" @onclick="DoCreate" style="margin-top:30px; width: 300px; height: 45px; background-color:#4B4A4D; font-size: medium; color: #fff;" id="loginButton">Save User</button>
+
+        </div>
+    </div>
+
+    <style>
+        .bo-admin {
+            display: block;
+        }
+
+            .bo-admin a {
+                padding-left: 5px;
+                text-decoration: none;
+            }
+    </style>
+}
+else if (sessKey != null && ((LocalStorageService)session).GetItem<string>(sessKey).Equals("COMPANY"))
+{
+    navigationManager.NavigateTo("/Restaurant");
+}
+else
+{
+    navigationManager.NavigateTo($"/?returnUrl={Uri.EscapeDataString(navigationManager.Uri)}");
+}
+
+@code {
+
+    string name = "";
+    string email = "";
+    string password = "";
+    string role = "Non Selected";
+    List<string> roles = new List<string>() { "Non Selected" };
+    string company_name = "";
+    string token = "";
+    string errorsDisplay = "";
+    string display = "display: none;";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var sessKey = ((LocalStorageService)session).Key(0);
+        var hasSession = sessKey != null ? ((LocalStorageService)session).GetItem<string>(sessKey).Equals("BO_ADMIN") : false;
+
+        if (hasSession)
+        {
+            var firebaseClient = new FirebaseClient("https://eat-backoffice.firebaseio.com/");
+            var dbRoles = await firebaseClient.Child("select_lists").Child("user_roles").OnceAsync<string>();
+
+            foreach (var role in dbRoles)
+            {
+                roles.Add(role.Object);
+            }
+        }
+    }
+
+    private void CheckChanged(ChangeEventArgs e)
+    {
+        role = e.Value.ToString();
+        if (role.Equals("COMPANY"))
+        {
+            display = "display: inline-block;";
+        }
+        else
+        {
+            display = "display: none;";
+        }
+    }
+
+    protected async Task DoCreate()
+    {
+
+        if (String.IsNullOrEmpty(name))
+        {
+            errorsDisplay = "Name Required";
+        }
+        if (String.IsNullOrEmpty(email))
+        {
+            errorsDisplay = "Email Required";
+        }
+        if (String.IsNullOrEmpty(password))
+        {
+            errorsDisplay = "Password Required";
+        }
+        if (role.Equals("Non Selected"))
+        {
+            errorsDisplay = "Role Required";
+        }
+        if (role.Equals("COMPANY") && String.IsNullOrEmpty(company_name))
+        {
+            errorsDisplay = "Company Name Required";
+        }
+
+        if (!String.IsNullOrEmpty(name) && !String.IsNullOrEmpty(email) && !String.IsNullOrEmpty(password) && !String.IsNullOrEmpty(role) || (role.Equals("COMPANY") && !String.IsNullOrEmpty(company_name)))
+        {
+            var firebaseClient = new FirebaseClient("https://eat-backoffice.firebaseio.com/");
+            var dbLogin = await firebaseClient.Child("Users").OrderBy("email").EqualTo(email.ToString()).LimitToFirst(1).OnceAsync<UserFirebaseModel>();
+            var restaurant = await firebaseClient.Child("Restaurants").Child(email.Replace(".", " ")).OnceAsync<FirebaseRestaurantModel>();
+
+
+            if (dbLogin.Count() == 0 && restaurant.Count() == 0)
+            {
+                var currentUserLogin = new UserFirebaseModel()
+                {
+                    name = name,
+                    email = email,
+                    password = password,
+                    role = role,
+                    token = token
+                };
+                var keyEmail = email.Replace(".", "_");
+
+                var newRestaurant = new RestaurantModel()
+                {
+                    name = company_name,
+                    email = email
+                };
+
+                await firebaseClient
+                  .Child("Users").Child(keyEmail)
+                  .PutAsync(currentUserLogin);
+
+                await firebaseClient
+                  .Child("Restaurants").Child(keyEmail)
+                  .PutAsync(newRestaurant);
+
+                navigationManager.NavigateTo("/Users");
+            }
+            else
+            {
+                errorsDisplay = "User Already exists!";
+            }
+        }
+    }
+}
+

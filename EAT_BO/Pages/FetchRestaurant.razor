@@ -1,0 +1,234 @@
+@page "/Restaurant"
+@using Firebase.Database;
+@using Firebase.Database.Query;
+@using System.Threading.Tasks;
+@using Blazored.LocalStorage;
+
+@using EAT_BO.Models;
+@using EAT_BO.Shared;
+
+@inject NavigationManager navigationManager
+@inject ILocalStorageService session
+@inject IJSRuntime js
+
+@{
+    var sessKey = ((LocalStorageService)session).Key(0);
+    var hasSession = sessKey != null ? ((LocalStorageService)session).GetItem<string>(sessKey).Equals("COMPANY") : false;
+}
+
+@if (hasSession)
+{
+    <h1>@restaurant_name</h1>
+
+    <TabControl>
+        <TabPage Text="Items Menu">
+            <br />
+            <br />
+            <a href="/CreateMenuItem" class="AddItem">
+                <i class="fas fa-2x fa-plus logspan"></i>
+            </a>
+            <br />
+            <br />
+            <br />
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Tag</th>
+                        <th>Time (min)</th>
+                        <th>Price (&euro;)</th>
+                        <th>Disponibility</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in m)
+                    {
+                        <tr id="@item.name">
+                            <td>@item.name</td>
+                            <td>@item.tag</td>
+                            <td>@item.time</td>
+                            <td>@item.price</td>
+                            <td>@item.isAvailable</td>
+                            <td><i class="oi oi-trash" @onclick="@(e => DoDelete(item.name, "menu"))"></i></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </TabPage>
+        <TabPage Text="Drinks Menu">
+            <br />
+            <br />
+            <a href="/CreateDrink" class="AddItem">
+                <i class="fas fa-2x fa-plus logspan"></i>
+            </a>
+            <br />
+            <br />
+            <br />
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>@*Price (&euro;)*@</th>
+                        <th>Disponibility</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in d)
+                    {
+                        <tr id="@item.name">
+                            <td>@item.name</td>
+                            <td>@*@item.price*@</td>
+                            <td>@item.isAvailable</td>
+                            <td><i class="oi oi-trash" @onclick="@(e => DoDelete(item.name, "drinks"))"></i></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </TabPage>
+        <TabPage Text="Desserts Menu">
+            <br />
+            <br />
+            <a href="/CreateDessert" class="AddItem">
+                <i class="fas fa-2x fa-plus logspan"></i>
+            </a>
+            <br />
+            <br />
+            <br />
+            <table class="table" id="desserts">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>@*Price (&euro;)*@</th>
+                        <th>Disponibility</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in de)
+                    {
+                        <tr id="@item.name">
+                            <td>@item.name</td>
+                            <td>@*@item.price*@</td>
+                            <td>@item.isAvailable</td>
+                            <td><i class="oi oi-trash" @onclick="@(e => DoDelete(item.name, "desserts"))"></i></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </TabPage>
+    </TabControl>
+
+    <style>
+        .oi-trash {
+            cursor: pointer;
+        }
+
+            .oi-trash:hover {
+                color: darkblue;
+            }
+
+        .AddItem {
+            float: right;
+            color: #4b4a4d;
+        }
+
+        .restaurant {
+            display: block;
+        }
+
+            .restaurant a {
+                padding-left: 5px;
+                text-decoration: none;
+            }
+    </style>
+}
+else if (sessKey != null && ((LocalStorageService)session).GetItem<string>(sessKey).Equals("BO_ADMIN"))
+{
+    navigationManager.NavigateTo("/Users");
+}
+else
+{
+    navigationManager.NavigateTo($"/?returnUrl={Uri.EscapeDataString(navigationManager.Uri)}");
+}
+
+@code {
+    private RestaurantModel menu = new RestaurantModel();
+    private List<MenuModel> m = new List<MenuModel>();
+    private List<DrinksDessertModel> d = new List<DrinksDessertModel>();
+    private List<DrinksDessertModel> de = new List<DrinksDessertModel>();
+    private string restaurant_name = "";
+    private string message = "Do you want to delete this item?";
+
+    protected async Task DoDelete(string name, string category)
+    {
+        var firebaseClient = new FirebaseClient("https://eat-backoffice.firebaseio.com/");
+        bool isConfirmed = await js.InvokeAsync<bool>("ConfirmDelete", message);
+
+        if (isConfirmed)
+        {
+            await firebaseClient.Child("Restaurants").Child(GetKeyEmail).Child(category).Child(name).DeleteAsync();
+            await js.InvokeVoidAsync("reloadTable", name);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var sessKey = ((LocalStorageService)session).Key(0);
+        var hasSession = sessKey != null ? ((LocalStorageService)session).GetItem<string>(sessKey).Equals("COMPANY") : false;
+
+        if (hasSession)
+        {
+            var firebaseClient = new FirebaseClient("https://eat-backoffice.firebaseio.com/");
+            var restaurant = await firebaseClient
+                                    .Child("Restaurants")
+                                    .OrderBy("email").EqualTo(sessKey).LimitToFirst(1)
+                                    .OnceAsync<FirebaseRestaurantModel>();
+
+            if (restaurant.Count() == 1 && restaurant.ElementAt(0).Object != null)
+            {
+                var r = restaurant.ElementAt(0).Object;
+
+                if (r.desserts != null)
+                {
+                    foreach (var v in r.desserts.Values)
+                    {
+                        de.Add(v);
+                    }
+                }
+
+                if (r.drinks != null)
+                {
+                    foreach (var v in r.drinks.Values)
+                    {
+                        d.Add(v);
+                    }
+                }
+
+                if (r.menu != null)
+                {
+                    foreach (var v in r.menu.Values)
+                    {
+                        m.Add(v);
+                    }
+                }
+                restaurant_name = r.name;
+
+                menu = new RestaurantModel
+                {
+                    name = r.name,
+                    email = r.email,
+                    address = r.address,
+                    desserts = de,
+                    drinks = d,
+                    menu = m
+                };
+            }
+        }
+    }
+    private string GetKeyEmail()
+    {
+        return ((LocalStorageService)session).Key(0).Replace(".", "_").ToString();
+    }
+}

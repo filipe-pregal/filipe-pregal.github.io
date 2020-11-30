@@ -1,0 +1,79 @@
+﻿@page "/"
+@using Firebase.Database;
+@using Firebase.Database.Query;
+@using System.Threading.Tasks;
+
+@using EAT_BO.Models;
+
+@inject NavigationManager navigationManager
+@inject Blazored.LocalStorage.ILocalStorageService session
+
+<h1>Login</h1>
+<br />
+<br />
+<br />
+
+<body>
+    <div class="BodyContent">
+        <div class="form-group">
+            <input type="email" @bind="@email" class="form-control input-lg" placeholder="Email" autofocus />
+        </div>
+        <div class="form-group">
+            <input type="password" @bind="@password" class="form-control input-lg" placeholder="Password" />
+        </div>
+
+        <div class="form-group" style="text-align: center">
+            <div class="text-danger">@loginErrorMessage</div>
+            <button class="btn btn-gray" @onclick="DoLogin" style="margin-top:30px; width: 300px; height: 45px; background-color:#4B4A4D; font-size: medium; color: #fff;" id="loginButton">Log me in</button>
+
+        </div>
+    </div>
+</body>
+
+<style>
+    input {
+        max-width: 100% !important;
+    }
+
+</style>
+
+@code{
+    string email = "";
+    string password = "";
+    string loginErrorMessage = "";
+
+    protected async Task DoLogin()
+    {
+        var firebaseClient = new FirebaseClient("https://eat-backoffice.firebaseio.com/");
+        var dbLogin = await firebaseClient.Child("Users").OrderBy("email").EqualTo(email.ToString()).LimitToFirst(1).OnceAsync<UserFirebaseModel>();
+        UserFirebaseModel firebaseUser = null;
+
+        if (dbLogin.Count() == 1)
+        {
+            firebaseUser = dbLogin.ElementAt(0).Object;
+        }
+
+        if (firebaseUser == null)
+        {
+            loginErrorMessage = "Account Does Not Exist!";
+            await session.ClearAsync();
+        }
+        else if (!firebaseUser.password.Equals(password))
+        {
+            loginErrorMessage = "Wrong Credentials";
+            await session.ClearAsync();
+        }
+        else if(firebaseUser.role.Equals("BO_ADMIN"))
+        {
+            await session.ClearAsync();
+            await session.SetItemAsync<string>(email, "BO_ADMIN");
+            navigationManager.NavigateTo("/Users");
+        }
+        else if(firebaseUser.role.Equals("COMPANY"))
+        {
+            await session.ClearAsync();
+            await session.SetItemAsync<string>(email, "COMPANY");
+            navigationManager.NavigateTo("/Restaurant");
+        }
+    }
+}
