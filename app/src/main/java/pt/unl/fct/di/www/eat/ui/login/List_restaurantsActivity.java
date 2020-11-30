@@ -369,12 +369,12 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         }
     }
 
-
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
+        sp = getSharedPreferences("myuser", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString("email", email);
+        editor.putString("user", email);
         editor.commit();
-        super.onStop();
+        super.onDestroy();
     }
 }

@@ -1,6 +1,8 @@
 package pt.unl.fct.di.www.eat;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -8,9 +10,12 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 
 import pt.unl.fct.di.www.eat.ui.login.CompanyLoginActivity;
+import pt.unl.fct.di.www.eat.ui.login.List_restaurantsActivity;
 import pt.unl.fct.di.www.eat.ui.login.UserLoginActivity;
 
 public class StartActivity extends AppCompatActivity {
+
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,4 +49,26 @@ public class StartActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected void onStart() {
+        try{
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("myuser", Context.MODE_PRIVATE);
+            String email = new String();
+            email = sp.getString("user", email);
+            Intent it;
+            // caso cliente
+            if (email.length() > 0) {
+                it = new Intent(getApplicationContext(), List_restaurantsActivity.class);
+                it.putExtra("user", email);
+                startActivity(it);
+            } else {
+                it = new Intent(getApplicationContext(), UserLoginActivity.class);
+                startActivity(it);
+            }
+        } catch(Exception e ){
+
+        }
+
+        super.onStart();
+    }
 }
