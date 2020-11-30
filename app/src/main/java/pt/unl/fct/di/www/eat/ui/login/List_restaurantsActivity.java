@@ -50,7 +50,8 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
     ArrayList<String> mEmail = new ArrayList<>();
     ArrayList<String> mTime = new ArrayList<>();
     ArrayList<Bitmap> mImg = new ArrayList<>();
-    //ArrayList<String> mAddress = new ArrayList<>();
+    ArrayList<String> mColors = new ArrayList<>();
+
     String[] tags;
     boolean[] selectedTags;
     ArrayList<String> sTags = new ArrayList<String>();
@@ -265,6 +266,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             mTag.add(r.getTag());
             mTime.add(r.getTime().substring(11, 16));
             setImage(r.getImage_url());
+            mColors.add(r.getThemeColor());
         }
     }
 
@@ -291,6 +293,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         mEmail.clear();
         mTag.clear();
         mImg.clear();
+        mColors.clear();
     }
 
     private void openMenus(String restaurant) {

@@ -7,13 +7,13 @@ public class RestaurantData {
     Map<String, Option> desserts;
     Map<String, Option> drinks;
     Map<String, Menu> menu;
-    String address, name, tag, email, time, image_url;
+    String address, name, tag, email, time, image_url, themeColor;
 
     public RestaurantData() {
 
     }
 
-    public RestaurantData(Map<String, Option> desserts, String address, Map<String, Option> drinks, String name, String tag, Map<String, Menu> menu, String email, String time, String image_url) {
+    public RestaurantData(String themeColor, Map<String, Option> desserts, String address, Map<String, Option> drinks, String name, String tag, Map<String, Menu> menu, String email, String time, String image_url) {
         this.desserts = desserts;
         this.address = address;
         this.drinks = drinks;
@@ -23,6 +23,15 @@ public class RestaurantData {
         this.email = email;
         this.time = time;
         this.image_url = image_url;
+        this.themeColor = themeColor;
+    }
+
+    public String getThemeColor() {
+        return themeColor;
+    }
+
+    public void setThemeColor(String themeColor) {
+        this.themeColor = themeColor;
     }
 
     public String getImage_url() {
