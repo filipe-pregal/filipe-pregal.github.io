@@ -118,5 +118,6 @@ public class CompanyLoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ListMenusCompany.class);
         intent.putExtra("user", email);
         startActivity(intent);
+        finish();
     }
 }

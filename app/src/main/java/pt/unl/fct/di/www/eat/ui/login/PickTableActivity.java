@@ -105,13 +105,14 @@ public class PickTableActivity extends AppCompatActivity {
         intent.putExtra("eat", eat);
         intent.putExtra("code", code);
         startActivity(intent);
+        finish();
     }
 
     private void createRequest(){
         DatabaseReference addRequest = mref.child("Requests").child(restaurant).child(email);
 
         DatabaseReference cartRef = mref.child("Carts").child(restaurant).child(email);
-        cartRef.addValueEventListener(new ValueEventListener() {
+        cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 checkLogin();
@@ -175,6 +176,7 @@ public class PickTableActivity extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void aux(Button b, String a){

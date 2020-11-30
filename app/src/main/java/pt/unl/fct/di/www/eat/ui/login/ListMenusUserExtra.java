@@ -146,7 +146,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
                 dessert = a.getText().toString();
 
             DatabaseReference m = mref.child("Restaurants").child(restaurant).child("menu").child(menu);
-            m.addListenerForSingleValueEvent(new ValueEventListener() {
+            m.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
@@ -173,6 +173,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
         intent.putExtra("user", email);
         intent.putExtra("restaurant", restaurant);
         startActivity(intent);
+        finish();
     }
 
     private void setDataExtra(RestaurantData r) {
@@ -257,5 +258,6 @@ public class ListMenusUserExtra extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 }

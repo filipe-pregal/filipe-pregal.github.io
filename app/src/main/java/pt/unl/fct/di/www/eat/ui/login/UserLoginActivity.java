@@ -126,11 +126,13 @@ public class UserLoginActivity extends AppCompatActivity {
     private void openRegister() {
         Intent intent = new Intent(this, RegisterUser.class);
         startActivity(intent);
+        finish();
     }
 
     private void openRestaurants(String email) {
         Intent intent = new Intent(this, List_restaurantsActivity.class);
         intent.putExtra("user", email);
         startActivity(intent);
+        finish();
     }
 }

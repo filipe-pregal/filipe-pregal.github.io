@@ -222,6 +222,7 @@ public class RequestUser extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private String convertTime(double time) {
