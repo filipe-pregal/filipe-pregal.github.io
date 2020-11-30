@@ -91,7 +91,7 @@ public class EatOptionsActivity extends AppCompatActivity {
         DatabaseReference addRequest = mref.child("Requests").child(restaurant).child(email);
 
         DatabaseReference cartRef = mref.child("Carts").child(restaurant).child(email);
-        cartRef.addValueEventListener(new ValueEventListener() {
+        cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 checkLogin();

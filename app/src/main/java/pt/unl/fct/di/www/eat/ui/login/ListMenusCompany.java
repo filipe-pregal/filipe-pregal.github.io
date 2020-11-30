@@ -143,7 +143,7 @@ public class ListMenusCompany extends AppCompatActivity {
         sDrinks = findViewById(R.id.seeDrinks);
         sDesserts = findViewById(R.id.seeDesserts);
 
-        requests();
+        menus();
 
         btnRequest.setOnClickListener(view -> {
             checkLogin();
@@ -158,24 +158,7 @@ public class ListMenusCompany extends AppCompatActivity {
         btnMenu.setOnClickListener(view -> {
             checkLogin();
             setVisibility(8);
-            DatabaseReference rest = mref.child("Restaurants").child(email);
-            rest.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        resetDataMenu();
-                        RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
-                        setDataMenu(post);
-                    }
-                    MyAdapterMenu adapter = new MyAdapterMenu(getApplicationContext(), rest);
-                    listView1.setAdapter(adapter);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    System.out.println("The read failed: " + databaseError.getCode());
-                }
-            });
+            menus();
         });
 
         btnExtra = findViewById(R.id.editExtras);
@@ -247,6 +230,27 @@ public class ListMenusCompany extends AppCompatActivity {
                     System.out.println("The read failed: " + databaseError.getCode());
                 }
             });
+        });
+    }
+
+    private void menus(){
+        DatabaseReference rest = mref.child("Restaurants").child(email);
+        rest.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    resetDataMenu();
+                    RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
+                    setDataMenu(post);
+                }
+                MyAdapterMenu adapter = new MyAdapterMenu(getApplicationContext(), rest);
+                listView1.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
         });
     }
 
