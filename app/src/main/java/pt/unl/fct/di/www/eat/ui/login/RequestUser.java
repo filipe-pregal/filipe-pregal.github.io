@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -130,6 +131,8 @@ public class RequestUser extends AppCompatActivity {
             TextView myPayment = row.findViewById(R.id.paymentR);
             TextView myPrice = row.findViewById(R.id.priceR);
             TextView myTime = row.findViewById(R.id.timeR);
+            ImageView img = row.findViewById(R.id.removeR);
+            img.setVisibility(View.GONE);
 
             ListView list = row.findViewById(R.id.itemsR);
 

@@ -1,6 +1,8 @@
 package pt.unl.fct.di.www.eat.ui.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,10 +13,12 @@ import java.util.TimerTask;
 import pt.unl.fct.di.www.eat.R;
 import pt.unl.fct.di.www.eat.StartActivity;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashScreen<pref> extends AppCompatActivity {
+    String email = new String();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        email = new String();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
 
@@ -25,4 +29,6 @@ public class SplashScreen extends AppCompatActivity {
             }
         }, 3000);
     }
+
+
 }

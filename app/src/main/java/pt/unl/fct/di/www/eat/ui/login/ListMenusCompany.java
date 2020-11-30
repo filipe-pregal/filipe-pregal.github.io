@@ -2,6 +2,7 @@ package pt.unl.fct.di.www.eat.ui.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -69,6 +70,7 @@ public class ListMenusCompany extends AppCompatActivity {
     ArrayList<Double> mPriceR = new ArrayList<>();
     ArrayList<String> mTimeR = new ArrayList<>();
     ArrayList<List<RequestItem>> mItem = new ArrayList<>();
+    ArrayList<String> rKeys = new ArrayList<>();
 
 
     @Override
@@ -79,10 +81,7 @@ public class ListMenusCompany extends AppCompatActivity {
                 super.onOptionsItemSelected(item);
                 return true;
             case R.id.action_logout:
-                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
-                user.setValue("");
-                Intent it = new Intent(this, StartActivity.class);
-                startActivity(it);
+                logout();
                 return true;
             case R.id.action_settings:
                 Intent i2 = new Intent(this, Settings_page.class);
@@ -90,7 +89,7 @@ public class ListMenusCompany extends AppCompatActivity {
                 startActivity(i2);
                 return true;
             case android.R.id.home:
-               finish();
+               logout();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -134,6 +133,12 @@ public class ListMenusCompany extends AppCompatActivity {
         if (extras != null) {
             email = extras.getString("user");
         }
+
+        SharedPreferences sp = getSharedPreferences("myuser", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("user", "");
+        editor.putString("company", email);
+        editor.commit();
 
         mref = FirebaseDatabase.getInstance().getReference();
         checkLogin();
@@ -234,6 +239,20 @@ public class ListMenusCompany extends AppCompatActivity {
         });
     }
 
+    private void logout() {
+        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
+        user.setValue("");
+        try {
+            SharedPreferences preferences = getSharedPreferences("myuser",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+            finish();
+        } catch (Exception e) {
+
+        }
+    }
+
     private void menus(){
         DatabaseReference rest = mref.child("Restaurants").child(email);
         rest.addValueEventListener(new ValueEventListener() {
@@ -268,7 +287,7 @@ public class ListMenusCompany extends AppCompatActivity {
                         while (it.hasNext()){
                             DataSnapshot data = it.next();
                             Request request = data.getValue(Request.class);
-                            setDataRequest(request, data.getKey());
+                            setDataRequest(request, data.getKey(), child.getKey());
                         }
                     }
                 }
@@ -353,12 +372,13 @@ public class ListMenusCompany extends AppCompatActivity {
         }
     }
 
-    private void setDataRequest(Request r, String code){
+    private void setDataRequest(Request r, String code, String key){
         mCode.add(code);
         mPayment.add(r.getPayment());
         mPriceR.add(r.getPrice());
         mTimeR.add(convertTime(r.getTime()));
         mItem.add(r.getItems());
+        rKeys.add(key);
     }
 
     private void resetDataRequest(){
@@ -667,7 +687,14 @@ public class ListMenusCompany extends AppCompatActivity {
             TextView myPayment = row.findViewById(R.id.paymentR);
             TextView myPrice = row.findViewById(R.id.priceR);
             TextView myTime = row.findViewById(R.id.timeR);
+            ImageView img = row.findViewById(R.id.removeR);
 
+            img.setImageResource(R.drawable.done);
+
+            img.setOnClickListener(view -> {
+                DatabaseReference rRef = mref.child("Requests").child(email).child(rKeys.get(position)).child(mCode.get(position));
+                rRef.removeValue();
+            });
 
             ListView list = row.findViewById(R.id.itemsR);
 
