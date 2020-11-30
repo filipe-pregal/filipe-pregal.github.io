@@ -23,12 +23,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/RelativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/bodyTitle"
-            android:layout_marginBottom="40dp">
+            android:layout_height="match_parent"
+            android:layout_below="@+id/bodyTitle">
 
             <TextView
                 android:id="@+id/cardHeader"
@@ -38,43 +37,70 @@
                 android:gravity="center"
                 android:text="Thank you for your preference!"
                 android:textColor="#212121"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/bodyTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="120dp"
-                android:gravity="center"
-                android:text="Your order will be available in:"
-                android:textSize="23sp" />
-
-            <RelativeLayout
-                android:id="@+id/centeredDiv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/bodyTitle"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="55dp">
-
-                <ImageView
-                    android:id="@+id/clock_icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentStart="true"
-                    app:srcCompat="@drawable/clock_icon" />
-
-                <TextView
-                    android:id="@+id/time"
-                    android:layout_width="wrap_content"
+                android:textSize="24sp"
+                app:layout_constraintTop_toTopOf="parent"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/timeContainer"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="30dp"
-                    android:layout_toRightOf="@id/clock_icon"
-                    android:text="15min"
-                    android:textSize="24sp" />
-            </RelativeLayout>
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/cardHeader"
+                    app:layout_constraintBottom_toTopOf="@id/mapContainer">
+                        <TextView
+                            android:id="@+id/bodyTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Your order will be available in:"
+                            android:textSize="23sp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"/>
 
+                        <RelativeLayout
+                            android:id="@+id/centeredDiv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/bodyTitle"
+                            android:layout_marginTop="35dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent">
+
+                            <ImageView
+                                android:id="@+id/clock_icon"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                app:srcCompat="@drawable/clock_icon" />
+
+                            <TextView
+                                android:id="@+id/time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="30dp"
+                                android:layout_toRightOf="@id/clock_icon"
+                                android:text="15min"
+                                android:textSize="24sp" />
+                        </RelativeLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mapContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/timeContainer"
+        app:layout_constraintBottom_toTopOf="@id/codeContainer">
+        <ImageButton
+            android:id="@+id/maps_url"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/maps_icon"
+            android:text="Route"
+            android:textSize="26sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"></ImageButton>
             <TextView
                 android:id="@+id/mapsTitle"
                 android:layout_width="wrap_content"
@@ -83,41 +109,48 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="20dp"
                 android:text="Open on Maps"
-                android:textSize="24sp">
+                android:textSize="24sp"
+                app:layout_constraintTop_toBottomOf="@id/maps_url"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
 
             </TextView>
-
-            <ImageButton
-                android:id="@+id/maps_url"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_above="@id/labelCode"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/maps_icon"
-                android:text="Route"
-                android:textSize="26sp"></ImageButton>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/codeContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/mapContainer"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    >
             <TextView
                 android:id="@+id/labelCode"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/orderCode"
-                android:gravity="center"
                 android:text="Your code:"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
 
             <TextView
                 android:id="@+id/orderCode"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:gravity="center"
                 android:text="C4UT5"
                 android:textColor="#212121"
-                android:textSize="28sp" />
+                android:textSize="28sp"
+                app:layout_constraintTop_toBottomOf="@id/labelCode"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
