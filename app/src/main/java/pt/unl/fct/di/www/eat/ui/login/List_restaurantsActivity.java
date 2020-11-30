@@ -368,7 +368,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             String color = mColors.get(position);
             if (color.equals("") || color == null)
                 color = "#DDDDDD";
-            int colorTxt = Color.parseColor(isWhite(color) ? "#EEEEEE":"#111111");
+            int colorTxt = Color.parseColor(isWhite(color) ? "#EEEEEE":"#333333");
             System.out.println(color + " text: " + colorTxt);
             myTitle.setTextColor(colorTxt);
             myTitle.setText(mTitle.get(position));
@@ -377,7 +377,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             myTime.setTextColor(colorTxt);
             myTime.setText("Closes at: " + mTime.get(position));
             myImg.setImageBitmap(mImg.get(position));
-            myCard.setBackgroundColor(Color.parseColor(color));
+            myCard.setCardBackgroundColor(Color.parseColor(color));
             return row;
         }
     }

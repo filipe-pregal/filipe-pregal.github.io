@@ -181,27 +181,27 @@ public class PickTableActivity extends AppCompatActivity {
 
     private void aux(Button b, String a){
         if(table.equals("")){
-            b.setBackgroundColor(Color.BLUE);
+            b.setBackgroundResource(R.color.selected);
             table = b.getText().toString();
         }
         else if(table.equals(a)){
-            b.setBackgroundColor(Color.GREEN);
+            b.setBackgroundResource(R.color.available);
             table = "";
         }else {
             if(a.equals("2")){
-                btn2.setBackgroundColor(Color.BLUE);
-                btn3.setBackgroundColor(Color.GREEN);
-                btn6.setBackgroundColor(Color.GREEN);
+                btn2.setBackgroundResource(R.color.selected);
+                btn3.setBackgroundResource(R.color.available);
+                btn6.setBackgroundResource(R.color.available);
                 table = a;
             }else if (a.equals("3")){
-                btn3.setBackgroundColor(Color.BLUE);
-                btn2.setBackgroundColor(Color.GREEN);
-                btn6.setBackgroundColor(Color.GREEN);
+                btn3.setBackgroundResource(R.color.selected);
+                btn2.setBackgroundResource(R.color.available);
+                btn6.setBackgroundResource(R.color.available);
                 table = a;
             }else {
-                btn6.setBackgroundColor(Color.BLUE);
-                btn2.setBackgroundColor(Color.GREEN);
-                btn3.setBackgroundColor(Color.GREEN);
+                btn6.setBackgroundResource(R.color.selected);
+                btn2.setBackgroundResource(R.color.available);
+                btn3.setBackgroundResource(R.color.available);
                 table = a;
             }
         }
