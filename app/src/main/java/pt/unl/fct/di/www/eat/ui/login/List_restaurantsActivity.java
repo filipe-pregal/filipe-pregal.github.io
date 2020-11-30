@@ -2,6 +2,7 @@ package pt.unl.fct.di.www.eat.ui.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -76,10 +77,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 d.show(getSupportFragmentManager(), "Restaurant Tags");
                 return true;
             case R.id.action_logout:
-                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
-                user.setValue("");
-                Intent it = new Intent(this, StartActivity.class);
-                startActivity(it);
+                logout();
                 return true;
             case R.id.action_settings:
                 Intent i2 = new Intent(this, Settings_page.class);
@@ -130,6 +128,12 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             email = extras.getString("user");
         }
 
+        SharedPreferences sp = getSharedPreferences("myuser", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("user", email);
+        editor.putString("company", "");
+        editor.commit();
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
@@ -174,6 +178,20 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 openMenus(s);
             }
         });
+    }
+
+    private void logout() {
+        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
+        user.setValue("");
+        try {
+            SharedPreferences preferences = getSharedPreferences("myuser",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+            finish();
+        } catch (Exception e) {
+
+        }
     }
 
     private void getRestaurantTags() {

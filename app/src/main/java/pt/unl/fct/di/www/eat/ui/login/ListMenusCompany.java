@@ -2,6 +2,7 @@ package pt.unl.fct.di.www.eat.ui.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -79,10 +80,7 @@ public class ListMenusCompany extends AppCompatActivity {
                 super.onOptionsItemSelected(item);
                 return true;
             case R.id.action_logout:
-                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
-                user.setValue("");
-                Intent it = new Intent(this, StartActivity.class);
-                startActivity(it);
+                logout();
                 return true;
             case R.id.action_settings:
                 Intent i2 = new Intent(this, Settings_page.class);
@@ -134,6 +132,12 @@ public class ListMenusCompany extends AppCompatActivity {
         if (extras != null) {
             email = extras.getString("user");
         }
+
+        SharedPreferences sp = getSharedPreferences("myuser", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("user", "");
+        editor.putString("company", email);
+        editor.commit();
 
         mref = FirebaseDatabase.getInstance().getReference();
         checkLogin();
@@ -232,6 +236,20 @@ public class ListMenusCompany extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    private void logout() {
+        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
+        user.setValue("");
+        try {
+            SharedPreferences preferences = getSharedPreferences("myuser",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+            finish();
+        } catch (Exception e) {
+
+        }
     }
 
     private void menus(){
