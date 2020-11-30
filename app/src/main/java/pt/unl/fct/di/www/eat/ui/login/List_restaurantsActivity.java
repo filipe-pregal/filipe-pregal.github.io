@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
@@ -22,6 +23,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -361,13 +364,44 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             TextView myTag = row.findViewById(R.id.tag);
             TextView myTime = row.findViewById(R.id.time);
             ImageView myImg = row.findViewById(R.id.imgR);
+            CardView myCard = row.findViewById(R.id.container);
 
+            String color = mColors.get(position);
+            if (color.equals("") || color == null)
+                color = "#DDDDDD";
+            int colorTxt = Color.parseColor(isWhite(color) ? "#EEEEEE":"#111111");
+            System.out.println(color + " text: " + colorTxt);
+            myTitle.setTextColor(colorTxt);
             myTitle.setText(mTitle.get(position));
+            myTag.setTextColor(colorTxt);
             myTag.setText(mTag.get(position));
+            myTime.setTextColor(colorTxt);
             myTime.setText("Closes at: " + mTime.get(position));
             myImg.setImageBitmap(mImg.get(position));
-
+            myCard.setBackgroundColor(Color.parseColor(color));
             return row;
         }
+    }
+
+    private static int[] hex2Rgb(String colorStr) {
+        int[] color = new int[3];
+        color[0] = Integer.valueOf( colorStr.substring( 1, 3 ), 16 );
+        color[1] = Integer.valueOf( colorStr.substring( 3, 5 ), 16 );
+        color[2] = Integer.valueOf( colorStr.substring( 5, 7 ), 16 );
+        return color;
+    }
+
+    private static boolean isWhiteFromColor(int[] c) {
+        double y = (299 * c[0] + 587 * c[1] + 114 * c[2]) / 1000;
+        return y < 128;
+    }
+
+    /**
+     * Returns a contrasting title given a color
+     * @param hex Color in HEXadecimal
+     * @return <strong>true</strong> if the title should be White<p><strong>false</strong> if the title should be Black</p>
+     */
+    private static boolean isWhite(String hex) {
+        return isWhiteFromColor(hex2Rgb(hex));
     }
 }
