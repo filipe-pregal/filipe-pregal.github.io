@@ -2,6 +2,7 @@ package pt.unl.fct.di.www.eat.ui.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +50,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
     String email, restaurant, res_name;
     DatabaseReference mref;
     int numOfItemsInMenu;
+    DecimalFormat priceFormatter = new DecimalFormat("#.##");
 
     ArrayList<String> mTitle = new ArrayList<>();
     ArrayList<String> menuKeys = new ArrayList<>();
@@ -76,10 +79,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
                 d.show(getSupportFragmentManager(), "Menu Tags");
                 return true;
             case R.id.action_logout:
-                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
-                user.setValue("");
-                Intent it = new Intent(this, StartActivity.class);
-                startActivity(it);
+                logout();
                 return true;
             case R.id.action_settings:
                 Intent i2 = new Intent(this, Settings_page.class);
@@ -121,6 +121,20 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
             }
         });
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void logout() {
+        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
+        user.setValue("");
+        try {
+            SharedPreferences preferences = getSharedPreferences("myuser",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+            finish();
+        } catch (Exception e) {
+
+        }
     }
 
     private void searchFilter(DatabaseReference rest) {
@@ -211,7 +225,6 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         numOfItemsInMenu = (int) dataSnapshot.getChildrenCount();
-                        // TODO
                         if (numOfItemsInMenu==0)
                             btn.setText("Checkout");
                         else
@@ -331,7 +344,6 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         intent.putExtra("restaurant", restaurant);
         intent.putExtra("res_name", res_name);
         startActivity(intent);
-        finish();
     }
 
     private String convertTime(double time) {
@@ -425,7 +437,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
 
             myDish.setText(mTitle.get(position));
             myTag.setText("#" + mTags.get(position));
-            myPrice.setText(mPrice.get(position).toString().concat("€"));
+            myPrice.setText(priceFormatter.format(mPrice.get(position)).concat("€"));
             myTime.setText(convertTime(mTime.get(position)));
 
             img.setImageBitmap(mImg.get(position));

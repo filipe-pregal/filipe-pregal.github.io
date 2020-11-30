@@ -2,6 +2,7 @@ package pt.unl.fct.di.www.eat.ui.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ public class CartUser extends AppCompatActivity {
 
     Button btnPayment;
     ListView listView;
+    TextView emptyText;
     String email, restaurant, res_name;
     DatabaseReference mref;
 
@@ -50,10 +52,7 @@ public class CartUser extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
-                user.setValue("");
-                Intent it = new Intent(this, StartActivity.class);
-                startActivity(it);
+                logout();
                 return true;
             case R.id.action_settings:
                 Intent i2 = new Intent(this, Settings_page.class);
@@ -94,6 +93,7 @@ public class CartUser extends AppCompatActivity {
         }
 
         listView = findViewById(R.id.listViewCart);
+        emptyText = findViewById(R.id.emptyText);
         checkLogin();
 
         btnPayment = findViewById(R.id.payment);
@@ -104,6 +104,7 @@ public class CartUser extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 checkLogin();
                 resetData();
+                listView.setEmptyView(emptyText);
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Cart cart = child.getValue(Cart.class);
@@ -135,6 +136,20 @@ public class CartUser extends AppCompatActivity {
             else
                 Toast.makeText(getApplicationContext(), "You can't advance with an empty cart!", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void logout() {
+        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
+        user.setValue("");
+        try {
+            SharedPreferences preferences = getSharedPreferences("myuser",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+            finish();
+        } catch (Exception e) {
+
+        }
     }
 
     private void setData(String key, Cart cart) {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
@@ -23,6 +24,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,7 +44,7 @@ import pt.unl.fct.di.www.eat.StartActivity;
 import pt.unl.fct.di.www.eat.data.RestaurantData;
 
 public class List_restaurantsActivity extends AppCompatActivity implements RestaurantTagsDialog.RestaurantTagsListener {
-    SharedPreferences sp ;
+
     ListView listView;
     String email;
     ArrayList abc = new ArrayList<RestaurantData>();
@@ -51,7 +55,8 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
     ArrayList<String> mEmail = new ArrayList<>();
     ArrayList<String> mTime = new ArrayList<>();
     ArrayList<Bitmap> mImg = new ArrayList<>();
-    //ArrayList<String> mAddress = new ArrayList<>();
+    ArrayList<String> mColors = new ArrayList<>();
+
     String[] tags;
     boolean[] selectedTags;
     ArrayList<String> sTags = new ArrayList<String>();
@@ -72,10 +77,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 d.show(getSupportFragmentManager(), "Restaurant Tags");
                 return true;
             case R.id.action_logout:
-                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
-                user.setValue("");
-                Intent it = new Intent(this, StartActivity.class);
-                startActivity(it);
+                logout();
                 return true;
             case R.id.action_settings:
                 Intent i2 = new Intent(this, Settings_page.class);
@@ -126,6 +128,12 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             email = extras.getString("user");
         }
 
+        SharedPreferences sp = getSharedPreferences("myuser", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("user", email);
+        editor.putString("company", "");
+        editor.commit();
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
@@ -162,7 +170,6 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -171,6 +178,20 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 openMenus(s);
             }
         });
+    }
+
+    private void logout() {
+        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
+        user.setValue("");
+        try {
+            SharedPreferences preferences = getSharedPreferences("myuser",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+            finish();
+        } catch (Exception e) {
+
+        }
     }
 
     private void getRestaurantTags() {
@@ -266,6 +287,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             mTag.add(r.getTag());
             mTime.add(r.getTime().substring(11, 16));
             setImage(r.getImage_url());
+            mColors.add(r.getThemeColor());
         }
     }
 
@@ -292,6 +314,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         mEmail.clear();
         mTag.clear();
         mImg.clear();
+        mColors.clear();
     }
 
     private void openMenus(String restaurant) {
@@ -299,7 +322,6 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         intent.putExtra("user", email);
         intent.putExtra("restaurant", restaurant);
         startActivity(intent);
-        finish();
     }
 
     private void redirectLogin() {
@@ -359,22 +381,44 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             TextView myTag = row.findViewById(R.id.tag);
             TextView myTime = row.findViewById(R.id.time);
             ImageView myImg = row.findViewById(R.id.imgR);
+            CardView myCard = row.findViewById(R.id.container);
 
+            String color = mColors.get(position);
+            if (color.equals("") || color == null)
+                color = "#DDDDDD";
+            int colorTxt = Color.parseColor(isWhite(color) ? "#EEEEEE":"#111111");
+            System.out.println(color + " text: " + colorTxt);
+            myTitle.setTextColor(colorTxt);
             myTitle.setText(mTitle.get(position));
+            myTag.setTextColor(colorTxt);
             myTag.setText(mTag.get(position));
-            myTime.setText("Close time: " + mTime.get(position));
+            myTime.setTextColor(colorTxt);
+            myTime.setText("Closes at: " + mTime.get(position));
             myImg.setImageBitmap(mImg.get(position));
-
+            myCard.setBackgroundColor(Color.parseColor(color));
             return row;
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        sp = getSharedPreferences("myuser", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString("user", email);
-        editor.commit();
-        super.onDestroy();
+    private static int[] hex2Rgb(String colorStr) {
+        int[] color = new int[3];
+        color[0] = Integer.valueOf( colorStr.substring( 1, 3 ), 16 );
+        color[1] = Integer.valueOf( colorStr.substring( 3, 5 ), 16 );
+        color[2] = Integer.valueOf( colorStr.substring( 5, 7 ), 16 );
+        return color;
+    }
+
+    private static boolean isWhiteFromColor(int[] c) {
+        double y = (299 * c[0] + 587 * c[1] + 114 * c[2]) / 1000;
+        return y < 128;
+    }
+
+    /**
+     * Returns a contrasting title given a color
+     * @param hex Color in HEXadecimal
+     * @return <strong>true</strong> if the title should be White<p><strong>false</strong> if the title should be Black</p>
+     */
+    private static boolean isWhite(String hex) {
+        return isWhiteFromColor(hex2Rgb(hex));
     }
 }

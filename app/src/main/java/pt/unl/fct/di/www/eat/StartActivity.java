@@ -10,12 +10,11 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 
 import pt.unl.fct.di.www.eat.ui.login.CompanyLoginActivity;
+import pt.unl.fct.di.www.eat.ui.login.ListMenusCompany;
 import pt.unl.fct.di.www.eat.ui.login.List_restaurantsActivity;
 import pt.unl.fct.di.www.eat.ui.login.UserLoginActivity;
 
 public class StartActivity extends AppCompatActivity {
-
-    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,24 +50,30 @@ public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        try{
-            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("myuser", Context.MODE_PRIVATE);
-            String email = new String();
-            email = sp.getString("user", email);
+        try {
+            SharedPreferences sharedPref = getSharedPreferences("myuser", Context.MODE_PRIVATE);
+            String email = "";
+            String company = "";
+            email = sharedPref.getString("user", email);
+            company = sharedPref.getString("company", company);
             Intent it;
-            // caso cliente
-            if (email.length() > 0) {
+
+            //CLIENTE
+            if (!email.isEmpty()) {
                 it = new Intent(getApplicationContext(), List_restaurantsActivity.class);
                 it.putExtra("user", email);
                 startActivity(it);
-            } else {
-                it = new Intent(getApplicationContext(), UserLoginActivity.class);
+            }
+            //RESTAURANTE
+            if (!company.isEmpty()) {
+                it = new Intent(getApplicationContext(), ListMenusCompany.class);
+                it.putExtra("user", company);
                 startActivity(it);
             }
-        } catch(Exception e ){
 
-        }
+        } catch (Exception e) { }
 
         super.onStart();
     }
+
 }
