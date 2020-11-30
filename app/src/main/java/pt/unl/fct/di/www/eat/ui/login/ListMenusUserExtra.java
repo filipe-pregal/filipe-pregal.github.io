@@ -146,7 +146,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
                 dessert = a.getText().toString();
 
             DatabaseReference m = mref.child("Restaurants").child(restaurant).child("menu").child(menu);
-            m.addListenerForSingleValueEvent(new ValueEventListener() {
+            m.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
