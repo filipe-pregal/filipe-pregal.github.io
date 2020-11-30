@@ -301,7 +301,6 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         intent.putExtra("user", email);
         intent.putExtra("restaurant", restaurant);
         startActivity(intent);
-        finish();
     }
 
     private void redirectLogin() {
