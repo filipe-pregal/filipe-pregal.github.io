@@ -410,6 +410,8 @@ public class ListMenusCompany extends AppCompatActivity {
         time = time.trim();
         if (time.equals(""))
             return false;
+        if(time.contains("-"))
+            return false;
         char unit = time.charAt(time.length() - 1);
         if (unit != 'm' && unit != 'h')
             return false;
@@ -455,6 +457,8 @@ public class ListMenusCompany extends AppCompatActivity {
     private boolean isNumericPrice(String price) {
         price = price.trim();
         if (price.equals(""))
+            return false;
+        if(price.contains("-"))
             return false;
         char unit = price.charAt(price.length() - 1);
         if (unit != '€')

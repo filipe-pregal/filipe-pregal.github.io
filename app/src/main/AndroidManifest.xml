@@ -14,13 +14,17 @@
         <activity android:name=".ui.login.Settings_page"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity android:name=".ui.login.RequestUser"
+            android:label="Requests"
             android:parentActivityName=".ui.login.List_restaurantsActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity android:name=".ui.login.PickTableActivity"
+            android:label="Choose a table"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity android:name=".ui.login.EatOptionsActivity"
+            android:label="Options to have your meal"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity android:name=".ui.login.PaymentActivity"
+            android:label="Payment options"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
         <activity
             android:name=".ui.login.CartUser"
