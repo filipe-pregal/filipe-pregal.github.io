@@ -76,7 +76,7 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:backgroundTint="#00FFFFFF"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:src="@drawable/done"
             android:layout_gravity="center_vertical"
             android:layout_alignParentRight="true"/>
