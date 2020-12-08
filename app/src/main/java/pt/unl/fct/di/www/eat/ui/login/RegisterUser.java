@@ -3,10 +3,12 @@ package pt.unl.fct.di.www.eat.ui.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,8 @@ public class RegisterUser extends AppCompatActivity {
     EditText name, email, password, confirmPassword;
     Button registerBtn;
     DatabaseReference d;
+    ImageButton imgP, imgPC;
+    Boolean visibleP, visiblePC;
 
     private static String str(EditText view) {
         return view.getText().toString();
@@ -40,6 +44,41 @@ public class RegisterUser extends AppCompatActivity {
         confirmPassword = findViewById(R.id.PasswordConfirmation);
         registerBtn = findViewById(R.id.reUser);
         registerBtn.setEnabled(false);
+        imgP = findViewById(R.id.pwShow);
+        imgPC = findViewById(R.id.pwShowC);
+        visibleP = false;
+        visiblePC = false;
+
+        imgP.setOnClickListener(view -> {
+            System.out.println("aaa");
+            if(!visibleP) {
+                password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                password.setSelection(password.getText().length());
+                imgP.setImageResource(R.drawable.hide);
+                visibleP = true;
+            }
+            else {
+                password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                password.setSelection(password.getText().length());
+                imgP.setImageResource(R.drawable.show);
+                visibleP = false;
+            }
+        });
+
+        imgPC.setOnClickListener(view -> {
+            if(!visiblePC) {
+                confirmPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                confirmPassword.setSelection(confirmPassword.getText().length());
+                imgPC.setImageResource(R.drawable.hide);
+                visiblePC = true;
+            }
+            else {
+                confirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                confirmPassword.setSelection(confirmPassword.getText().length());
+                imgPC.setImageResource(R.drawable.show);
+                visiblePC = false;
+            }
+        });
 
         name.addTextChangedListener(new TextWatcher() {
             @Override

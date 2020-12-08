@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.EventListener;
 import java.util.UUID;
 
 import pt.unl.fct.di.www.eat.R;
@@ -28,6 +31,8 @@ public class UserLoginActivity extends AppCompatActivity {
 
     EditText email, pwd;
     Button loginBtn, registerBtn;
+    ImageButton imgB;
+    Boolean visible;
     DatabaseReference d;
     SharedPreferences sp;
 
@@ -39,6 +44,23 @@ public class UserLoginActivity extends AppCompatActivity {
         email = findViewById(R.id.emailUser);
         pwd = findViewById(R.id.passwordUser);
         loginBtn = findViewById(R.id.loginUser);
+        imgB = findViewById(R.id.showPw);
+        visible = false;
+
+        imgB.setOnClickListener(view -> {
+            if(!visible) {
+                pwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                pwd.setSelection(pwd.getText().length());
+                imgB.setImageResource(R.drawable.hide);
+                visible = true;
+            }
+            else {
+                pwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                pwd.setSelection(pwd.getText().length());
+                imgB.setImageResource(R.drawable.show);
+                visible = false;
+            }
+        });
 
         email.addTextChangedListener(new TextWatcher() {
             @Override

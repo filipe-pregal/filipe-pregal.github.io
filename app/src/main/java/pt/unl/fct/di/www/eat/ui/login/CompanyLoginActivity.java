@@ -3,10 +3,12 @@ package pt.unl.fct.di.www.eat.ui.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,8 +25,11 @@ import java.util.UUID;
 import pt.unl.fct.di.www.eat.R;
 
 public class CompanyLoginActivity extends AppCompatActivity {
+
     EditText email, pwd;
     Button loginBtn;
+    ImageButton imgB;
+    Boolean visible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,23 @@ public class CompanyLoginActivity extends AppCompatActivity {
         email = findViewById(R.id.usernameCompany);
         pwd = findViewById(R.id.passwordCompany);
         loginBtn = findViewById(R.id.loginCompany);
+        imgB = findViewById(R.id.showPwC);
+        visible = false;
+
+        imgB.setOnClickListener(view -> {
+            if(!visible) {
+                pwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                pwd.setSelection(pwd.getText().length());
+                imgB.setImageResource(R.drawable.hide);
+                visible = true;
+            }
+            else {
+                pwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                pwd.setSelection(pwd.getText().length());
+                imgB.setImageResource(R.drawable.show);
+                visible = false;
+            }
+        });
 
         email.addTextChangedListener(new TextWatcher() {
             @Override
