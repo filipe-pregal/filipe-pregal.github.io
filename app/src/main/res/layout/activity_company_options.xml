@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:enabled="true"
-        android:text="Edit Drinks "
+        android:text="Save Drinks "
         android:visibility="gone" />
 
     <TextView
@@ -97,7 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:enabled="true"
-        android:text="Edit Desserts"
+        android:text="Save Desserts"
         android:visibility="gone" />
 
 </LinearLayout>
