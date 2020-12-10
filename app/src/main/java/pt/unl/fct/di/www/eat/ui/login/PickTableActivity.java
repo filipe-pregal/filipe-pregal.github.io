@@ -176,6 +176,7 @@ public class PickTableActivity extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        System.out.println("table");
         finish();
     }
 

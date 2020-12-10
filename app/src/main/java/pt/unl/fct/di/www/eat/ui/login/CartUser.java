@@ -172,13 +172,6 @@ public class CartUser extends AppCompatActivity {
         cartKey.clear();
     }
 
-    private void openMenus() {
-        Intent intent = new Intent(this, ListMenusUser.class);
-        intent.putExtra("user", email);
-        intent.putExtra("restaurant", restaurant);
-        startActivity(intent);
-    }
-
     private void openPayment() {
         Intent intent = new Intent(this, PaymentActivity.class);
         Double price = getTotalPrice();
@@ -220,6 +213,7 @@ public class CartUser extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        System.out.println("Cart");
         finish();
     }
 

@@ -71,6 +71,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
                 i1.putExtra("user", email);
                 i1.putExtra("restaurant", restaurant);
                 startActivity(i1);
+                finish();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -112,16 +113,16 @@ public class ListMenusUserExtra extends AppCompatActivity {
         name = findViewById(R.id.menuName);
 
         DatabaseReference rest = mref.child("Restaurants").child(restaurant);
-        rest.addValueEventListener(new ValueEventListener() {
+        rest.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 checkLogin();
                 resetDataExtra();
-                RestaurantData aux = null ;
+                RestaurantData aux = null;
                 if (dataSnapshot.exists()) {
                     aux = dataSnapshot.getValue(RestaurantData.class);
                 }
-                if(aux != null) {
+                if (aux != null) {
                     setDataExtra(aux);
                     addRadioDrinks();
                     addRadioDesserts(mDrinks.size());
@@ -271,6 +272,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        System.out.println("Extras");
         finish();
     }
 }

@@ -41,7 +41,6 @@ public class EatOptionsActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
-
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -172,6 +171,7 @@ public class EatOptionsActivity extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        System.out.println("EatOptions");
         finish();
     }
 }

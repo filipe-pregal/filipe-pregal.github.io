@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,10 +49,12 @@ import pt.unl.fct.di.www.eat.data.RestaurantData;
 public class ListMenusCompany extends AppCompatActivity {
 
     ListView listView1, listView2;
-    Button btnMenu, btnRequest, btnExtra, btnDrink, btnDessert;
-    TextView sDrinks, sDesserts;
+    Button btnMenu, btnRequest, btnExtra, btnEditExtra;
+    TextView sDrinks, sDesserts, emptyText;
     String email;
     DatabaseReference mref;
+    DatabaseReference extraD, menuD, reqsD;
+    ValueEventListener extraV, menuV, reqsV;
 
     ArrayList<String> mTitle = new ArrayList<>();
     ArrayList<String> mDesserts = new ArrayList<>();
@@ -81,15 +84,13 @@ public class ListMenusCompany extends AppCompatActivity {
                 super.onOptionsItemSelected(item);
                 return true;
             case R.id.action_logout:
+            case android.R.id.home:
                 logout();
                 return true;
             case R.id.action_settings:
                 Intent i2 = new Intent(this, Settings_page.class);
                 i2.putExtra("user", email);
                 startActivity(i2);
-                return true;
-            case android.R.id.home:
-               logout();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -148,22 +149,30 @@ public class ListMenusCompany extends AppCompatActivity {
         listView2 = findViewById(R.id.listViewDesserts);
         sDrinks = findViewById(R.id.seeDrinks);
         sDesserts = findViewById(R.id.seeDesserts);
+        emptyText = findViewById(R.id.emptyTextR);
 
         menus();
 
         btnRequest.setOnClickListener(view -> {
             checkLogin();
             setVisibility(8);
+            if(menuD != null && extraD != null) {
+                menuD.removeEventListener(menuV);
+                extraD.removeEventListener(extraV);
+            }
             requests();
         });
 
         btnMenu = findViewById(R.id.editMenus);
-        btnDrink = findViewById(R.id.editDrinks);
-        btnDessert = findViewById(R.id.editDesserts);
+        btnEditExtra = findViewById(R.id.extrasEdit);
 
         btnMenu.setOnClickListener(view -> {
             checkLogin();
             setVisibility(8);
+            if(reqsD != null && extraD != null){
+                reqsD.removeEventListener(reqsV);
+                extraD.removeEventListener(extraV);
+            }
             menus();
         });
 
@@ -171,8 +180,13 @@ public class ListMenusCompany extends AppCompatActivity {
         btnExtra.setOnClickListener(view -> {
             checkLogin();
             setVisibility(0);
-            DatabaseReference rest = mref.child("Restaurants").child(email);
-            rest.addValueEventListener(new ValueEventListener() {
+            if(reqsD != null && menuD!= null) {
+                reqsD.removeEventListener(reqsV);
+                menuD.removeEventListener(menuV);
+            }
+
+            extraD = mref.child("Restaurants").child(email);
+            extraV = extraD.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
@@ -180,10 +194,10 @@ public class ListMenusCompany extends AppCompatActivity {
                         RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                         setDataExtra(post);
                     }
-                    MyAdapterExtra adapter1 = new MyAdapterExtra(getApplicationContext(), rest, mDrinks, mAvailableDrinks, "drink");
+                    MyAdapterExtra adapter1 = new MyAdapterExtra(getApplicationContext(), extraD, mDrinks, mAvailableDrinks, "drink");
                     listView1.setAdapter(adapter1);
 
-                    MyAdapterExtra adapter2 = new MyAdapterExtra(getApplicationContext(), rest, mDesserts, mAvailableDesserts, "dessert");
+                    MyAdapterExtra adapter2 = new MyAdapterExtra(getApplicationContext(), extraD, mDesserts, mAvailableDesserts, "dessert");
                     listView2.setAdapter(adapter2);
                 }
 
@@ -195,37 +209,21 @@ public class ListMenusCompany extends AppCompatActivity {
             });
         });
 
-        btnDrink.setOnClickListener(view -> {
+        btnEditExtra.setOnClickListener(view -> {
             checkLogin();
-            DatabaseReference d = mref.child("Restaurants").child(email).child("drinks");
+            DatabaseReference d = mref.child("Restaurants").child(email);
             d.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (int i = 0; i < tagDrinks.size(); i++) {
-                        if (dataSnapshot.child(tagDrinks.get(i)).exists()) {
-                            DatabaseReference aux = d.child(tagDrinks.get(i)).child("isAvailable");
+                    if(dataSnapshot.exists()){
+                        DatabaseReference drinks = d.child("drinks");
+                        for (int i =0; i<tagDrinks.size(); i++){
+                            DatabaseReference aux = drinks.child(tagDrinks.get(i)).child("isAvailable");
                             aux.setValue(mAvailableDrinks.get(i));
                         }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(getApplicationContext(), "The read failed: " + databaseError.getCode(), Toast.LENGTH_SHORT).show();
-                    System.out.println("The read failed: " + databaseError.getCode());
-                }
-            });
-        });
-
-        btnDessert.setOnClickListener(view -> {
-            checkLogin();
-            DatabaseReference d = mref.child("Restaurants").child(email).child("desserts");
-            d.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (int i = 0; i < tagDesserts.size(); i++) {
-                        if (dataSnapshot.child(tagDesserts.get(i)).exists()) {
-                            DatabaseReference aux = d.child(tagDesserts.get(i)).child("isAvailable");
+                        DatabaseReference desserts = d.child("desserts");
+                        for (int i=0; i<tagDesserts.size(); i++){
+                            DatabaseReference aux = desserts.child(tagDesserts.get(i)).child("isAvailable");
                             aux.setValue(mAvailableDesserts.get(i));
                         }
                     }
@@ -247,6 +245,12 @@ public class ListMenusCompany extends AppCompatActivity {
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
+            if(reqsD != null)
+                reqsD.removeEventListener(reqsV);
+            if(menuD != null)
+                reqsD.removeEventListener(menuV);
+            if(extraD != null)
+                reqsD.removeEventListener(extraV);
             finish();
         } catch (Exception e) {
 
@@ -254,8 +258,8 @@ public class ListMenusCompany extends AppCompatActivity {
     }
 
     private void menus(){
-        DatabaseReference rest = mref.child("Restaurants").child(email);
-        rest.addValueEventListener(new ValueEventListener() {
+        menuD = mref.child("Restaurants").child(email);
+        menuV = menuD.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -263,7 +267,7 @@ public class ListMenusCompany extends AppCompatActivity {
                     RestaurantData post = dataSnapshot.getValue(RestaurantData.class);
                     setDataMenu(post);
                 }
-                MyAdapterMenu adapter = new MyAdapterMenu(getApplicationContext(), rest);
+                MyAdapterMenu adapter = new MyAdapterMenu(getApplicationContext(), menuD);
                 listView1.setAdapter(adapter);
             }
 
@@ -275,12 +279,13 @@ public class ListMenusCompany extends AppCompatActivity {
     }
 
     private void requests(){
-        DatabaseReference requestRef = mref.child("Requests").child(email);
-        requestRef.addValueEventListener(new ValueEventListener() {
+        reqsD = mref.child("Requests").child(email);
+        reqsV = reqsD.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 checkLogin();
                 resetDataRequest();
+                listView1.setEmptyView(emptyText);
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Iterator<DataSnapshot> it = child.getChildren().iterator();
@@ -338,8 +343,7 @@ public class ListMenusCompany extends AppCompatActivity {
     }
 
     private void setVisibility(int state) {
-        btnDessert.setVisibility(state);
-        btnDrink.setVisibility(state);
+        btnEditExtra.setVisibility(state);
         sDrinks.setVisibility(state);
         sDesserts.setVisibility(state);
         listView2.setVisibility(state);

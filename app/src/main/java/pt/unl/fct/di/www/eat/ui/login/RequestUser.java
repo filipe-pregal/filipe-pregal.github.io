@@ -51,6 +51,7 @@ public class RequestUser extends AppCompatActivity {
                 Intent i2 = new Intent(this, List_restaurantsActivity.class);
                 i2.putExtra("user", email);
                 startActivity(i2);
+                finish();
                 return true;
 
             default:

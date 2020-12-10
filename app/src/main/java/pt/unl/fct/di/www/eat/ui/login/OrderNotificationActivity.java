@@ -50,6 +50,7 @@ public class OrderNotificationActivity extends AppCompatActivity {
                 Intent i1 = new Intent(this, List_restaurantsActivity.class);
                 i1.putExtra("user", email);
                 startActivity(i1);
+                finish();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -103,17 +104,14 @@ public class OrderNotificationActivity extends AppCompatActivity {
         });
 
 
-        maps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
-                Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                intent.setPackage("com.google.android.apps.maps");
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                }
+        maps.setOnClickListener(view -> {
+            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
+            Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            intent.setPackage("com.google.android.apps.maps");
+            if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             }
+            startActivity(intent);
         });
 
     }

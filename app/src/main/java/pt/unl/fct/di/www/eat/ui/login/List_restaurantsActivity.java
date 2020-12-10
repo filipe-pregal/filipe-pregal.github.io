@@ -141,8 +141,8 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         //Adicionado para a toolbar
         Toolbar myToolbar = findViewById(R.id.toolbar_restaurants);
         setSupportActionBar(myToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        //ActionBar actionBar = getSupportActionBar();
+        //actionBar.setDisplayHomeAsUpEnabled(true);
 
         mref = FirebaseDatabase.getInstance().getReference();
 
@@ -328,6 +328,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        System.out.println("Restaurants");
         finish();
     }
 
@@ -387,7 +388,6 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             if (color.equals("") || color == null)
                 color = "#DDDDDD";
             int colorTxt = Color.parseColor(isWhite(color) ? "#EEEEEE":"#333333");
-            System.out.println(color + " text: " + colorTxt);
             myTitle.setTextColor(colorTxt);
             myTitle.setText(mTitle.get(position));
             myTag.setTextColor(colorTxt);

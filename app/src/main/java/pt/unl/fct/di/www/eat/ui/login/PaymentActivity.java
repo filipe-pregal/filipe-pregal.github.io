@@ -112,6 +112,7 @@ public class PaymentActivity extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+        System.out.println("payment");
         finish();
     }
 }
