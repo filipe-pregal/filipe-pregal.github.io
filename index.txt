@@ -27,8 +27,10 @@
 			<section>
 				<h3>Protótipo Online:</h3>
 				<p><a href="https://marvelapp.com/prototype/26334g16/screen/74027887?fbclid=IwAR25NEGS_fPPmjpbzCw1xObN7NhMnZUPciOKfks8x8-S7Jsp0U1kxH1U2YQ" target="_blank">Aceder</a> (marvelapp.com)</p>
-				<h3>Aplicação Android:</h3>
+				<h3>Aplicação Android Teste:</h3>
 				<p><a href="https://mega.nz/file/AKpWjb4S#zifgafsT9WljBu3Ow21bPV_Qg9IYxX9CB71riHu0njw" target="_blank">Tranferir</a> (mega.nz)</p>
+				<h3>Aplicação Android Final:</h3>
+				<a href="https://mega.nz/file/ILBkmJ6R#5V5fay3NIvgEo_KTKu57rdjvJpXlubA6I4OqKU27QZQ" target="_blank">Tranferir</a> (mega.nz)</p>
 			</section>
 			<section>
 				<h3>1ª Fase do Trabalho:</h3>
@@ -51,10 +53,12 @@
 				<h3>5ºa Fase do Trabalho:</h3>
 				<p>Relatório Avaliação Realizada: <a href="IPM_Stage_5_group_30.pdf" target="_blank">Ver Ficheiro</a></p>
 				<p>Relatório Avaliação Recebida: <a href="Stage5.pdf" target="_blank">Ver Ficheiro</a></p>
-			</section><!---
-			<section>
-				<h3>Cabeçalho:</h3>
 			</section>
+			<section>
+				<h3>6ºa Fase do Trabalho:</h3>
+				<p>Relatório: <a href="IPM_Stage_6_group_30.pdf" target="_blank">Ver Ficheiro</a></p>
+				<p>Aplicação Android: <a href="https://mega.nz/file/ILBkmJ6R#5V5fay3NIvgEo_KTKu57rdjvJpXlubA6I4OqKU27QZQ">Transferir</a></p>
+			</section><!---
 			<section>
 				<h3>Cabeçalho:</h3>
 			</section>
