@@ -247,7 +247,6 @@ public class ListMenusCompany extends AppCompatActivity {
             if(extraD != null)
                 reqsD.removeEventListener(extraV);
         } catch (Exception e) {
-
         }
         redirectLogin();
     }
