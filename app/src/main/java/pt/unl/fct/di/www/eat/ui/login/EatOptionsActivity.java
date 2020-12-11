@@ -34,7 +34,6 @@ public class EatOptionsActivity extends AppCompatActivity {
     HashMap<String, RequestItem> aux = new HashMap<>();
     ArrayList<RequestItem> items = new ArrayList<>();
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -150,7 +149,7 @@ public class EatOptionsActivity extends AppCompatActivity {
 
     private void checkLogin() {
         DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -171,7 +170,6 @@ public class EatOptionsActivity extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
-        System.out.println("EatOptions");
         finish();
     }
 }

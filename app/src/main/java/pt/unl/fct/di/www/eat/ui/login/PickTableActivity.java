@@ -155,7 +155,7 @@ public class PickTableActivity extends AppCompatActivity {
 
     private void checkLogin() {
         DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -176,7 +176,6 @@ public class PickTableActivity extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
-        System.out.println("table");
         finish();
     }
 

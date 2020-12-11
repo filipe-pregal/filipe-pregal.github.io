@@ -40,6 +40,8 @@ public class CartUser extends AppCompatActivity {
     TextView emptyText;
     String email, restaurant, res_name;
     DatabaseReference mref;
+    DatabaseReference cart;
+    ValueEventListener dV;
 
     ArrayList<String> mTitle = new ArrayList<>();
     ArrayList<String> mDrink = new ArrayList<>();
@@ -61,10 +63,12 @@ public class CartUser extends AppCompatActivity {
                 startActivity(i2);
                 return true;
             case android.R.id.home:
+                cart.removeEventListener(dV);
                 Intent i1 = new Intent(this, ListMenusUser.class);
                 i1.putExtra("user", email);
                 i1.putExtra("restaurant", restaurant);
                 startActivity(i1);
+                finish();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -98,8 +102,8 @@ public class CartUser extends AppCompatActivity {
 
         btnPayment = findViewById(R.id.payment);
 
-        DatabaseReference cartRef = mref.child("Carts").child(restaurant).child(email);
-        cartRef.addValueEventListener(new ValueEventListener() {
+        cart = mref.child("Carts").child(restaurant).child(email);
+        dV = cart.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 checkLogin();
@@ -139,6 +143,7 @@ public class CartUser extends AppCompatActivity {
     }
 
     private void logout() {
+        cart.removeEventListener(dV);
         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
         user.setValue("");
         try {
@@ -146,7 +151,7 @@ public class CartUser extends AppCompatActivity {
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
-            finish();
+            redirectLogin();
         } catch (Exception e) {
 
         }
@@ -173,6 +178,7 @@ public class CartUser extends AppCompatActivity {
     }
 
     private void openPayment() {
+        cart.removeEventListener(dV);
         Intent intent = new Intent(this, PaymentActivity.class);
         Double price = getTotalPrice();
         intent.putExtra("user", email);
@@ -192,7 +198,7 @@ public class CartUser extends AppCompatActivity {
 
     private void checkLogin() {
         DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -213,7 +219,6 @@ public class CartUser extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
-        System.out.println("Cart");
         finish();
     }
 

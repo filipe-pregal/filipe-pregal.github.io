@@ -176,7 +176,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
-            finish();
+            redirectLogin();
         } catch (Exception e) {
 
         }
@@ -250,7 +250,7 @@ public class ListMenusUserExtra extends AppCompatActivity {
 
     private void checkLogin() {
         DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -272,7 +272,6 @@ public class ListMenusUserExtra extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
-        System.out.println("Extras");
         finish();
     }
 }

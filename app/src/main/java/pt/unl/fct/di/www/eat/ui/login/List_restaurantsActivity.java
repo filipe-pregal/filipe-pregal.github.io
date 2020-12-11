@@ -49,6 +49,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
     String email;
     ArrayList abc = new ArrayList<RestaurantData>();
     DatabaseReference mref;
+    DatabaseReference restaurants;
 
     ArrayList<String> mTitle = new ArrayList<>();
     ArrayList<String> mTag = new ArrayList<>();
@@ -151,7 +152,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
 
         checkLogin();
 
-        DatabaseReference restaurants = mref.child("Restaurants");
+        restaurants = mref.child("Restaurants");
         restaurants.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -170,13 +171,11 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                checkLogin();
-                String s = (String) parent.getItemAtPosition(position);
-                openMenus(s);
-            }
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            checkLogin();
+            String s = (String) parent.getItemAtPosition(position);
+            openMenus(s);
         });
     }
 
@@ -188,7 +187,7 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
-            finish();
+            redirectLogin();
         } catch (Exception e) {
 
         }
@@ -328,13 +327,12 @@ public class List_restaurantsActivity extends AppCompatActivity implements Resta
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
-        System.out.println("Restaurants");
         finish();
     }
 
     private void checkLogin() {
         DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {

@@ -25,8 +25,6 @@ public class PaymentActivity extends AppCompatActivity {
     Double time, price;
     DatabaseReference mref;
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -90,7 +88,7 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void checkLogin() {
         DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -112,7 +110,6 @@ public class PaymentActivity extends AppCompatActivity {
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
-        System.out.println("payment");
         finish();
     }
 }

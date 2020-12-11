@@ -33,6 +33,8 @@ public class OrderNotificationActivity extends AppCompatActivity {
     String address, email, restaurant, payment, code;
     Double price, time;
     TextView timeView, codeView;
+    DatabaseReference mref;
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -83,6 +85,9 @@ public class OrderNotificationActivity extends AppCompatActivity {
             payment = extras.getString("payment");
             code = extras.getString("code");
         }
+        mref = FirebaseDatabase.getInstance().getReference();
+
+        checkLogin();
 
         timeView = findViewById(R.id.time);
         codeView = findViewById(R.id.orderCode);
@@ -103,7 +108,6 @@ public class OrderNotificationActivity extends AppCompatActivity {
             }
         });
 
-
         maps.setOnClickListener(view -> {
             Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
             Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -116,6 +120,32 @@ public class OrderNotificationActivity extends AppCompatActivity {
 
     }
 
+    private void checkLogin() {
+        DatabaseReference user = mref.child("Users").child(email);
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String token = dataSnapshot.child("token").getValue().toString();
+                    if (token.equals("")) {
+                        redirectLogin();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void redirectLogin() {
+        getIntent().removeExtra("user");
+        Intent intent = new Intent(this, UserLoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     private void logout() {
         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
         user.setValue("");
@@ -124,7 +154,7 @@ public class OrderNotificationActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
-            finish();
+            redirectLogin();
         } catch (Exception e) {
 
         }

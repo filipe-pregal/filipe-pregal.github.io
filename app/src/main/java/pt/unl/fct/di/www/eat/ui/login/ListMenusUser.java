@@ -49,6 +49,9 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
     Button btn;
     String email, restaurant, res_name;
     DatabaseReference mref;
+    DatabaseReference menus;
+    ValueEventListener dV;
+
     int numOfItemsInMenu;
     DecimalFormat priceFormatter = new DecimalFormat("#.##");
 
@@ -124,6 +127,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
     }
 
     private void logout() {
+        menus.removeEventListener(dV);
         DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users").child(email).child("token");
         user.setValue("");
         try {
@@ -131,7 +135,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
-            finish();
+            redirectLogin();
         } catch (Exception e) {
 
         }
@@ -215,8 +219,8 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         listView = findViewById(R.id.listViewMenuUser);
         checkLogin();
 
-        DatabaseReference rest = mref.child("Restaurants").child(restaurant);
-        rest.addValueEventListener(new ValueEventListener() {
+        menus = mref.child("Restaurants").child(restaurant);
+        dV = menus.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 resetData();
@@ -259,10 +263,6 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
             checkLogin();
             redirectCart();
         });
-    }
-
-    private void executeNrOfItemsInCart(DatabaseReference mref) {
-
     }
 
     private void getMenuTags() {
@@ -340,6 +340,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
     }
 
     private void redirectCart() {
+        menus.removeEventListener(dV);
         Intent intent = new Intent(this, CartUser.class);
         intent.putExtra("user", email);
         intent.putExtra("restaurant", restaurant);
@@ -361,7 +362,7 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
 
     private void checkLogin() {
         DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -383,7 +384,6 @@ public class ListMenusUser extends AppCompatActivity implements RestaurantTagsDi
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
-        System.out.println("Menus");
         finish();
     }
 

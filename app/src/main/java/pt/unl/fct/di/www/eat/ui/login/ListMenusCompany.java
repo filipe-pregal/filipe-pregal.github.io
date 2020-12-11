@@ -80,7 +80,6 @@ public class ListMenusCompany extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.app_bar_search:
-
                 super.onOptionsItemSelected(item);
                 return true;
             case R.id.action_logout:
@@ -156,10 +155,10 @@ public class ListMenusCompany extends AppCompatActivity {
         btnRequest.setOnClickListener(view -> {
             checkLogin();
             setVisibility(8);
-            if(menuD != null && extraD != null) {
+            if(menuD != null)
                 menuD.removeEventListener(menuV);
+            if(extraD != null)
                 extraD.removeEventListener(extraV);
-            }
             requests();
         });
 
@@ -169,10 +168,6 @@ public class ListMenusCompany extends AppCompatActivity {
         btnMenu.setOnClickListener(view -> {
             checkLogin();
             setVisibility(8);
-            if(reqsD != null && extraD != null){
-                reqsD.removeEventListener(reqsV);
-                extraD.removeEventListener(extraV);
-            }
             menus();
         });
 
@@ -180,10 +175,10 @@ public class ListMenusCompany extends AppCompatActivity {
         btnExtra.setOnClickListener(view -> {
             checkLogin();
             setVisibility(0);
-            if(reqsD != null && menuD!= null) {
+            if(reqsD != null)
                 reqsD.removeEventListener(reqsV);
+            if(menuD!= null)
                 menuD.removeEventListener(menuV);
-            }
 
             extraD = mref.child("Restaurants").child(email);
             extraV = extraD.addValueEventListener(new ValueEventListener() {
@@ -251,13 +246,17 @@ public class ListMenusCompany extends AppCompatActivity {
                 reqsD.removeEventListener(menuV);
             if(extraD != null)
                 reqsD.removeEventListener(extraV);
-            finish();
         } catch (Exception e) {
 
         }
+        redirectLogin();
     }
 
     private void menus(){
+        if(reqsD != null)
+            reqsD.removeEventListener(reqsV);
+        if (extraD != null)
+            extraD.removeEventListener(extraV);
         menuD = mref.child("Restaurants").child(email);
         menuV = menuD.addValueEventListener(new ValueEventListener() {
             @Override
@@ -511,7 +510,7 @@ public class ListMenusCompany extends AppCompatActivity {
 
     private void checkLogin() {
         DatabaseReference user = mref.child("Users").child(email);
-        user.addValueEventListener(new ValueEventListener() {
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -521,7 +520,6 @@ public class ListMenusCompany extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -530,6 +528,7 @@ public class ListMenusCompany extends AppCompatActivity {
     }
 
     private void redirectLogin() {
+        System.out.println("ola?");
         getIntent().removeExtra("user");
         Intent intent = new Intent(this, CompanyLoginActivity.class);
         startActivity(intent);
